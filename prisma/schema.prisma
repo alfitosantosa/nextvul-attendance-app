@@ -1,0 +1,278 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id      String     @id
+  parent  Parent?
+  student Student?
+  teacher Teacher?
+  roles   UserRole[]
+
+  @@map("users")
+}
+
+model Role {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  description String
+  permissions String[]
+  users       UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  id     String @id @default(cuid())
+  userId String
+  roleId String
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@map("user_roles")
+}
+
+model AcademicYear {
+  id             String          @id @default(cuid())
+  year           String          @unique
+  startDate      DateTime
+  endDate        DateTime
+  isActive       Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  calendarEvents CalendarEvent[]
+  classes        Class[]
+  schedules      Schedule[]
+  students       Student[]
+  violationTypes ViolationType[]
+
+  @@map("academic_years")
+}
+
+model Major {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  name        String
+  description String?
+  isActive    Boolean   @default(true)
+  classes     Class[]
+  students    Student[]
+  subjects    Subject[]
+
+  @@map("majors")
+}
+
+model Class {
+  id             String       @id @default(cuid())
+  name           String
+  grade          Int
+  majorId        String
+  academicYearId String
+  capacity       Int          @default(36)
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
+  major          Major        @relation(fields: [majorId], references: [id])
+  schedules      Schedule[]
+  students       Student[]
+  violations     Violation[]
+
+  @@unique([name, academicYearId])
+  @@map("classes")
+}
+
+model Student {
+  id             String       @id @default(cuid())
+  userId         String       @unique
+  nisn           String       @unique
+  birthPlace     String
+  birthDate      DateTime
+  nik            String       @unique
+  address        String
+  classId        String
+  academicYearId String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  enrollmentDate DateTime     @default(now())
+  gender         String
+  graduationDate DateTime?
+  majorId        String
+  parentPhone    String?
+  status         String       @default("active")
+  name           String
+  attendances    Attendance[]
+  parents        Parent[]
+  payments       Payment[]
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
+  class          Class        @relation(fields: [classId], references: [id])
+  major          Major        @relation(fields: [majorId], references: [id])
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  violations     Violation[]
+
+  @@map("students")
+}
+
+model Teacher {
+  id         String     @id @default(cuid())
+  userId     String     @unique
+  employeeId String     @unique
+  nik        String     @unique
+  birthPlace String
+  birthDate  DateTime
+  address    String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  endDate    DateTime?
+  gender     String     @default("L")
+  position   String?
+  startDate  DateTime   @default(now())
+  status     String     @default("active")
+  name       String
+  schedules  Schedule[]
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("teachers")
+}
+
+model Parent {
+  id        String  @id @default(cuid())
+  userId    String  @unique
+  studentId String
+  relation  String
+  address   String?
+  name      String
+  student   Student @relation(fields: [studentId], references: [id])
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("parents")
+}
+
+model Subject {
+  id          String     @id @default(cuid())
+  code        String     @unique
+  name        String
+  description String?
+  majorId     String?
+  credits     Int        @default(2)
+  isActive    Boolean    @default(true)
+  schedules   Schedule[]
+  major       Major?     @relation(fields: [majorId], references: [id])
+
+  @@map("subjects")
+}
+
+model Schedule {
+  id             String       @id @default(cuid())
+  classId        String
+  subjectId      String
+  teacherId      String
+  academicYearId String
+  dayOfWeek      Int
+  startTime      String
+  endTime        String
+  room           String?
+  attendances    Attendance[]
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
+  class          Class        @relation(fields: [classId], references: [id])
+  subject        Subject      @relation(fields: [subjectId], references: [id])
+  teacher        Teacher      @relation(fields: [teacherId], references: [id])
+
+  @@unique([classId, subjectId, teacherId, dayOfWeek, startTime])
+  @@map("schedules")
+}
+
+model Attendance {
+  id         String   @id @default(cuid())
+  studentId  String
+  scheduleId String
+  status     String
+  notes      String?
+  createdAt  DateTime @default(now())
+  date       DateTime
+  schedule   Schedule @relation(fields: [scheduleId], references: [id])
+  student    Student  @relation(fields: [studentId], references: [id])
+
+  @@unique([studentId, scheduleId, date])
+  @@map("attendances")
+}
+
+model ViolationType {
+  id             String       @id @default(cuid())
+  name           String
+  description    String
+  points         Int
+  category       String
+  academicYearId String
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
+  violations     Violation[]
+
+  @@map("violation_types")
+}
+
+model Violation {
+  id              String        @id @default(cuid())
+  studentId       String
+  violationTypeId String
+  classId         String
+  description     String?
+  status          String        @default("active")
+  reportedBy      String
+  createdAt       DateTime      @default(now())
+  date            DateTime
+  resolutionDate  DateTime?
+  resolutionNotes String?
+  class           Class         @relation(fields: [classId], references: [id])
+  student         Student       @relation(fields: [studentId], references: [id])
+  violationType   ViolationType @relation(fields: [violationTypeId], references: [id])
+
+  @@map("violations")
+}
+
+model PaymentType {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String
+  amount      Decimal
+  isMonthly   Boolean   @default(false)
+  isActive    Boolean   @default(true)
+  payments    Payment[]
+
+  @@map("payment_types")
+}
+
+model Payment {
+  id            String      @id @default(cuid())
+  studentId     String
+  paymentTypeId String
+  amount        Decimal
+  dueDate       DateTime?
+  status        String      @default("pending")
+  notes         String?
+  createdAt     DateTime    @default(now())
+  paymentDate   DateTime
+  receiptNumber String?
+  paymentType   PaymentType @relation(fields: [paymentTypeId], references: [id])
+  student       Student     @relation(fields: [studentId], references: [id])
+
+  @@map("payments")
+}
+
+model CalendarEvent {
+  id             String       @id @default(cuid())
+  title          String
+  description    String?
+  eventDate      DateTime
+  eventType      String
+  isPublished    Boolean      @default(false)
+  academicYearId String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
+
+  @@map("calendar_events")
+}
