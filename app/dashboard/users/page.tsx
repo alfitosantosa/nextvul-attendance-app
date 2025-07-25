@@ -1,52 +1,19 @@
 "use client";
 
 import * as React from "react";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-} from "@tanstack/react-table";
-import {
-  ArrowUpDown,
-  ChevronDown,
-  MoreHorizontal,
-} from "lucide-react";
+import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, ColumnFiltersState, SortingState, VisibilityState } from "@tanstack/react-table";
+import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
 import Navbar from "@/components/navbar";
-import { useGetClerk } from "../hooks/useClerk";
+import { useGetUsers } from "@/app/hooks/useUsers";
 
 export type User = {
   id: string;
-  first_name?: string | null;
-  profile_image_url?: string | null;
-  email_addresses?: { email_address: string }[];
   parent?: { id: string } | null;
   student?: { id: string } | null;
   teacher?: { id: string } | null;
@@ -56,63 +23,24 @@ export type User = {
 const columns: ColumnDef<User>[] = [
   {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) =>
-          table.toggleAllPageRowsSelected(!!value)
-        }
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) =>
-          row.toggleSelected(!!value)
-        }
-        aria-label="Select row"
-      />
-    ),
+    header: ({ table }) => <Checkbox checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")} onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)} aria-label="Select all" />,
+    cell: ({ row }) => <Checkbox checked={row.getIsSelected()} onCheckedChange={(value) => row.toggleSelected(!!value)} aria-label="Select row" />,
     enableSorting: false,
     enableHiding: false,
   },
   {
-    id: "profile",
-    header: "Avatar",
-    cell: ({ row }) => (
-      <img
-        src={row.original.profile_image_url ?? "/default-avatar.png"}
-        alt="Avatar"
-        className="w-10 h-10 rounded-full object-cover"
-      />
-    ),
-  },
-  {
-    accessorKey: "first_name",
-    header: "Name",
-    cell: ({ row }) => <div>{row.original.first_name ?? "-"}</div>,
-  },
-  {
-    id: "email",
-    header: "Email",
-    cell: ({ row }) => (
-      <div>
-        {row.original.email_addresses?.[0]?.email_address ?? "-"}
-      </div>
+    accessorKey: "id",
+    header: ({ column }) => (
+      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+        User ID
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
   },
   {
     accessorKey: "roles",
     header: "Roles",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {(row.original.roles ?? []).map((r) => r.role).join(", ") || "None"}
-      </div>
-    ),
+    cell: ({ row }) => <div className="capitalize">{row.original.roles.map((r) => r.role).join(", ") || "None"}</div>,
   },
   {
     accessorKey: "parent",
@@ -145,13 +73,7 @@ const columns: ColumnDef<User>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() =>
-                navigator.clipboard.writeText(user.id)
-              }
-            >
-              Copy User ID
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(user.id)}>Copy User ID</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View Details</DropdownMenuItem>
           </DropdownMenuContent>
@@ -162,7 +84,7 @@ const columns: ColumnDef<User>[] = [
 ];
 
 export default function DataTableUsers() {
-  const { data, isLoading, error } = useGetClerk();
+  const { data, isLoading, error } = useGetUsers();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -196,19 +118,10 @@ export default function DataTableUsers() {
       <Navbar />
       <Card className="max-w-7xl mx-auto my-8 p-6">
         <h1 className="text-2xl font-bold">Users</h1>
-        <p className="text-muted-foreground mb-4">
-          Manage users from the database.
-        </p>
+        <p className="text-muted-foreground mb-4">Manage users from the database.</p>
 
         <div className="flex items-center py-4 gap-4">
-          <Input
-            placeholder="Filter by Name..."
-            value={(table.getColumn("first_name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("first_name")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          />
+          <Input placeholder="Filter by User ID..." value={(table.getColumn("id")?.getFilterValue() as string) ?? ""} onChange={(event) => table.getColumn("id")?.setFilterValue(event.target.value)} className="max-w-sm" />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
@@ -220,14 +133,7 @@ export default function DataTableUsers() {
                 .getAllColumns()
                 .filter((col) => col.getCanHide())
                 .map((column) => (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
+                  <DropdownMenuCheckboxItem key={column.id} className="capitalize" checked={column.getIsVisible()} onCheckedChange={(value) => column.toggleVisibility(!!value)}>
                     {column.id}
                   </DropdownMenuCheckboxItem>
                 ))}
@@ -241,14 +147,7 @@ export default function DataTableUsers() {
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
+                    <TableHead key={header.id}>{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
                   ))}
                 </TableRow>
               ))}
@@ -256,17 +155,9 @@ export default function DataTableUsers() {
             <TableBody>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
+                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
+                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                     ))}
                   </TableRow>
                 ))
@@ -283,24 +174,13 @@ export default function DataTableUsers() {
 
         <div className="flex items-center justify-end space-x-2 py-4">
           <div className="text-muted-foreground flex-1 text-sm">
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
+            {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s) selected.
           </div>
           <div className="space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
+            <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
               Previous
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
+            <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
               Next
             </Button>
           </div>

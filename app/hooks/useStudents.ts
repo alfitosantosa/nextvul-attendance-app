@@ -4,11 +4,12 @@ import axios from "axios";
 
 export const useGetStudents = () => {
   return useQuery({
-    queryKey: ["students"],
+    queryKey: ["users"],
     queryFn: async () => {
       try {
         const res = await axios.get("/api/students");
-        return res.data.data;
+        console.log(res.data);
+        return res.data;
       } catch (error: any) {
         throw new Error(error?.response?.data?.message || "Failed to fetch data");
       }

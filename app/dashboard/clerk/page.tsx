@@ -10,22 +10,20 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
 import Navbar from "@/components/navbar";
-import { useGetStudents } from "../hooks/useStudents";
+import { useGetClerk } from "@/app/hooks/useClerk";
 
-export type Student = {
+export type User = {
   id: string;
-  nisn: string;
-  birthPlace: string;
-  birthDate: string;
-  address: string;
-  gender: string;
-  status: string;
-  parentPhone?: string | null;
-  class: { name: string };
-  major: { name: string };
+  first_name?: string | null;
+  profile_image_url?: string | null;
+  email_addresses?: { email_address: string }[];
+  parent?: { id: string } | null;
+  student?: { id: string } | null;
+  teacher?: { id: string } | null;
+  roles: { role: string }[];
 };
 
-const columns: ColumnDef<Student>[] = [
+const columns: ColumnDef<User>[] = [
   {
     id: "select",
     header: ({ table }) => <Checkbox checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")} onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)} aria-label="Select all" />,
@@ -34,58 +32,45 @@ const columns: ColumnDef<Student>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "nisn",
-    header: ({ column }) => (
-      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        NISN
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
+    id: "profile",
+    header: "Avatar",
+    cell: ({ row }) => <img src={row.original.profile_image_url ?? "/default-avatar.png"} alt="Avatar" className="w-10 h-10 rounded-full object-cover" />,
   },
   {
-    accessorKey: "birthPlace",
-    header: "Birth Place",
+    accessorKey: "first_name",
+    header: "Name",
+    cell: ({ row }) => <div>{row.original.first_name ?? "-"}</div>,
   },
   {
-    accessorKey: "birthDate",
-    header: "Birth Date",
-    cell: ({ row }) => {
-      const date = new Date(row.original.birthDate);
-      return <div>{date.toLocaleDateString()}</div>;
-    },
+    id: "email",
+    header: "Email",
+    cell: ({ row }) => <div>{row.original.email_addresses?.[0]?.email_address ?? "-"}</div>,
   },
   {
-    accessorKey: "gender",
-    header: "Gender",
+    accessorKey: "roles",
+    header: "Roles",
+    cell: ({ row }) => <div className="capitalize">{(row.original.roles ?? []).map((r) => r.role).join(", ") || "None"}</div>,
   },
   {
-    accessorKey: "address",
-    header: "Address",
+    accessorKey: "parent",
+    header: "Parent",
+    cell: ({ row }) => <div>{row.original.parent?.id ?? "-"}</div>,
   },
   {
-    accessorKey: "class.name",
-    header: "Class",
-    cell: ({ row }) => row.original.class?.name ?? "-",
+    accessorKey: "student",
+    header: "Student",
+    cell: ({ row }) => <div>{row.original.student?.id ?? "-"}</div>,
   },
   {
-    accessorKey: "major.name",
-    header: "Major",
-    cell: ({ row }) => row.original.major?.name ?? "-",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-  },
-  {
-    accessorKey: "parentPhone",
-    header: "Parent Phone",
-    cell: ({ row }) => row.original.parentPhone ?? "-",
+    accessorKey: "teacher",
+    header: "Teacher",
+    cell: ({ row }) => <div>{row.original.teacher?.id ?? "-"}</div>,
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const student = row.original;
+      const user = row.original;
 
       return (
         <DropdownMenu>
@@ -97,7 +82,7 @@ const columns: ColumnDef<Student>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(student.id)}>Copy Student ID</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(user.id)}>Copy User ID</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View Details</DropdownMenuItem>
           </DropdownMenuContent>
@@ -107,8 +92,8 @@ const columns: ColumnDef<Student>[] = [
   },
 ];
 
-export default function DataTableStudents() {
-  const { data, isLoading, error } = useGetStudents();
+export default function DataTableClerk() {
+  const { data, isLoading, error } = useGetClerk();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -141,11 +126,11 @@ export default function DataTableStudents() {
     <>
       <Navbar />
       <Card className="max-w-7xl mx-auto my-8 p-6">
-        <h1 className="text-2xl font-bold">Students</h1>
-        <p className="text-muted-foreground mb-4">Manage students from the database.</p>
+        <h1 className="text-2xl font-bold">Clerk</h1>
+        <p className="text-muted-foreground mb-4">Manage Clerk from the database.</p>
 
         <div className="flex items-center py-4 gap-4">
-          <Input placeholder="Filter by NISN..." value={(table.getColumn("nisn")?.getFilterValue() as string) ?? ""} onChange={(event) => table.getColumn("nisn")?.setFilterValue(event.target.value)} className="max-w-sm" />
+          <Input placeholder="Filter by Name..." value={(table.getColumn("first_name")?.getFilterValue() as string) ?? ""} onChange={(event) => table.getColumn("first_name")?.setFilterValue(event.target.value)} className="max-w-sm" />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">

@@ -10,17 +10,23 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
 import Navbar from "@/components/navbar";
-import { useGetUsers } from "../hooks/useUsers";
+import { useGetStudents } from "@/app/hooks/useStudents";
 
-export type User = {
+export type Student = {
   id: string;
-  parent?: { id: string } | null;
-  student?: { id: string } | null;
-  teacher?: { id: string } | null;
-  roles: { role: string }[];
+  nisn: string;
+  name: string;
+  birthPlace: string;
+  birthDate: string;
+  address: string;
+  gender: string;
+  status: string;
+  parentPhone?: string | null;
+  class: { name: string };
+  major: { name: string };
 };
 
-const columns: ColumnDef<User>[] = [
+const columns: ColumnDef<Student>[] = [
   {
     id: "select",
     header: ({ table }) => <Checkbox checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")} onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)} aria-label="Select all" />,
@@ -29,39 +35,62 @@ const columns: ColumnDef<User>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "id",
+    accessorKey: "nisn",
     header: ({ column }) => (
       <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        User ID
+        NISN
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
   {
-    accessorKey: "roles",
-    header: "Roles",
-    cell: ({ row }) => <div className="capitalize">{row.original.roles.map((r) => r.role).join(", ") || "None"}</div>,
+    accessorKey: "name",
+    header: "Name",
   },
   {
-    accessorKey: "parent",
-    header: "Parent",
-    cell: ({ row }) => <div>{row.original.parent?.id ?? "-"}</div>,
+    accessorKey: "birthPlace",
+    header: "Birth Place",
   },
   {
-    accessorKey: "student",
-    header: "Student",
-    cell: ({ row }) => <div>{row.original.student?.id ?? "-"}</div>,
+    accessorKey: "birthDate",
+    header: "Birth Date",
+    cell: ({ row }) => {
+      const date = new Date(row.original.birthDate);
+      return <div>{date.toLocaleDateString()}</div>;
+    },
   },
   {
-    accessorKey: "teacher",
-    header: "Teacher",
-    cell: ({ row }) => <div>{row.original.teacher?.id ?? "-"}</div>,
+    accessorKey: "gender",
+    header: "Gender",
+  },
+  {
+    accessorKey: "address",
+    header: "Address",
+  },
+  {
+    accessorKey: "class.name",
+    header: "Class",
+    cell: ({ row }) => row.original.class?.name ?? "-",
+  },
+  {
+    accessorKey: "major.name",
+    header: "Major",
+    cell: ({ row }) => row.original.major?.name ?? "-",
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+  },
+  {
+    accessorKey: "parentPhone",
+    header: "Parent Phone",
+    cell: ({ row }) => row.original.parentPhone ?? "-",
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const user = row.original;
+      const student = row.original;
 
       return (
         <DropdownMenu>
@@ -73,7 +102,7 @@ const columns: ColumnDef<User>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(user.id)}>Copy User ID</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(student.id)}>Copy Student ID</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View Details</DropdownMenuItem>
           </DropdownMenuContent>
@@ -83,8 +112,8 @@ const columns: ColumnDef<User>[] = [
   },
 ];
 
-export default function DataTableUsers() {
-  const { data, isLoading, error } = useGetUsers();
+export default function DataTableStudents() {
+  const { data, isLoading, error } = useGetStudents();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -117,11 +146,11 @@ export default function DataTableUsers() {
     <>
       <Navbar />
       <Card className="max-w-7xl mx-auto my-8 p-6">
-        <h1 className="text-2xl font-bold">Users</h1>
-        <p className="text-muted-foreground mb-4">Manage users from the database.</p>
+        <h1 className="text-2xl font-bold">Students</h1>
+        <p className="text-muted-foreground mb-4">Manage students from the database.</p>
 
         <div className="flex items-center py-4 gap-4">
-          <Input placeholder="Filter by User ID..." value={(table.getColumn("id")?.getFilterValue() as string) ?? ""} onChange={(event) => table.getColumn("id")?.setFilterValue(event.target.value)} className="max-w-sm" />
+          <Input placeholder="Filter by NISN..." value={(table.getColumn("nisn")?.getFilterValue() as string) ?? ""} onChange={(event) => table.getColumn("nisn")?.setFilterValue(event.target.value)} className="max-w-sm" />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
