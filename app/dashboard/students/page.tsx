@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, ColumnFiltersState, SortingState, VisibilityState } from "@tanstack/react-table";
+import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, SortingState, VisibilityState } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -11,9 +11,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card } from "@/components/ui/card";
 import Navbar from "@/components/navbar";
 import { useGetStudents } from "@/app/hooks/useStudents";
+import { DialogCreateStudent } from "@/components/dialog/DialogCreateStudent";
 
 export type Student = {
   id: string;
+  avatarUrl?: string | null;
   nisn: string;
   name: string;
   birthPlace: string;
@@ -33,6 +35,15 @@ const columns: ColumnDef<Student>[] = [
     cell: ({ row }) => <Checkbox checked={row.getIsSelected()} onCheckedChange={(value) => row.toggleSelected(!!value)} aria-label="Select row" />,
     enableSorting: false,
     enableHiding: false,
+  },
+  {
+    accessorKey: "avatarUrl",
+    header: "Avatar",
+    cell: ({ row }) => (
+      <div className="flex items-center">
+        <img src={row.original.avatarUrl ?? "/default-avatar.png"} alt={row.original.name} className="w-8 h-8 rounded-full" />
+      </div>
+    ),
   },
   {
     accessorKey: "nisn",
@@ -116,26 +127,40 @@ export default function DataTableStudents() {
   const { data, isLoading, error } = useGetStudents();
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [globalFilter, setGlobalFilter] = React.useState("");
 
   const table = useReactTable({
     data: data ?? [],
     columns,
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    filterFns: {
+      globalFilterFn: (row, _columnId, filterValue) => {
+        const nisn = row.original.nisn.toLowerCase();
+        const name = row.original.name.toLowerCase();
+        const search = filterValue.toLowerCase();
+        return nisn.includes(search) || name.includes(search);
+      },
+    },
+    globalFilterFn: (row, _columnId, filterValue) => {
+      const nisn = row.original.nisn.toLowerCase();
+      const name = row.original.name.toLowerCase();
+      const search = filterValue.toLowerCase();
+      return nisn.includes(search) || name.includes(search);
+    },
     state: {
       sorting,
-      columnFilters,
       columnVisibility,
       rowSelection,
+      globalFilter,
     },
   });
 
@@ -149,8 +174,10 @@ export default function DataTableStudents() {
         <h1 className="text-2xl font-bold">Students</h1>
         <p className="text-muted-foreground mb-4">Manage students from the database.</p>
 
-        <div className="flex items-center py-4 gap-4">
-          <Input placeholder="Filter by NISN..." value={(table.getColumn("nisn")?.getFilterValue() as string) ?? ""} onChange={(event) => table.getColumn("nisn")?.setFilterValue(event.target.value)} className="max-w-sm" />
+        <div className="flex items-center py-4 gap-4 flex-wrap">
+          <Input placeholder="Search NISN or Name..." value={globalFilter} onChange={(e) => setGlobalFilter(e.target.value)} className="max-w-sm" />
+          <DialogCreateStudent />
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">

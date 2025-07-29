@@ -3,7 +3,6 @@
 //   userId     String     @unique
 //   employeeId String     @unique
 //   nik        String     @unique
-// name         String
 //   birthPlace String
 //   birthDate  DateTime
 //   address    String
@@ -14,9 +13,11 @@
 //   position   String?
 //   startDate  DateTime   @default(now())
 //   status     String     @default("active")
+//   name       String
+//   avatarUrl  String?
 //   schedules  Schedule[]
 //   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+//
 //   @@map("teachers")
 // }
 import { NextRequest, NextResponse } from "next/server";
@@ -33,9 +34,10 @@ export async function GET(request: NextRequest) {
         nik: true,
         birthPlace: true,
         birthDate: true,
-        address: true,
         createdAt: true,
         updatedAt: true,
+        address: true,
+        avatarUrl: true,
         endDate: true,
 
         user: {
@@ -73,7 +75,7 @@ export async function GET(request: NextRequest) {
 }
 export async function POST(request: NextRequest) {
   try {
-    const { userId, employeeId, name, nik, birthPlace, birthDate, address } = await request.json();
+    const { userId, employeeId, name, nik, birthPlace, birthDate, address, avatarUrl } = await request.json();
     if (!userId || !employeeId || !name || !nik || !birthPlace || !birthDate || !address) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
@@ -83,6 +85,7 @@ export async function POST(request: NextRequest) {
         employeeId,
         name,
         nik,
+        avatarUrl,
         birthPlace,
         birthDate: new Date(birthDate),
         address,

@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
 }
 export async function POST(request: NextRequest) {
   try {
-    const { userId, nisn, name, birthPlace, birthDate, nik, address, classId, academicYearId, enrollmentDate, gender, graduationDate, majorId, parentPhone } = await request.json();
+    const { userId, nisn, name, avatarUrl, birthPlace, birthDate, nik, address, classId, academicYearId, enrollmentDate, gender, graduationDate, majorId, parentPhone } = await request.json();
     if (!userId || !nisn || !birthPlace || !birthDate || !nik || !address || !classId || !academicYearId || !enrollmentDate || !gender || !graduationDate || !majorId || !parentPhone) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
@@ -95,6 +95,7 @@ export async function POST(request: NextRequest) {
         userId,
         nisn,
         name,
+        avatarUrl,
         birthPlace,
         birthDate,
         nik,

@@ -88,7 +88,7 @@ model Class {
 
 model Student {
   id             String       @id @default(cuid())
-  userId         String       @unique
+  userId         String?      @unique
   nisn           String       @unique
   birthPlace     String
   birthDate      DateTime
@@ -105,13 +105,14 @@ model Student {
   parentPhone    String?
   status         String       @default("active")
   name           String
+  avatarUrl      String?
   attendances    Attendance[]
   parents        Parent[]
   payments       Payment[]
   academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
   class          Class        @relation(fields: [classId], references: [id])
   major          Major        @relation(fields: [majorId], references: [id])
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
   violations     Violation[]
 
   @@map("students")
@@ -119,7 +120,7 @@ model Student {
 
 model Teacher {
   id         String     @id @default(cuid())
-  userId     String     @unique
+  userId     String?    @unique
   employeeId String     @unique
   nik        String     @unique
   birthPlace String
@@ -133,21 +134,22 @@ model Teacher {
   startDate  DateTime   @default(now())
   status     String     @default("active")
   name       String
+  avatarUrl  String?
   schedules  Schedule[]
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("teachers")
 }
 
 model Parent {
   id        String  @id @default(cuid())
-  userId    String  @unique
+  userId    String? @unique
   studentId String
   relation  String
   address   String?
   name      String
   student   Student @relation(fields: [studentId], references: [id])
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("parents")
 }

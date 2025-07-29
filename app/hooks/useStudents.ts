@@ -1,5 +1,5 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 export const useGetStudents = () => {
@@ -13,6 +13,23 @@ export const useGetStudents = () => {
       } catch (error: any) {
         throw new Error(error?.response?.data?.message || "Failed to fetch data");
       }
+    },
+  });
+};
+
+export const useCreateStudent = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: any) => {
+      const res = await axios.post("/api/students", data);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+    onError: (error: any) => {
+      console.error("Error creating student:", error);
+      throw new Error(error?.response?.data?.message || "Failed to create student");
     },
   });
 };
