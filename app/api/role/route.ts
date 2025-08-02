@@ -43,3 +43,45 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Failed to create role" }, { status: 500 });
   }
 }
+
+export async function PUT(request: NextRequest) {
+  try {
+    const { id, name, description, permissions } = await request.json();
+    if (!id || !name || !description || !permissions) {
+      return NextResponse.json({ error: "ID, name, description, and permissions are required" }, { status: 400 });
+    }
+
+    const updatedRole = await prisma.role.update({
+      where: { id },
+      data: {
+        name,
+        description,
+        permissions,
+      },
+    });
+
+    return NextResponse.json(updatedRole);
+  } catch (error) {
+    console.error("Error updating role:", error);
+    return NextResponse.json({ error: "Failed to update role" }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { id } = await request.json();
+    if (!id) {
+      return NextResponse.json({ error: "ID is required" }, { status: 400 });
+    }
+
+    await prisma.role.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ message: "Role deleted successfully" }, { status: 200 });
+  } catch (error) {
+    console.error("Error deleting role:", error);
+    return NextResponse.json({ error: "Failed to delete role" }, { status: 500 });
+  }
+}
+  

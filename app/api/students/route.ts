@@ -1,6 +1,6 @@
 // model Student {
 //   id             String       @id @default(cuid())
-//   userId         String       @unique
+//   userId         String?      @unique
 //   nisn           String       @unique
 //   birthPlace     String
 //   birthDate      DateTime
@@ -16,13 +16,15 @@
 //   majorId        String
 //   parentPhone    String?
 //   status         String       @default("active")
+//   name           String
+//   avatarUrl      String?
 //   attendances    Attendance[]
 //   parents        Parent[]
 //   payments       Payment[]
 //   academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
 //   class          Class        @relation(fields: [classId], references: [id])
 //   major          Major        @relation(fields: [majorId], references: [id])
-//   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   user           User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
 //   violations     Violation[]
 
 //   @@map("students")
@@ -113,6 +115,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newStudent, { status: 201 });
   } catch (error) {
     console.error("Error creating student:", error);
+    console.log("Error details:", error);
     return NextResponse.json({ error: "Failed to create student" }, { status: 500 });
   }
 }
