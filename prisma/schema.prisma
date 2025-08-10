@@ -8,37 +8,76 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Role {
+  id          String     @id @default(cuid())
+  name        String     @unique  // "student", "teacher", "parent", "admin"
+  description String
+  isActive    Boolean    @default(true)
+  permissions String[]
+  users       User[]
+  
+  @@map("roles")
+}
+
 model User {
-  id      String     @id
-  parent  Parent?
-  student Student?
-  teacher Teacher?
-  roles   UserRole[]
+  id          String    @id @default(cuid())
+  clerkId     String?   @unique  // ID dari Clerk
+  roleId      String    // Foreign key ke Role (WAJIB)
+  name        String    // Nama (WAJIB untuk semua)
+  email       String?   @unique
+  avatarUrl   String?
+  
+  // === FIELDS UNTUK STUDENT ===
+  nisn           String?   @unique  // Wajib untuk student
+  birthPlace     String?            // Wajib untuk student
+  birthDate      DateTime?          // Wajib untuk student
+  nik            String?   @unique  // Wajib untuk student
+  address        String?            // Wajib untuk student
+  classId        String?            // Wajib untuk student
+  academicYearId String?            // Wajib untuk student
+  enrollmentDate DateTime?          // Default now() untuk student
+  gender         String?            // Wajib untuk student & teacher
+  graduationDate DateTime?          // Optional untuk student
+  majorId        String?            // Wajib untuk student
+  parentPhone    String?            // Optional untuk student
+  status         String?   @default("active")  // active/inactive/graduated
+  
+  // === FIELDS UNTUK TEACHER ===
+  employeeId     String?   @unique  // Wajib untuk teacher
+  position       String?            // Optional untuk teacher
+  startDate      DateTime?          // Default now() untuk teacher
+  endDate        DateTime?          // Optional untuk teacher
+  
+  // === FIELDS UNTUK PARENT ===
+  studentIds     String[]           // Array ID student (anak-anak) - untuk parent
+  relation       String?            // Father/Mother/Guardian - wajib untuk parent
+  
+  // === TIMESTAMPS ===
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  
+  // === RELATIONS ===
+  role           Role              @relation(fields: [roleId], references: [id])
+  
+  // Relations sebagai Student
+  academicYear   AcademicYear?     @relation("StudentAcademicYear", fields: [academicYearId], references: [id])
+  class          Class?            @relation("StudentClass", fields: [classId], references: [id])
+  major          Major?            @relation("StudentMajor", fields: [majorId], references: [id])
+  attendances    Attendance[]      @relation("StudentAttendance")
+  payments       Payment[]         @relation("StudentPayment")
+  violations     Violation[]       @relation("StudentViolation")
+  
+  // Relations sebagai Teacher
+  schedules      Schedule[]        @relation("TeacherSchedule")
+  
+  // Relations sebagai Parent (many-to-many dengan students)
+  parentOf       User[]            @relation("ParentStudent") 
+  parents        User[]            @relation("ParentStudent")
 
   @@map("users")
 }
 
-model Role {
-  id          String     @id @default(cuid())
-  name        String     @unique
-  description String
-  permissions String[]
-  users       UserRole[]
-
-  @@map("roles")
-}
-
-model UserRole {
-  id     String @id @default(cuid())
-  userId String
-  roleId String
-  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, roleId])
-  @@map("user_roles")
-}
-
+// Models lain tetap sama, hanya relasi yang berubah
 model AcademicYear {
   id             String          @id @default(cuid())
   year           String          @unique
@@ -50,7 +89,7 @@ model AcademicYear {
   calendarEvents CalendarEvent[]
   classes        Class[]
   schedules      Schedule[]
-  students       Student[]
+  students       User[]          @relation("StudentAcademicYear")  // Relasi ke User
   violationTypes ViolationType[]
 
   @@map("academic_years")
@@ -63,7 +102,7 @@ model Major {
   description String?
   isActive    Boolean   @default(true)
   classes     Class[]
-  students    Student[]
+  students    User[]    @relation("StudentMajor")  // Relasi ke User
   subjects    Subject[]
 
   @@map("majors")
@@ -79,79 +118,11 @@ model Class {
   academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
   major          Major        @relation(fields: [majorId], references: [id])
   schedules      Schedule[]
-  students       Student[]
+  students       User[]       @relation("StudentClass")  // Relasi ke User
   violations     Violation[]
 
   @@unique([name, academicYearId])
   @@map("classes")
-}
-
-model Student {
-  id             String       @id @default(cuid())
-  userId         String?      @unique
-  nisn           String       @unique
-  birthPlace     String
-  birthDate      DateTime
-  nik            String       @unique
-  address        String
-  classId        String
-  academicYearId String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  enrollmentDate DateTime     @default(now())
-  gender         String
-  graduationDate DateTime?
-  majorId        String
-  parentPhone    String?
-  status         String       @default("active")
-  name           String
-  avatarUrl      String?
-  attendances    Attendance[]
-  parents        Parent[]
-  payments       Payment[]
-  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
-  class          Class        @relation(fields: [classId], references: [id])
-  major          Major        @relation(fields: [majorId], references: [id])
-  user           User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  violations     Violation[]
-
-  @@map("students")
-}
-
-model Teacher {
-  id         String     @id @default(cuid())
-  userId     String?    @unique
-  employeeId String     @unique
-  nik        String     @unique
-  birthPlace String
-  birthDate  DateTime
-  address    String
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  endDate    DateTime?
-  gender     String     @default("L")
-  position   String?
-  startDate  DateTime   @default(now())
-  status     String     @default("active")
-  name       String
-  avatarUrl  String?
-  schedules  Schedule[]
-  user       User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("teachers")
-}
-
-model Parent {
-  id        String  @id @default(cuid())
-  userId    String? @unique
-  studentId String
-  relation  String
-  address   String?
-  name      String
-  student   Student @relation(fields: [studentId], references: [id])
-  user      User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("parents")
 }
 
 model Subject {
@@ -172,7 +143,7 @@ model Schedule {
   id             String       @id @default(cuid())
   classId        String
   subjectId      String
-  teacherId      String
+  teacherId      String       // Relasi ke User dengan role teacher
   academicYearId String
   dayOfWeek      Int
   startTime      String
@@ -182,7 +153,7 @@ model Schedule {
   academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
   class          Class        @relation(fields: [classId], references: [id])
   subject        Subject      @relation(fields: [subjectId], references: [id])
-  teacher        Teacher      @relation(fields: [teacherId], references: [id])
+  teacher        User         @relation("TeacherSchedule", fields: [teacherId], references: [id])  // Relasi ke User
 
   @@unique([classId, subjectId, teacherId, dayOfWeek, startTime])
   @@map("schedules")
@@ -190,14 +161,14 @@ model Schedule {
 
 model Attendance {
   id         String   @id @default(cuid())
-  studentId  String
+  studentId  String   // Relasi ke User dengan role student
   scheduleId String
   status     String
   notes      String?
   createdAt  DateTime @default(now())
   date       DateTime
   schedule   Schedule @relation(fields: [scheduleId], references: [id])
-  student    Student  @relation(fields: [studentId], references: [id])
+  student    User     @relation("StudentAttendance", fields: [studentId], references: [id])  // Relasi ke User
 
   @@unique([studentId, scheduleId, date])
   @@map("attendances")
@@ -218,7 +189,7 @@ model ViolationType {
 
 model Violation {
   id              String        @id @default(cuid())
-  studentId       String
+  studentId       String        // Relasi ke User dengan role student
   violationTypeId String
   classId         String
   description     String?
@@ -229,7 +200,7 @@ model Violation {
   resolutionDate  DateTime?
   resolutionNotes String?
   class           Class         @relation(fields: [classId], references: [id])
-  student         Student       @relation(fields: [studentId], references: [id])
+  student         User          @relation("StudentViolation", fields: [studentId], references: [id])  // Relasi ke User
   violationType   ViolationType @relation(fields: [violationTypeId], references: [id])
 
   @@map("violations")
@@ -249,7 +220,7 @@ model PaymentType {
 
 model Payment {
   id            String      @id @default(cuid())
-  studentId     String
+  studentId     String      // Relasi ke User dengan role student
   paymentTypeId String
   amount        Decimal
   dueDate       DateTime?
@@ -259,7 +230,7 @@ model Payment {
   paymentDate   DateTime
   receiptNumber String?
   paymentType   PaymentType @relation(fields: [paymentTypeId], references: [id])
-  student       Student     @relation(fields: [studentId], references: [id])
+  student       User        @relation("StudentPayment", fields: [studentId], references: [id])  // Relasi ke User
 
   @@map("payments")
 }

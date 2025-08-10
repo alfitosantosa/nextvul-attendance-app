@@ -120,21 +120,42 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.UserScalarFieldEnum = {
-  id: 'id'
-};
-
 exports.Prisma.RoleScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
+  isActive: 'isActive',
   permissions: 'permissions'
 };
 
-exports.Prisma.UserRoleScalarFieldEnum = {
+exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
-  roleId: 'roleId'
+  clerkId: 'clerkId',
+  roleId: 'roleId',
+  name: 'name',
+  email: 'email',
+  avatarUrl: 'avatarUrl',
+  nisn: 'nisn',
+  birthPlace: 'birthPlace',
+  birthDate: 'birthDate',
+  nik: 'nik',
+  address: 'address',
+  classId: 'classId',
+  academicYearId: 'academicYearId',
+  enrollmentDate: 'enrollmentDate',
+  gender: 'gender',
+  graduationDate: 'graduationDate',
+  majorId: 'majorId',
+  parentPhone: 'parentPhone',
+  status: 'status',
+  employeeId: 'employeeId',
+  position: 'position',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  studentIds: 'studentIds',
+  relation: 'relation',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.AcademicYearScalarFieldEnum = {
@@ -162,56 +183,6 @@ exports.Prisma.ClassScalarFieldEnum = {
   majorId: 'majorId',
   academicYearId: 'academicYearId',
   capacity: 'capacity'
-};
-
-exports.Prisma.StudentScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  nisn: 'nisn',
-  birthPlace: 'birthPlace',
-  birthDate: 'birthDate',
-  nik: 'nik',
-  address: 'address',
-  classId: 'classId',
-  academicYearId: 'academicYearId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  enrollmentDate: 'enrollmentDate',
-  gender: 'gender',
-  graduationDate: 'graduationDate',
-  majorId: 'majorId',
-  parentPhone: 'parentPhone',
-  status: 'status',
-  name: 'name',
-  avatarUrl: 'avatarUrl'
-};
-
-exports.Prisma.TeacherScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  employeeId: 'employeeId',
-  nik: 'nik',
-  birthPlace: 'birthPlace',
-  birthDate: 'birthDate',
-  address: 'address',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  endDate: 'endDate',
-  gender: 'gender',
-  position: 'position',
-  startDate: 'startDate',
-  status: 'status',
-  name: 'name',
-  avatarUrl: 'avatarUrl'
-};
-
-exports.Prisma.ParentScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  studentId: 'studentId',
-  relation: 'relation',
-  address: 'address',
-  name: 'name'
 };
 
 exports.Prisma.SubjectScalarFieldEnum = {
@@ -320,15 +291,11 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
-  User: 'User',
   Role: 'Role',
-  UserRole: 'UserRole',
+  User: 'User',
   AcademicYear: 'AcademicYear',
   Major: 'Major',
   Class: 'Class',
-  Student: 'Student',
-  Teacher: 'Teacher',
-  Parent: 'Parent',
   Subject: 'Subject',
   Schedule: 'Schedule',
   Attendance: 'Attendance',

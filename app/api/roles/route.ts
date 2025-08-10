@@ -1,16 +1,12 @@
-"use server";
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-
 // model Role {
 //   id          String     @id @default(cuid())
 //   name        String     @unique
 //   description String
-//   permissions String[]
-//   users       UserRole[]
-
 //   @@map("roles")
 // }
+
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,15 +21,17 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const { name, description, permissions } = await request.json();
-    if (!name || !description || !permissions) {
-      return NextResponse.json({ error: "Name, description, and permissions are required" }, { status: 400 });
+    if (!name) {
+      return NextResponse.json({ error: "Name is required" }, { status: 400 });
     }
 
     const newRole = await prisma.role.create({
       data: {
         name,
         description,
-        permissions,
+        permissions: {
+          set: permissions || [],
+        },
       },
     });
 
@@ -47,8 +45,8 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const { id, name, description, permissions } = await request.json();
-    if (!id || !name || !description || !permissions) {
-      return NextResponse.json({ error: "ID, name, description, and permissions are required" }, { status: 400 });
+    if (!id || !name) {
+      return NextResponse.json({ error: "ID and name are required" }, { status: 400 });
     }
 
     const updatedRole = await prisma.role.update({
@@ -56,7 +54,9 @@ export async function PUT(request: NextRequest) {
       data: {
         name,
         description,
-        permissions,
+        permissions: {
+          set: permissions || [],
+        },
       },
     });
 
@@ -74,14 +74,13 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "ID is required" }, { status: 400 });
     }
 
-    await prisma.role.delete({
+    const deletedRole = await prisma.role.delete({
       where: { id },
     });
 
-    return NextResponse.json({ message: "Role deleted successfully" }, { status: 200 });
+    return NextResponse.json(deletedRole);
   } catch (error) {
     console.error("Error deleting role:", error);
     return NextResponse.json({ error: "Failed to delete role" }, { status: 500 });
   }
 }
-  
