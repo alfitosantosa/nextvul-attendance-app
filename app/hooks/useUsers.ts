@@ -1,5 +1,6 @@
-"use client";
-import { useQuery } from "@tanstack/react-query";
+// app/api/users/route.ts
+
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 export const useGetUsers = () => {
@@ -10,46 +11,73 @@ export const useGetUsers = () => {
         const res = await axios.get("/api/users");
         return res.data;
       } catch (error: any) {
-        throw new Error(error?.response?.data?.message || "Failed to fetch data");
+        throw new Error(error?.response?.data?.message || "Failed to fetch users");
       }
     },
   });
 };
 
-// create users
-
 export const useCreateUser = () => {
-  return async (id: string) => {
-    try {
-      const res = await axios.post("/api/users", { id });
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: any) => {
+      const res = await axios.post("/api/users", data);
       return res.data;
-    } catch (error: any) {
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+    onError: (error: any) => {
+      console.error("Error creating user:", error);
       throw new Error(error?.response?.data?.message || "Failed to create user");
-    }
-  };
+    },
+  });
 };
-
-// update users
 
 export const useUpdateUser = () => {
-  return async (id: string, data: any) => {
-    try {
-      const res = await axios.put(`/api/users/${id}`, data);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: any) => {
+      const res = await axios.put("/api/users", data);
       return res.data;
-    } catch (error: any) {
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+    onError: (error: any) => {
+      console.error("Error updating user:", error);
       throw new Error(error?.response?.data?.message || "Failed to update user");
-    }
-  };
+    },
+  });
 };
 
-// delete users
 export const useDeleteUser = () => {
-  return async (id: string) => {
-    try {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
       const res = await axios.delete(`/api/users/${id}`);
       return res.data;
-    } catch (error: any) {
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+    onError: (error: any) => {
+      console.error("Error deleting user:", error);
       throw new Error(error?.response?.data?.message || "Failed to delete user");
-    }
-  };
+    },
+  });
+};
+
+export const useGetUserById = (id: string) => {
+  return useQuery({
+    queryKey: ["users", id],
+    queryFn: async () => {
+      try {
+        const res = await axios.get(`/api/users/${id}`);
+        return res.data;
+      } catch (error: any) {
+        throw new Error(error?.response?.data?.message || "Failed to fetch user");
+      }
+    },
+  });
 };

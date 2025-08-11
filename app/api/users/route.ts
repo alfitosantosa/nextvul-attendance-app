@@ -5,7 +5,7 @@
 //   name        String    // Nama (WAJIB untuk semua)
 //   email       String?   @unique
 //   avatarUrl   String?
-  
+
 //   // === FIELDS UNTUK STUDENT ===
 //   nisn           String?   @unique  // Wajib untuk student
 //   birthPlace     String?            // Wajib untuk student
@@ -20,24 +20,24 @@
 //   majorId        String?            // Wajib untuk student
 //   parentPhone    String?            // Optional untuk student
 //   status         String?   @default("active")  // active/inactive/graduated
-  
+
 //   // === FIELDS UNTUK TEACHER ===
 //   employeeId     String?   @unique  // Wajib untuk teacher
 //   position       String?            // Optional untuk teacher
 //   startDate      DateTime?          // Default now() untuk teacher
 //   endDate        DateTime?          // Optional untuk teacher
-  
+
 //   // === FIELDS UNTUK PARENT ===
 //   studentIds     String[]           // Array ID student (anak-anak) - untuk parent
 //   relation       String?            // Father/Mother/Guardian - wajib untuk parent
-  
+
 //   // === TIMESTAMPS ===
 //   createdAt      DateTime  @default(now())
 //   updatedAt      DateTime  @updatedAt
-  
+
 //   // === RELATIONS ===
 //   role           Role              @relation(fields: [roleId], references: [id])
-  
+
 //   // Relations sebagai Student
 //   academicYear   AcademicYear?     @relation("StudentAcademicYear", fields: [academicYearId], references: [id])
 //   class          Class?            @relation("StudentClass", fields: [classId], references: [id])
@@ -45,17 +45,16 @@
 //   attendances    Attendance[]      @relation("StudentAttendance")
 //   payments       Payment[]         @relation("StudentPayment")
 //   violations     Violation[]       @relation("StudentViolation")
-  
+
 //   // Relations sebagai Teacher
 //   schedules      Schedule[]        @relation("TeacherSchedule")
-  
+
 //   // Relations sebagai Parent (many-to-many dengan students)
-//   parentOf       User[]            @relation("ParentStudent") 
+//   parentOf       User[]            @relation("ParentStudent")
 //   parents        User[]            @relation("ParentStudent")
 
 //   @@map("users")
 // }
-
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
@@ -140,4 +139,3 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "Failed to delete user" }, { status: 500 });
   }
 }
-
