@@ -21,7 +21,7 @@ import * as z from "zod";
 import { toast } from "sonner";
 
 // Import hooks
-import { useGetMajors, useCreateMajor, useUpdateMajor, useDeleteMajor } from "@/app/hooks/useMajor";
+import { useGetMajors, useCreateMajor, useUpdateMajor, useDeleteMajor } from "@/app/hooks/useMajors";
 import Navbar from "@/components/navbar";
 
 // Type definitions

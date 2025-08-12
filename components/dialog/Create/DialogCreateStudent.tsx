@@ -12,7 +12,7 @@ import { useCreateUser } from "@/app/hooks/useUsers";
 import { format } from "date-fns";
 import { useGetClasses } from "@/app/hooks/useClass";
 import { useGetAcademicYears } from "@/app/hooks/useAcademicYear";
-import { useGetMajors } from "@/app/hooks/useMajor";
+import { useGetMajors } from "@/app/hooks/useMajors";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";

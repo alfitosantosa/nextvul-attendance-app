@@ -21,7 +21,7 @@ import { toast } from "sonner";
 
 // Import hooks
 import { useGetClasses, useCreateClass, useUpdateClass, useDeleteClass } from "@/app/hooks/useClass";
-import { useGetMajors } from "@/app/hooks/useMajor";
+import { useGetMajors } from "@/app/hooks/useMajors";
 import { useGetAcademicYears } from "@/app/hooks/useAcademicYear";
 import Navbar from "@/components/navbar";
 

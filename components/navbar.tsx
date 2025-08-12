@@ -15,6 +15,7 @@ const navigationItems = [
   { href: "/dashboard/attendance", label: "Attendance" },
   { href: "/dashboard/violations", label: "Violations" },
   { href: "/dashboard/payments", label: "Payments" },
+  { href: "/dashboard/users", label: "User" },
 ];
 
 export default function Navbar() {
