@@ -20,7 +20,7 @@ export const useCreateAcademicYear = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: any) => {
-      const res = await axios.post("/api/academic-year", data);
+      const res = await axios.post("/api/academicyear", data);
       return res.data;
     },
     onSuccess: () => {
@@ -37,7 +37,7 @@ export const useUpdateAcademicYear = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: any) => {
-      const res = await axios.put("/api/academic-year", data);
+      const res = await axios.put("/api/academicyear", data);
       return res.data;
     },
     onSuccess: () => {
@@ -54,7 +54,7 @@ export const useDeleteAcademicYear = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const res = await axios.delete(`/api/academic-year/${id}`);
+      const res = await axios.delete(`/api/academicyear/`, { data: { id } });
       return res.data;
     },
     onSuccess: () => {

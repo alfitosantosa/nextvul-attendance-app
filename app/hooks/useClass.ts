@@ -54,7 +54,7 @@ export const useDeleteClass = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const res = await axios.delete(`/api/class/${id}`);
+      const res = await axios.delete(`/api/class/`, { data: { id } });
       return res.data;
     },
     onSuccess: () => {

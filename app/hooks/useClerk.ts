@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const useGetClerk = () => {
   return useQuery({
-    queryKey: ["users"],
+    queryKey: ["clerk"],
     queryFn: async () => {
       try {
         const res = await axios.get("/api/clerk/users");
