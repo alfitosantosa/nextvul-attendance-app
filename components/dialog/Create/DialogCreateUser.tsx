@@ -23,6 +23,7 @@ import { useGetClasses } from "@/app/hooks/useClass";
 import { useGetAcademicYears } from "@/app/hooks/useAcademicYear";
 import { useGetMajors } from "@/app/hooks/useMajors";
 import { useGetClerk } from "@/app/hooks/useClerk";
+import axios from "axios";
 
 // Type definitions
 export type UserData = {
@@ -104,6 +105,7 @@ const userSchema = z.object({
   roleId: z.string().min(1, "Role wajib dipilih"),
   clerkId: z.string().optional(),
   gender: z.string().optional(),
+  avatarUrl: z.string().optional(),
 
   // Conditional fields based on role
   nisn: z.string().optional(),
@@ -142,8 +144,8 @@ function ClerkUserSelector({ onSelect, selectedClerkId, disabled = false }: { on
   }, [clerkUsers, searchTerm]);
 
   const selectedUser = React.useMemo(() => {
-    if (!selectedClerkId) return null;
-    return clerkUsers.find((user: ClerkUser) => user.id === selectedClerkId) || null;
+    if (!selectedClerkId) return "";
+    return clerkUsers.find((user: ClerkUser) => user.id === selectedClerkId) || "";
   }, [clerkUsers, selectedClerkId]);
 
   const handleSelect = (clerkUser: ClerkUser) => {
@@ -162,7 +164,7 @@ function ClerkUserSelector({ onSelect, selectedClerkId, disabled = false }: { on
       <Label>Clerk User (Opsional)</Label>
       <div className="flex gap-2">
         <Button type="button" variant="outline" onClick={() => setOpen(true)} disabled={disabled || clerkUsersLoading} className="flex-1 justify-start">
-          {clerkUsersLoading ? "Loading..." : selectedUser ? `${selectedUser.first_name} ${selectedUser.last_name} (${selectedUser.email_addresses[0]?.email_address})` : "Pilih Clerk User"}
+          {clerkUsersLoading ? "Loading..." : selectedUser ? `${selectedUser.first_name} (${selectedUser.email_addresses[0]?.email_address})` : "Pilih Clerk User"}
         </Button>
         {selectedUser && (
           <Button type="button" variant="outline" size="sm" onClick={handleClear} disabled={disabled}>
@@ -283,7 +285,6 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
   const handleClerkUserSelect = (clerkUser: ClerkUser | null) => {
     if (clerkUser) {
       setValue("clerkId", clerkUser.id);
-      setValue("name", `${clerkUser.first_name} ${clerkUser.last_name}`);
       setValue("email", clerkUser.email_addresses[0]?.email_address || "");
     } else {
       setValue("clerkId", "");
@@ -311,6 +312,29 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
       onSuccess();
     } catch (error: any) {
       toast.error(error.message || "Terjadi kesalahan");
+    }
+  };
+
+  const onSubmitAvatar = async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch(`https://file.pasarjaya.cloud/api/upload`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to upload avatar");
+      }
+
+      const data = await res.json();
+      console.log("Avatar URL:", data.fileUrl);
+      setValue("avatarUrl", data.fileUrl);
+      toast.success("Avatar berhasil diunggah!");
+    } catch (error: any) {
+      toast.error(error.message || "Gagal mengunggah avatar");
     }
   };
 
@@ -555,6 +579,31 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
               {renderRoleSpecificFields()}
             </div>
           )}
+
+          {/* input avatar url */}
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="picture">Avatar</Label>
+                <Input id="picture" type="file" accept="image/*" />
+                {errors.avatarUrl && <p className="text-sm text-red-500">{errors.avatarUrl.message}</p>}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    const fileInput = document.getElementById("picture") as HTMLInputElement;
+                    const file = fileInput?.files?.[0];
+                    if (file) {
+                      onSubmitAvatar(file);
+                    }
+                  }}
+                  className="mt-2"
+                >
+                  Submit Avatar
+                </Button>
+              </div>
+            </div>
+          </div>
 
           <div className="flex justify-end gap-2 pt-4 border-t">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
