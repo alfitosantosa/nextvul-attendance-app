@@ -22,7 +22,29 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   try {
-    const violations = await prisma.violation.findMany();
+    const violations = await prisma.violation.findMany({
+      include: {
+        student: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        violationType: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        class: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
     return NextResponse.json(violations);
   } catch (error) {
     console.error("Error fetching violations:", error);

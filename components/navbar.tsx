@@ -1,7 +1,7 @@
 import { Bell, GraduationCap, Menu, ChevronDown } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "./ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import React from "react";
 
 const userRoles = ["Admin", "Teacher"]; // Example roles, replace with actual user roles
@@ -13,7 +13,6 @@ const navigationItems = [
   { href: "/dashboard/majors", label: "Jurusan" },
   { href: "/dashboard/classes", label: "Kelas" },
   { href: "/dashboard/attendance", label: "Absensi" },
-  { href: "/dashboard/violations", label: "Pelanggaran" },
   { href: "/dashboard/payments", label: "Pembayaran" },
   { href: "/dashboard/users", label: "Users" },
   { href: "/dashboard/subjects", label: "Mata Pelajaran" },
@@ -21,6 +20,7 @@ const navigationItems = [
   { href: "/dashboard/violations", label: "Pelanggaran" },
   // { href: "/dashboard/teachers", label: "Guru" },
   // { href: "/dashboard/students", label: "Siswa" },
+  ,
 ];
 
 export default function Navbar() {
@@ -46,12 +46,12 @@ export default function Navbar() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="flex items-center space-x-2">
                   <Menu className="h-4 w-4" />
-                  <span>Menu</span>
+                  <span>Dashboard</span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                {navigationItems.map((item, index) => (
+                {navigationItems.map((item: any) => (
                   <DropdownMenuItem key={item.href} asChild>
                     <a href={item.href} className="w-full cursor-pointer hover:text-blue-600 transition-colors">
                       {item.label}
