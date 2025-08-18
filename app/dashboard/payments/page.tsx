@@ -1,16 +1,16 @@
-// page schedule
+// payment pages
 
 import Navbar from "@/components/navbar";
 
-export default function SchedulePage() {
+export default function PaymentsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-2xl font-bold mb-6">Jadwal</h1>
-        {/* Schedule content goes here */}
-        <p>Jadwal akan ditampilkan di sini.</p>
+        <h1 className="text-2xl font-bold mb-6">Pembayaran</h1>
+        {/* Payments content goes here */}
+        <p>Informasi pembayaran akan ditampilkan di sini.</p>
       </div>
     </div>
   );

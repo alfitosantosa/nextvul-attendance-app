@@ -1,16 +1,16 @@
-// page schedule
+// attendance page
 
 import Navbar from "@/components/navbar";
 
-export default function SchedulePage() {
+export default function AttendancePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-2xl font-bold mb-6">Jadwal</h1>
-        {/* Schedule content goes here */}
-        <p>Jadwal akan ditampilkan di sini.</p>
+        <h1 className="text-2xl font-bold mb-6">Absensi</h1>
+        {/* Attendance content goes here */}
+        <p>Absensi akan ditampilkan di sini.</p>
       </div>
     </div>
   );

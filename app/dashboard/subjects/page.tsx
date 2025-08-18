@@ -1,0 +1,17 @@
+// page useGetSubjects
+
+import Navbar from "@/components/navbar";
+
+export default function SubjectsPage() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <Navbar />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h1 className="text-2xl font-bold mb-6">Mata Pelajaran</h1>
+        {/* Subjects content goes here */}
+        <p>Mata pelajaran akan ditampilkan di sini.</p>
+      </div>
+    </div>
+  );
+}
