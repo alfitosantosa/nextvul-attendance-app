@@ -1,0 +1,94 @@
+// model Violation {
+//   id              String        @id @default(cuid())
+//   studentId       String
+//   violationTypeId String
+//   classId         String
+//   description     String?
+//   status          String        @default("active")
+//   reportedBy      String
+//   createdAt       DateTime      @default(now())
+//   date            DateTime
+//   resolutionDate  DateTime?
+//   resolutionNotes String?
+//   class           Class         @relation(fields: [classId], references: [id])
+//   student         User          @relation("StudentViolation", fields: [studentId], references: [id])
+//   violationType   ViolationType @relation(fields: [violationTypeId], references: [id])
+
+//   @@map("violations")
+// }
+
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+export async function GET(request: NextRequest) {
+  try {
+    const violations = await prisma.violation.findMany();
+    return NextResponse.json(violations);
+  } catch (error) {
+    console.error("Error fetching violations:", error);
+    return NextResponse.json({ error: "Failed to fetch violations" }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  const { studentId, violationTypeId, classId, description, status, reportedBy, date, resolutionDate, resolutionNotes } = await request.json();
+
+  try {
+    const violation = await prisma.violation.create({
+      data: {
+        studentId,
+        violationTypeId,
+        classId,
+        description,
+        status,
+        reportedBy,
+        date,
+        resolutionDate,
+        resolutionNotes,
+      },
+    });
+    return NextResponse.json(violation);
+  } catch (error) {
+    console.error("Error creating violation:", error);
+    return NextResponse.json({ error: "Failed to create violation" }, { status: 500 });
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    const { id, studentId, violationTypeId, classId, description, status, reportedBy, date, resolutionDate, resolutionNotes } = await request.json();
+
+    const violation = await prisma.violation.update({
+      where: { id },
+      data: {
+        studentId,
+        violationTypeId,
+        classId,
+        description,
+        status,
+        reportedBy,
+        date,
+        resolutionDate,
+        resolutionNotes,
+      },
+    });
+    return NextResponse.json(violation);
+  } catch (error) {
+    console.error("Error updating violation:", error);
+    return NextResponse.json({ error: "Failed to update violation" }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { id } = await request.json();
+
+    const violation = await prisma.violation.delete({
+      where: { id },
+    });
+    return NextResponse.json(violation);
+  } catch (error) {
+    console.error("Error deleting violation:", error);
+    return NextResponse.json({ error: "Failed to delete violation" }, { status: 500 });
+  }
+}

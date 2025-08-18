@@ -410,7 +410,8 @@ export default function RoleDataTable() {
   return (
     <>
       <Navbar />
-      <div className="w-max-7xl mx-auto my-8 p-6">
+      <div className="w-max-7xl mx-auto my-8 p-6 max-w-7xl">
+        <div className="font-bold text-3xl">Roles Menu</div>
         <div className="flex items-center justify-between py-4">
           <div className="flex items-center space-x-2">
             <Input placeholder="Cari nama role..." value={(table.getColumn("name")?.getFilterValue() as string) ?? ""} onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)} className="max-w-sm" />

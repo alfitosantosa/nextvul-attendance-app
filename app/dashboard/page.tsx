@@ -9,7 +9,7 @@ import { Users, GraduationCap, ClipboardCheck, AlertTriangle, BookOpen, Bell, Us
 
 import ReportsModule from "@/components/reports-module";
 import Navbar from "@/components/navbar";
-import NavDashboard from "@/components/navDashboard";
+
 // import { useDashboardStats } from "@/app/hooks/use-api";
 
 // Mock data for demonstration - will be replaced with real user data
@@ -52,7 +52,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <Navbar />
-      <NavDashboard />
+   
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">

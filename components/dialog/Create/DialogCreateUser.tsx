@@ -157,6 +157,7 @@ function ClerkUserSelector({ onSelect, selectedClerkId, disabled = false }: { on
   const handleClear = () => {
     onSelect(null);
     setSearchTerm("");
+    clerkUsers(null);
   };
 
   return (
@@ -320,7 +321,7 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch(`https://file.pasarjaya.cloud/api/upload`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_FILESERVER_URL}`, {
         method: "POST",
         body: formData,
       });
