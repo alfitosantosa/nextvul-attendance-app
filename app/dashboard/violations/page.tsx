@@ -29,7 +29,7 @@ import { useGetTypeViolations } from "@/app/hooks/useTypeViolations";
 import { useGetClasses } from "@/app/hooks/useClass";
 import Navbar from "@/components/navbar";
 import { useGetUsers } from "@/app/hooks/useUsers";
-import { lowercase } from "zod";
+import { object } from "zod";
 
 // Type definitions
 export type ViolationData = {
@@ -72,40 +72,48 @@ interface SearchableStudentSelectProps {
   className?: string;
 }
 
-function SearchableStudentSelect({ students, value, onValueChange, placeholder = "Pilih siswa...", disabled = false, className }: SearchableStudentSelectProps) {
+function SearchableStudentSelect({ students, value, onValueChange, placeholder = "Pilih siswa...", disabled = false, className }: SearchableStudentSelectProps): React.ReactElement {
   const [open, setOpen] = React.useState(false);
-  const [searchValue, setSearchValue] = React.useState("");
-
-  // Find selected student
-  const selectedStudent = students.find((student) => student.id === value);
+  const [searchTerm, setSearchTerm] = React.useState("");
 
   // Filter students based on search by name OR email
-  const filteredStudents = React.useMemo(() => {
-    if (!searchValue) return students;
-    const lowerSearch = searchValue.toLowerCase();
-    // Support search for multiple words/characters (split by space)
-    const keywords = lowerSearch.split(" ").filter(Boolean);
-    return students.filter((student) => {
-      const name = student.name?.toLowerCase() || "";
-      const email = student.email?.toLowerCase() || "";
-      // All keywords must be found in either name or email
-      return keywords.every((kw) => name.includes(kw) || email.includes(kw));
-    });
-  }, [students, searchValue]);
-  const handleSelectStudent = (studentId: string) => {
-    onValueChange(studentId);
+  const [filteredStudents, setFilteredStudents] = React.useState(students);
+
+  React.useEffect(() => {
+    if (!searchTerm) {
+      setFilteredStudents(students);
+    } else {
+      const filtered = students.filter((student) => {
+        const searchValue = searchTerm.toLowerCase();
+        return student.name.toLowerCase().includes(searchValue) || (student.email && student.email.toLowerCase().includes(searchValue));
+      });
+      setFilteredStudents(filtered);
+    }
+  }, [students, searchTerm]);
+
+  // Find selected student
+  const selectedStudent = React.useMemo(() => {
+    if (!value) return null;
+    return students.find((student) => student.id === value) || null;
+  }, [students, value]);
+
+  const handleSelect = (student: any) => {
+    onValueChange(student.id);
     setOpen(false);
+    setSearchTerm("");
   };
-  const handleClear = (e: React.MouseEvent) => {
-    e.stopPropagation();
+
+  const handleClear = () => {
     onValueChange("");
-    setSearchValue("");
+    setSearchTerm("");
   };
+
   React.useEffect(() => {
     if (open) {
-      setSearchValue("");
+      setSearchTerm("");
     }
   }, [open]);
+
   React.useEffect(() => {
     if (value && !students.some((student) => student.id === value)) {
       onValueChange("");
@@ -115,13 +123,7 @@ function SearchableStudentSelect({ students, value, onValueChange, placeholder =
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className={cn("w-full justify-</Popover>between h-auto min-h-10 px-3 py</PopoverTrigger>-2", !selectedStudent && "text-muted-foreground", className)}
-          disabled={disabled}
-        >
+        <Button variant="outline" role="combobox" aria-expanded={open} className={cn("w-full justify-between h-auto min-h-10 px-3 py-2", !selectedStudent && "text-muted-foreground", className)} disabled={disabled}>
           <div className="flex flex-1 items-center gap-2 overflow-hidden">
             {selectedStudent ? (
               <div className="flex flex-col items-start flex-1 min-w-0">
@@ -143,15 +145,15 @@ function SearchableStudentSelect({ students, value, onValueChange, placeholder =
           <div className="flex items-center border-b px-3">
             <CommandInput
               placeholder="Cari nama siswa..."
-              value={searchValue}
-              onValueChange={setSearchValue}
+              value={searchTerm}
+              onValueChange={setSearchTerm}
               className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
-          <CommandEmpty className="py-6 text-center text-sm">{searchValue ? "Tidak ada siswa yang ditemukan" : "Tidak ada data siswa"}</CommandEmpty>
+          <CommandEmpty className="py-6 text-center text-sm">{searchTerm ? "Tidak ada siswa yang ditemukan" : "Tidak ada data siswa"}</CommandEmpty>
           <CommandGroup className="max-h-60 overflow-auto">
             {filteredStudents.map((student) => (
-              <CommandItem key={student.id} value={student.id} onSelect={() => handleSelectStudent(student.id)} className="cursor-pointer">
+              <CommandItem key={student.id} value={student.name} onSelect={() => handleSelect(student)} className="cursor-pointer">
                 <div className="flex items-center justify-between w-full">
                   <div className="flex flex-col flex-1 min-w-0">
                     <span className="font-medium truncate">{student.name}</span>

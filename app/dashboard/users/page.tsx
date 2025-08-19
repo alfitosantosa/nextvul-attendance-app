@@ -26,6 +26,11 @@ export default function UserDataTable() {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  // Filter selections
+  const [roleSelection, setRoleSelection] = React.useState<string | null>(null);
+  const [classSelection, setClassSelection] = React.useState<string | null>(null);
+  const [majorSelection, setMajorSelection] = React.useState<string | null>(null);
+
   // Dialog states
   const [createDialogOpen, setCreateDialogOpen] = React.useState(false);
   const [editDialogOpen, setEditDialogOpen] = React.useState(false);
@@ -42,7 +47,47 @@ export default function UserDataTable() {
     return clerkUsers.find((user: ClerkUser) => user.id === clerkId) || null;
   };
 
-  // Enhanced success handler with better state management
+  // Get unique values for filters
+  const uniqueRoles = React.useMemo(() => {
+    return Array.from(new Set(usersData.map((user: UserData) => user.role?.name).filter(Boolean)));
+  }, [usersData]);
+
+  const uniqueClasses = React.useMemo(() => {
+    return Array.from(new Set(usersData.map((user: UserData) => user.class?.name).filter(Boolean)));
+  }, [usersData]);
+
+  const uniqueMajors = React.useMemo(() => {
+    return Array.from(new Set(usersData.map((user: UserData) => user.major?.name).filter(Boolean)));
+  }, [usersData]);
+
+  // Filter handlers
+  const handleRoleFilter = (roleName: string | null) => {
+    setRoleSelection(roleName);
+    if (roleName) {
+      table.getColumn("role")?.setFilterValue(roleName);
+    } else {
+      table.getColumn("role")?.setFilterValue("");
+    }
+  };
+
+  const handleClassFilter = (className: string | null) => {
+    setClassSelection(className);
+    if (className) {
+      table.getColumn("class")?.setFilterValue(className);
+    } else {
+      table.getColumn("class")?.setFilterValue("");
+    }
+  };
+
+  const handleMajorFilter = (majorName: string | null) => {
+    setMajorSelection(majorName);
+    if (majorName) {
+      table.getColumn("major")?.setFilterValue(majorName);
+    } else {
+      table.getColumn("major")?.setFilterValue("");
+    }
+  };
+
   const handleSuccess = React.useCallback(async () => {
     try {
       // Clear selections
@@ -135,6 +180,14 @@ export default function UserDataTable() {
         }
         return <Badge variant="secondary">{role.name}</Badge>;
       },
+      filterFn: (row, columnId, filterValue) => {
+        if (typeof filterValue === "function") {
+          return filterValue(row);
+        }
+        if (!filterValue) return true;
+        const role = row.original.role;
+        return role?.name === filterValue;
+      },
     },
     {
       accessorKey: "class",
@@ -151,6 +204,14 @@ export default function UserDataTable() {
         const classData = row.original.class;
         return <div>{classData?.name || "-"}</div>;
       },
+      filterFn: (row, columnId, filterValue) => {
+        if (typeof filterValue === "function") {
+          return filterValue(row);
+        }
+        if (!filterValue) return true;
+        const classData = row.original.class;
+        return classData?.name === filterValue;
+      },
     },
     {
       accessorKey: "major",
@@ -166,6 +227,14 @@ export default function UserDataTable() {
       cell: ({ row }) => {
         const major = row.original.major;
         return <div>{major?.name || "-"}</div>;
+      },
+      filterFn: (row, columnId, filterValue) => {
+        if (typeof filterValue === "function") {
+          return filterValue(row);
+        }
+        if (!filterValue) return true;
+        const major = row.original.major;
+        return major?.name === filterValue;
       },
     },
     {
@@ -277,6 +346,7 @@ export default function UserDataTable() {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+
     state: {
       sorting,
       columnFilters,
@@ -320,7 +390,65 @@ export default function UserDataTable() {
         <div className="font-bold text-3xl">Users Menu</div>
         <div className="flex items-center justify-between py-4">
           <div className="flex items-center space-x-2">
+            {/* Search Input */}
             <Input placeholder="Cari nama user..." value={(table.getColumn("name")?.getFilterValue() as string) ?? ""} onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)} className="max-w-sm" />
+
+            {/* Role Filter */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  {roleSelection ? roleSelection : "Filter Role"}
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => handleRoleFilter(null)}>Semua Role</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                {uniqueRoles.map((roleName) => (
+                  <DropdownMenuItem key={String(roleName)} onClick={() => handleRoleFilter(roleName as string)}>
+                    {roleName as string}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Class Filter */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  {classSelection ? classSelection : "Filter Kelas"}
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => handleClassFilter(null)}>Semua Kelas</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                {uniqueClasses.map((className) => (
+                  <DropdownMenuItem key={String(className)} onClick={() => handleClassFilter(className as string)}>
+                    {className as string}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Major Filter */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  {majorSelection ? majorSelection : "Filter Jurusan"}
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => handleMajorFilter(null)}>Semua Jurusan</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                {uniqueMajors.map((majorName) => (
+                  <DropdownMenuItem key={String(majorName)} onClick={() => handleMajorFilter(majorName as string)}>
+                    {majorName as string}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <div className="flex items-center space-x-2">
