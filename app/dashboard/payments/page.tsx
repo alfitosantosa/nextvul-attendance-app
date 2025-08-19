@@ -1,6 +1,6 @@
 // payment pages
 
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/navbar"; 
 
 export default function PaymentsPage() {
   return (

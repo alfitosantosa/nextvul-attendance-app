@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus, Pencil, Trash2, Calendar, User, AlertTriangle } from "lucide-react";
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus, Pencil, Trash2, Calendar, User, AlertTriangle, Search, X, Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,10 +15,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 // Import hooks
 import { useGetViolations, useCreateViolation, useUpdateViolation, useDeleteViolation } from "@/app/hooks/useViolations";
@@ -26,7 +29,7 @@ import { useGetTypeViolations } from "@/app/hooks/useTypeViolations";
 import { useGetClasses } from "@/app/hooks/useClass";
 import Navbar from "@/components/navbar";
 import { useGetUsers } from "@/app/hooks/useUsers";
-import { object } from "zod";
+import { lowercase } from "zod";
 
 // Type definitions
 export type ViolationData = {
@@ -58,6 +61,112 @@ export type ViolationData = {
     grade: number;
   };
 };
+
+// Searchable Student Select Component
+interface SearchableStudentSelectProps {
+  students: any[];
+  value?: string;
+  onValueChange: (value: string) => void;
+  placeholder?: string;
+  disabled?: boolean;
+  className?: string;
+}
+
+function SearchableStudentSelect({ students, value, onValueChange, placeholder = "Pilih siswa...", disabled = false, className }: SearchableStudentSelectProps) {
+  const [open, setOpen] = React.useState(false);
+  const [searchValue, setSearchValue] = React.useState("");
+
+  // Find selected student
+  const selectedStudent = students.find((student) => student.id === value);
+
+  // Filter students based on search by name OR email
+  const filteredStudents = React.useMemo(() => {
+    if (!searchValue) return students;
+    const lowerSearch = searchValue.toLowerCase();
+    // Support search for multiple words/characters (split by space)
+    const keywords = lowerSearch.split(" ").filter(Boolean);
+    return students.filter((student) => {
+      const name = student.name?.toLowerCase() || "";
+      const email = student.email?.toLowerCase() || "";
+      // All keywords must be found in either name or email
+      return keywords.every((kw) => name.includes(kw) || email.includes(kw));
+    });
+  }, [students, searchValue]);
+  const handleSelectStudent = (studentId: string) => {
+    onValueChange(studentId);
+    setOpen(false);
+  };
+  const handleClear = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onValueChange("");
+    setSearchValue("");
+  };
+  React.useEffect(() => {
+    if (open) {
+      setSearchValue("");
+    }
+  }, [open]);
+  React.useEffect(() => {
+    if (value && !students.some((student) => student.id === value)) {
+      onValueChange("");
+    }
+  }, [value, students, onValueChange]);
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className={cn("w-full justify-</Popover>between h-auto min-h-10 px-3 py</PopoverTrigger>-2", !selectedStudent && "text-muted-foreground", className)}
+          disabled={disabled}
+        >
+          <div className="flex flex-1 items-center gap-2 overflow-hidden">
+            {selectedStudent ? (
+              <div className="flex flex-col items-start flex-1 min-w-0">
+                <span className="font-medium truncate w-full">{selectedStudent.name}</span>
+                <span className="text-xs text-muted-foreground truncate w-full">{selectedStudent.email}</span>
+              </div>
+            ) : (
+              <span className="truncate">{placeholder}</span>
+            )}
+          </div>
+          <div className="flex items-center gap-1 ml-2">
+            {selectedStudent && !disabled && <X className="h-4 w-4 opacity-50 hover:opacity-100 cursor-pointer" onClick={handleClear} />}
+            <ChevronDown className="h-4 w-4 opacity-50" />
+          </div>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-full p-0" align="start">
+        <Command>
+          <div className="flex items-center border-b px-3">
+            <CommandInput
+              placeholder="Cari nama siswa..."
+              value={searchValue}
+              onValueChange={setSearchValue}
+              className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+            />
+          </div>
+          <CommandEmpty className="py-6 text-center text-sm">{searchValue ? "Tidak ada siswa yang ditemukan" : "Tidak ada data siswa"}</CommandEmpty>
+          <CommandGroup className="max-h-60 overflow-auto">
+            {filteredStudents.map((student) => (
+              <CommandItem key={student.id} value={student.id} onSelect={() => handleSelectStudent(student.id)} className="cursor-pointer">
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex flex-col flex-1 min-w-0">
+                    <span className="font-medium truncate">{student.name}</span>
+                    <span className="text-xs text-muted-foreground truncate">{student.email}</span>
+                  </div>
+                  <Check className={cn("ml-2 h-4 w-4", value === student.id ? "opacity-100" : "opacity-0")} />
+                </div>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 // Form schema
 const violationSchema = z.object({
@@ -94,14 +203,6 @@ function ViolationFormDialog({ open, onOpenChange, editData, onSuccess }: { open
   const students = React.useMemo(() => {
     return usersData.filter((user: any) => user.role?.name === "Student");
   }, [usersData]);
-
-  const [studentSearch, setStudentSearch] = React.useState("");
-
-  // Filter students based on search
-  const filteredStudents = React.useMemo(() => {
-    if (!studentSearch) return students;
-    return students.filter((student: any) => student.name?.toLowerCase().includes(studentSearch.toLowerCase()) || student.email?.toLowerCase().includes(studentSearch.toLowerCase()));
-  }, [students, studentSearch]);
 
   const {
     register,
@@ -158,7 +259,6 @@ function ViolationFormDialog({ open, onOpenChange, editData, onSuccess }: { open
         toast.success("Pelanggaran berhasil dibuat!");
       }
       reset();
-      setStudentSearch("");
       onOpenChange(false);
       onSuccess();
     } catch (error: any) {
@@ -182,30 +282,7 @@ function ViolationFormDialog({ open, onOpenChange, editData, onSuccess }: { open
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
                 </div>
               ) : (
-                <div className="space-y-2">
-                  <Input placeholder="Cari nama siswa..." value={studentSearch} onChange={(e) => setStudentSearch(e.target.value)} className="mb-2" />
-                  <Select value={selectedStudentId} onValueChange={(value) => setValue("studentId", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Pilih Siswa" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {filteredStudents.length > 0 ? (
-                        filteredStudents.map((student: any) => (
-                          <SelectItem key={student.id} value={student.id}>
-                            <div className="flex flex-col">
-                              <span className="font-medium">{student.name}</span>
-                              <span className="text-xs text-muted-foreground">{student.email}</span>
-                            </div>
-                          </SelectItem>
-                        ))
-                      ) : (
-                        <SelectItem value="Student" disabled>
-                          {studentSearch ? "Tidak ada siswa yang ditemukan" : "Tidak ada data siswa"}
-                        </SelectItem>
-                      )}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <SearchableStudentSelect students={students} value={selectedStudentId} onValueChange={(value) => setValue("studentId", value)} placeholder="Cari nama siswa..." className="w-full" />
               )}
               {errors.studentId && <p className="text-sm text-red-500">{errors.studentId.message}</p>}
             </div>
@@ -360,9 +437,18 @@ export default function ViolationDataTable() {
   // Additional filter states
   const [statusFilter, setStatusFilter] = React.useState<string>("all");
   const [classFilter, setClassFilter] = React.useState<string>("all");
+  const [globalFilter, setGlobalFilter] = React.useState<string>("");
 
   const { data: violations = [], isLoading, refetch } = useGetViolations();
   const { data: classes } = useGetClasses();
+
+  // Debug logs
+  React.useEffect(() => {
+    console.log("Violations data:", violations);
+    if (violations.length > 0) {
+      console.log("Sample violation structure:", violations[0]);
+    }
+  }, [violations]);
 
   const handleSuccess = () => {
     refetch();
@@ -396,6 +482,23 @@ export default function ViolationDataTable() {
     return found ? found.label : status;
   };
 
+  // Custom global filter function
+  const globalFilterFn = React.useCallback((row: any, columnId: string, filterValue: string) => {
+    if (!filterValue) return true;
+
+    const searchValue = filterValue.toLowerCase();
+    const student = row.original.student;
+    const violationType = row.original.violationType;
+    const classData = row.original.class;
+    const reportedBy = row.original.reportedBy;
+    const description = row.original.description;
+
+    // Search in multiple fields
+    const searchableText = [student?.name, student?.email, violationType?.name, classData?.name, reportedBy, description, getStatusLabel(row.original.status)].filter(Boolean).join(" ").toLowerCase();
+
+    return searchableText.includes(searchValue);
+  }, []);
+
   const columns: ColumnDef<ViolationData>[] = [
     {
       id: "select",
@@ -405,7 +508,8 @@ export default function ViolationDataTable() {
       enableHiding: false,
     },
     {
-      accessorKey: "student",
+      id: "student",
+      accessorFn: (row) => row.student?.name || "Unknown Student",
       header: ({ column }) => {
         return (
           <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
@@ -416,7 +520,7 @@ export default function ViolationDataTable() {
         );
       },
       cell: ({ row }) => {
-        const student = row.getValue("student") as ViolationData["student"];
+        const student = row.original.student;
         return (
           <div>
             <div className="font-medium">{student?.name || "Unknown Student"}</div>
@@ -424,30 +528,27 @@ export default function ViolationDataTable() {
           </div>
         );
       },
-      filterFn: (row, id, value) => {
-        const student = row.getValue("student") as ViolationData["student"];
-        const searchValue = value.toLowerCase();
-        return student?.name?.toLowerCase().includes(searchValue) || student?.email?.toLowerCase().includes(searchValue) || false;
-      },
+      enableGlobalFilter: true,
     },
     {
-      accessorKey: "class",
+      id: "class",
+      accessorFn: (row) => row.class?.name || "Unknown Class",
       header: "Kelas",
       cell: ({ row }) => {
-        const classData = row.getValue("class") as ViolationData["class"];
+        const classData = row.original.class;
         return <div>{classData?.name || "Unknown Class"}</div>;
       },
       filterFn: (row, id, value) => {
         if (value === "all") return true;
-        const classData = row.getValue("class") as ViolationData["class"];
-        return classData?.id === value;
+        return row.original.classId === value;
       },
     },
     {
-      accessorKey: "violationType",
+      id: "violationType",
+      accessorFn: (row) => row.violationType?.name || "Unknown Violation",
       header: "Jenis Pelanggaran",
       cell: ({ row }) => {
-        const violationType = row.getValue("violationType") as ViolationData["violationType"];
+        const violationType = row.original.violationType;
         return (
           <div className="max-w-xs">
             <div className="font-medium">{violationType?.name || "Unknown Violation"}</div>
@@ -564,15 +665,18 @@ export default function ViolationDataTable() {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    globalFilterFn: globalFilterFn,
+    onGlobalFilterChange: setGlobalFilter,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
+      globalFilter,
     },
   });
 
-  // Apply filters
+  // Apply status filter
   React.useEffect(() => {
     if (statusFilter !== "all") {
       table.getColumn("status")?.setFilterValue(statusFilter);
@@ -581,6 +685,7 @@ export default function ViolationDataTable() {
     }
   }, [statusFilter, table]);
 
+  // Apply class filter
   React.useEffect(() => {
     if (classFilter !== "all") {
       table.getColumn("class")?.setFilterValue(classFilter);
@@ -610,12 +715,10 @@ export default function ViolationDataTable() {
         <div className="mx-auto">
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center space-x-2">
-              <Input
-                placeholder="Cari nama siswa atau email..."
-                value={(table.getColumn("student")?.getFilterValue() as string) ?? ""}
-                onChange={(event) => table.getColumn("student")?.setFilterValue(event.target.value)}
-                className="max-w-sm"
-              />
+              <div className="relative">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input placeholder="Cari siswa, kelas, pelanggaran..." value={globalFilter ?? ""} onChange={(event) => setGlobalFilter(event.target.value)} className="max-w-sm pl-8" disabled={isLoading} />
+              </div>
 
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-[140px]">
@@ -644,6 +747,23 @@ export default function ViolationDataTable() {
                   ))}
                 </SelectContent>
               </Select>
+
+              {/* Clear all filters button */}
+              {(globalFilter || statusFilter !== "all" || classFilter !== "all") && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setGlobalFilter("");
+                    setStatusFilter("all");
+                    setClassFilter("all");
+                    table.resetColumnFilters();
+                  }}
+                >
+                  <X className="mr-2 h-4 w-4" />
+                  Reset Filter
+                </Button>
+              )}
             </div>
 
             <div className="flex items-center space-x-2">
@@ -688,7 +808,32 @@ export default function ViolationDataTable() {
             </div>
           </div>
 
-          <div className="rounded-md border w-max-7xl">
+          {/* Active Filters Display */}
+          {(globalFilter || statusFilter !== "all" || classFilter !== "all") && (
+            <div className="flex items-center space-x-2 py-2">
+              <span className="text-sm text-muted-foreground">Filter aktif:</span>
+              {globalFilter && (
+                <Badge variant="secondary" className="gap-1">
+                  Pencarian: {globalFilter}
+                  <X className="h-3 w-3 cursor-pointer" onClick={() => setGlobalFilter("")} />
+                </Badge>
+              )}
+              {statusFilter !== "all" && (
+                <Badge variant="secondary" className="gap-1">
+                  Status: {getStatusLabel(statusFilter)}
+                  <X className="h-3 w-3 cursor-pointer" onClick={() => setStatusFilter("all")} />
+                </Badge>
+              )}
+              {classFilter !== "all" && (
+                <Badge variant="secondary" className="gap-1">
+                  Kelas: {classes?.find((c: any) => c.id === classFilter)?.name}
+                  <X className="h-3 w-3 cursor-pointer" onClick={() => setClassFilter("all")} />
+                </Badge>
+              )}
+            </div>
+          )}
+
+          <div className="rounded-md border w-full overflow-hidden">
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -713,7 +858,21 @@ export default function ViolationDataTable() {
                     <TableCell colSpan={columns.length} className="h-24 text-center">
                       <div className="flex flex-col items-center justify-center space-y-2">
                         <AlertTriangle className="h-8 w-8 text-muted-foreground" />
-                        <p className="text-muted-foreground">Tidak ada data pelanggaran yang ditemukan.</p>
+                        <p className="text-muted-foreground">{globalFilter || statusFilter !== "all" || classFilter !== "all" ? "Tidak ada data yang sesuai dengan filter." : "Tidak ada data pelanggaran yang ditemukan."}</p>
+                        {(globalFilter || statusFilter !== "all" || classFilter !== "all") && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setGlobalFilter("");
+                              setStatusFilter("all");
+                              setClassFilter("all");
+                              table.resetColumnFilters();
+                            }}
+                          >
+                            Reset Filter
+                          </Button>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -725,6 +884,7 @@ export default function ViolationDataTable() {
           <div className="flex items-center justify-between space-x-2 py-4">
             <div className="flex-1 text-sm text-muted-foreground">
               {table.getFilteredSelectedRowModel().rows.length} dari {table.getFilteredRowModel().rows.length} baris dipilih.
+              {table.getFilteredRowModel().rows.length !== violations.length && <span className="ml-2">(difilter dari {violations.length} total)</span>}
             </div>
             <div className="flex items-center space-x-2">
               <p className="text-sm font-medium">
@@ -749,6 +909,7 @@ export default function ViolationDataTable() {
                 <h3 className="font-semibold">Total Pelanggaran</h3>
               </div>
               <p className="text-2xl font-bold mt-2">{violations.length}</p>
+              {table.getFilteredRowModel().rows.length !== violations.length && <p className="text-sm text-muted-foreground">({table.getFilteredRowModel().rows.length} terfilter)</p>}
             </div>
 
             <div className="bg-card rounded-lg border p-4">
@@ -756,7 +917,7 @@ export default function ViolationDataTable() {
                 <div className="h-3 w-3 rounded-full bg-red-600"></div>
                 <h3 className="font-semibold">Aktif</h3>
               </div>
-              <p className="text-2xl font-bold mt-2">{violations.filter((v: any) => v.status === "active").length}</p>
+              <p className="text-2xl font-bold mt-2">{table.getFilteredRowModel().rows.filter((row) => row.original.status === "active").length}</p>
             </div>
 
             <div className="bg-card rounded-lg border p-4">
@@ -764,7 +925,7 @@ export default function ViolationDataTable() {
                 <div className="h-3 w-3 rounded-full bg-green-600"></div>
                 <h3 className="font-semibold">Selesai</h3>
               </div>
-              <p className="text-2xl font-bold mt-2">{violations.filter((v: any) => v.status === "resolved").length}</p>
+              <p className="text-2xl font-bold mt-2">{table.getFilteredRowModel().rows.filter((row) => row.original.status === "resolved").length}</p>
             </div>
 
             <div className="bg-card rounded-lg border p-4">
@@ -772,7 +933,7 @@ export default function ViolationDataTable() {
                 <div className="h-3 w-3 rounded-full bg-yellow-600"></div>
                 <h3 className="font-semibold">Pending</h3>
               </div>
-              <p className="text-2xl font-bold mt-2">{violations.filter((v: any) => v.status === "pending").length}</p>
+              <p className="text-2xl font-bold mt-2">{table.getFilteredRowModel().rows.filter((row) => row.original.status === "pending").length}</p>
             </div>
           </div>
         </div>
