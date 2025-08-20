@@ -9,12 +9,12 @@ const userRoles = ["Admin", "Teacher"]; // Example roles, replace with actual us
 const navigationItems = [
   { href: "/dashboard/roles", label: "Roles" },
   { href: "/dashboard/clerk", label: "Clerk" }, // Example additional item
+  { href: "/dashboard/users", label: "Users" },
   { href: "/dashboard/academicyear", label: "Tahun Akademik" },
   { href: "/dashboard/majors", label: "Jurusan" },
   { href: "/dashboard/classes", label: "Kelas" },
   { href: "/dashboard/attendance", label: "Absensi" },
   { href: "/dashboard/payments", label: "Pembayaran" },
-  { href: "/dashboard/users", label: "Users" },
   { href: "/dashboard/subjects", label: "Mata Pelajaran" },
   { href: "/dashboard/typeviolations", label: "Jenis Pelanggaran" },
   { href: "/dashboard/violations", label: "Pelanggaran" },

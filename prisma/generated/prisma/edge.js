@@ -288,7 +288,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/alfitosantosa/projects/attendance-app/prisma/generated/prisma",
+      "value": "C:\\Users\\muhamad.alfito\\Desktop\\projects\\nextvul-attendance-app\\prisma\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -297,12 +297,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "darwin-arm64",
+        "value": "windows",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/alfitosantosa/projects/attendance-app/prisma/schema.prisma",
+    "sourceFilePath": "C:\\Users\\muhamad.alfito\\Desktop\\projects\\nextvul-attendance-app\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
