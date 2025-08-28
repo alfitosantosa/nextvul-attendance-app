@@ -17,7 +17,10 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   try {
-    const subjects = await prisma.subject.findMany();
+    const subjects = await prisma.subject.findMany({
+      include: { major: true },
+      orderBy: { name: "asc" },
+    });
     return NextResponse.json(subjects);
   } catch (error) {
     console.error("Error fetching subjects:", error);

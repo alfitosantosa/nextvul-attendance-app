@@ -23,7 +23,10 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   try {
-    const schedules = await prisma.schedule.findMany();
+    const schedules = await prisma.schedule.findMany({
+      include: { class: true, subject: true, teacher: true, academicYear: true },
+      orderBy: { dayOfWeek: "asc" },
+    });
     return NextResponse.json(schedules);
   } catch (error) {
     console.error("Error fetching schedules:", error);
