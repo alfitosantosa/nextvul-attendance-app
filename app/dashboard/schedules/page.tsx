@@ -108,6 +108,7 @@ function ScheduleFormDialog({ open, onOpenChange, editData, onSuccess }: { open:
   const { data: classes = [] } = useGetClasses();
   const { data: subjects = [] } = useGetSubjects();
   const { data: teachers = [] } = useGetTeachers();
+  console.log(teachers);
   const { data: academicYears = [] } = useGetAcademicYears();
 
   const {
