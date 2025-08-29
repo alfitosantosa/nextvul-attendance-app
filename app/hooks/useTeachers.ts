@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const useGetTeachers = () => {
   return useQuery({
-    queryKey: ["users"],
+    queryKey: ["teachers"],
     queryFn: async () => {
       try {
         const res = await axios.get("/api/teachers");
