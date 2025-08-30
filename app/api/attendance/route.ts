@@ -19,7 +19,12 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   try {
-    const attendances = await prisma.attendance.findMany();
+    const attendances = await prisma.attendance.findMany({
+      include: {
+        student: true,
+        schedule: true,
+      },
+    });
     return NextResponse.json(attendances);
   } catch (error) {
     console.error("Error fetching attendances:", error);
@@ -81,3 +86,5 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "Failed to delete attendance" }, { status: 500 });
   }
 }
+
+//create attendance bulk

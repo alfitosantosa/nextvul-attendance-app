@@ -7,8 +7,7 @@ export const useGetStudents = () => {
     queryKey: ["students"],
     queryFn: async () => {
       try {
-        const res = await axios.post("/api/users", );
-        console.log(res.data);
+        const res = await axios.get("/api/students");
         return res.data;
       } catch (error: any) {
         throw new Error(error?.response?.data?.message || "Failed to fetch data");
