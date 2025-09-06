@@ -25,6 +25,7 @@ export async function GET(request: NextRequest) {
       include: {
         academicYear: true,
         major: true,
+        _count: { select: { students: true, schedules: true, violations: true } },
       },
     });
     return NextResponse.json(classes);

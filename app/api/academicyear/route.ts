@@ -26,6 +26,7 @@ export async function GET(request: NextRequest) {
         students: true,
         schedules: true,
         calendarEvents: true,
+        // violationTypes: true,
       },
     });
     return NextResponse.json(academicYears);

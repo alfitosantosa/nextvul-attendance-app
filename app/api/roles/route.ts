@@ -1,7 +1,11 @@
 // model Role {
-//   id          String     @id @default(cuid())
-//   name        String     @unique
+//   id          String   @id @default(cuid())
+//   name        String   @unique
 //   description String
+//   permissions String[]
+//   isActive    Boolean  @default(true)
+//   users       User[]
+
 //   @@map("roles")
 // }
 
@@ -10,7 +14,9 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   try {
-    const roles = await prisma.role.findMany();
+    const roles = await prisma.role.findMany({
+      include: { users: true, _count: { select: { users: true } } },
+    });
     return NextResponse.json(roles);
   } catch (error) {
     console.error("Error fetching roles:", error);

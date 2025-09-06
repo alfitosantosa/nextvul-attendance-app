@@ -310,8 +310,6 @@ export default function AttendanceDataTable() {
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
 
   const { data: attendances = [], isLoading, refetch } = useGetAttendance();
-  // Log all schedules from attendances
-  console.log(attendances.map((a: { schedule: any }) => a.schedule) as any);
   const { data: schedules = [] } = useGetSchedules();
 
   const handleSuccess = () => {
@@ -351,6 +349,28 @@ export default function AttendanceDataTable() {
     return searchableText.includes(searchValue);
   }, []);
 
+  // Custom date filter function
+  const dateFilterFn = React.useCallback((row: any, columnId: string, filterValue: string) => {
+    if (!filterValue) return true;
+
+    const attendanceDate = new Date(row.original.date).toISOString().split("T")[0];
+    return attendanceDate === filterValue;
+  }, []);
+
+  // Custom class filter function
+  const classFilterFn = React.useCallback(
+    (row: any, columnId: string, filterValue: string) => {
+      if (filterValue === "all") return true;
+
+      // Find the schedule for this attendance
+      const scheduleId = row.original.scheduleId;
+      const schedule = schedules.find((s: any) => s.id === scheduleId);
+
+      return schedule?.class?.id === filterValue;
+    },
+    [schedules]
+  );
+
   const columns: ColumnDef<AttendanceData>[] = [
     {
       id: "select",
@@ -389,6 +409,7 @@ export default function AttendanceDataTable() {
         const dateB = new Date(rowB.original.date);
         return dateA.getTime() - dateB.getTime();
       },
+      filterFn: dateFilterFn,
     },
     {
       id: "student",
@@ -408,8 +429,8 @@ export default function AttendanceDataTable() {
           {row.original.student?.email && <div className="text-sm text-muted-foreground">{row.original.student.email}</div>}
         </div>
       ),
-        },
-        {
+    },
+    {
       id: "schedule",
       header: "Jadwal Pelajaran",
       cell: ({ row }) => {
@@ -421,19 +442,20 @@ export default function AttendanceDataTable() {
 
         return (
           <div className="space-y-1">
-        <div className="font-medium">{schedule.subject?.name}</div>
-        <div className="text-sm text-muted-foreground">
-          {schedule.class?.name} • {schedule.teacher?.name}
-        </div>
-        <div className="text-xs text-muted-foreground">
-          {DAYS_MAP[schedule.dayOfWeek as keyof typeof DAYS_MAP]} {schedule.startTime}-{schedule.endTime}
-          {schedule.room && ` • ${schedule.room}`}
-        </div>
+            <div className="font-medium">{schedule.subject?.name}</div>
+            <div className="text-sm text-muted-foreground">
+              {schedule.class?.name} • {schedule.teacher?.name}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {DAYS_MAP[schedule.dayOfWeek as keyof typeof DAYS_MAP]} {schedule.startTime}-{schedule.endTime}
+              {schedule.room && ` • ${schedule.room}`}
+            </div>
           </div>
         );
       },
-        },
-        {
+      filterFn: classFilterFn,
+    },
+    {
       id: "status",
       accessorKey: "status",
       header: ({ column }) => {
@@ -555,26 +577,23 @@ export default function AttendanceDataTable() {
     }
   }, [statusFilter, table]);
 
-  // Apply class filter (filter by schedule's class)
+  // Apply class filter
   React.useEffect(() => {
     if (classFilter !== "all") {
-      const filteredData = attendances.filter((attendance: AttendanceData) => attendance.schedule?.class?.id === classFilter);
-      // This is a simplified approach - you might want to implement a custom filter function
+      table.getColumn("schedule")?.setFilterValue(classFilter);
     } else {
-      // Reset filter
+      table.getColumn("schedule")?.setFilterValue(undefined);
     }
-  }, [classFilter, attendances]);
+  }, [classFilter, table]);
 
   // Apply date filter
   React.useEffect(() => {
     if (dateFilter) {
-      const filteredData = attendances.filter((attendance: AttendanceData) => {
-        const attendanceDate = new Date(attendance.date).toISOString().split("T")[0];
-        return attendanceDate === dateFilter;
-      });
-      // This is a simplified approach - you might want to implement a custom filter function
+      table.getColumn("date")?.setFilterValue(dateFilter);
+    } else {
+      table.getColumn("date")?.setFilterValue(undefined);
     }
-  }, [dateFilter, attendances]);
+  }, [dateFilter, table]);
 
   // Calculate statistics
   const stats = React.useMemo(() => {

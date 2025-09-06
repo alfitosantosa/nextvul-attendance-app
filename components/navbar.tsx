@@ -7,6 +7,8 @@ import React from "react";
 const userRoles = ["Admin", "Teacher"]; // Example roles, replace with actual user roles
 
 const navigationItems = [
+  { href: "/", label: "Home" },
+  { href: "/dashboard", label: "Dashboard" },
   { href: "/dashboard/roles", label: "Roles" },
   { href: "/dashboard/clerk", label: "Clerk" }, // Example additional item
   { href: "/dashboard/users", label: "Users" },

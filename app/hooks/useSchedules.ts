@@ -50,3 +50,25 @@ export const useDeleteSchedule = () => {
     },
   });
 };
+
+export const useGetSchedulesByTeacher = (teacherId: string) => {
+  return useQuery({
+    queryKey: ["schedules", teacherId],
+    queryFn: async () => {
+      const response = await axios.get(`/api/schedules/teacher/${teacherId}`);
+      return response.data;
+    },
+    enabled: !!teacherId, // Only run the query if teacherId is provided
+  });
+};
+
+export const useGetSchedulesByStudent = (studentId: string) => {
+  return useQuery({
+    queryKey: ["schedules", studentId],
+    queryFn: async () => {
+      const response = await axios.get(`/api/schedules/student/${studentId}`);
+      return response.data;
+    },
+    enabled: !!studentId, // Only run the query if studentId is provided
+  });
+};
