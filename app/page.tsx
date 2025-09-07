@@ -153,17 +153,17 @@ export default function Home() {
 
                 {/* User Info */}
                 <div className="text-center md:text-left flex-1 space-y-3">
-                  {/* <div className="space-y-2">
+                  <div className="space-y-2">
                     <div className="flex flex-col md:flex-row md:items-center gap-3">
                       <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">{user?.name}</h1>
-                      <Badge variant={getStatusVariant(user?.status)} className="w-fit px-3z py-1 font-medium shadow-sm md:none sm:inline-flex ">
+                      {/* <Badge variant={getStatusVariant(user?.status)} className="w-fit px-3z py-1 font-medium shadow-sm md:none sm:inline-flex ">
                         <div className="w-2 h-2 rounded-full bg-current mr-2 "></div>
                         {user?.status?.charAt(0).toUpperCase() + user?.status?.slice(1)}
-                      </Badge>
+                      </Badge> */}
                     </div>
 
                     <p className="text-xl text-gray-600 font-medium">{user?.position}</p>
-                  </div> */}
+                  </div>
 
                   {/* Meta Info */}
                   <div className="flex flex-col md:flex-row items-center gap-4 text-sm text-gray-500">
