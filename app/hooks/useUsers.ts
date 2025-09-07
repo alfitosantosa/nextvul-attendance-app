@@ -1,5 +1,7 @@
 // app/api/users/route.ts
 
+"use client";
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -79,5 +81,6 @@ export const useGetUserById = (id: string) => {
         throw new Error(error?.response?.data?.message || "Failed to fetch user");
       }
     },
+    enabled: !!id, // Only run query if id exists
   });
 };
