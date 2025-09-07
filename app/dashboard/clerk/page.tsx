@@ -46,26 +46,7 @@ const columns: ColumnDef<User>[] = [
     header: "Email",
     cell: ({ row }) => <div>{row.original.email_addresses?.[0]?.email_address ?? "-"}</div>,
   },
-  {
-    accessorKey: "roles",
-    header: "Roles",
-    cell: ({ row }) => <div className="capitalize">{(row.original.roles ?? []).map((r) => r.role).join(", ") || "None"}</div>,
-  },
-  {
-    accessorKey: "parent",
-    header: "Parent",
-    cell: ({ row }) => <div>{row.original.parent?.id ?? "-"}</div>,
-  },
-  {
-    accessorKey: "student",
-    header: "Student",
-    cell: ({ row }) => <div>{row.original.student?.id ?? "-"}</div>,
-  },
-  {
-    accessorKey: "teacher",
-    header: "Teacher",
-    cell: ({ row }) => <div>{row.original.teacher?.id ?? "-"}</div>,
-  },
+
   {
     id: "actions",
     enableHiding: false,

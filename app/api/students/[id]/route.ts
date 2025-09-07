@@ -56,87 +56,41 @@
 //   @@map("users")
 // }
 
+"use server";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(request: NextRequest) {
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   try {
-    const users = await prisma.user.findMany({
+    const student = await prisma.user.findUnique({
+      where: { id },
       include: {
         role: true,
+        academicYear: true,
         class: true,
         major: true,
-        academicYear: true,
-      },
-      orderBy: { name: "asc" },
-    });
-    return NextResponse.json(users);
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const { name, email, roleId, ...rest } = await request.json();
-    if (!name || !roleId) {
-      return NextResponse.json({ error: "Name and role are required" }, { status: 400 });
-    }
-
-    const newUser = await prisma.user.create({
-      data: {
-        name,
-        email,
-        roleId,
-        ...rest,
+        attendances: true,
+        payments: true,
+        violations: true,
+        // parents: true,
+        _count: {
+          select: {
+            attendances: true,
+            payments: true,
+            violations: true,
+            // parents: true,
+            // parentOf: true,
+          },
+        },
       },
     });
-
-    return NextResponse.json(newUser, { status: 201 });
-  } catch (error) {
-    console.error("Error creating user:", error);
-    return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
-  }
-}
-
-export async function PUT(request: NextRequest) {
-  try {
-    const { id, name, email, roleId, ...rest } = await request.json();
-    if (!id || !name || !roleId) {
-      return NextResponse.json({ error: "ID, name, and role are required" }, { status: 400 });
+    if (!student) {
+      return NextResponse.json({ error: "Student not found" }, { status: 404 });
     }
-
-    const updatedUser = await prisma.user.update({
-      where: { id },
-      data: {
-        name,
-        email,
-        roleId,
-        ...rest,
-      },
-    });
-
-    return NextResponse.json(updatedUser);
+    return NextResponse.json(student);
   } catch (error) {
-    console.error("Error updating user:", error);
-    return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
-  }
-}
-export async function DELETE(request: NextRequest) {
-  try {
-    const { id } = await request.json();
-    if (!id) {
-      return NextResponse.json({ error: "ID is required" }, { status: 400 });
-    }
-
-    const deletedUser = await prisma.user.delete({
-      where: { id },
-    });
-
-    return NextResponse.json(deletedUser);
-  } catch (error) {
-    console.error("Error deleting user:", error);
-    return NextResponse.json({ error: "Failed to delete user" }, { status: 500 });
+    console.error("Error fetching student:", error);
+    return NextResponse.json({ error: "Failed to fetch student" }, { status: 500 });
   }
 }

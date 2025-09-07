@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
         student: true,
         schedule: true,
       },
+      orderBy: { date: "desc" },
     });
     return NextResponse.json(attendances);
   } catch (error) {

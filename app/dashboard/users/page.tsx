@@ -128,12 +128,22 @@ export default function UserDataTable() {
       enableHiding: false,
     },
     {
+      accessorKey: "avatarUrl",
+      header: "Avatar",
+      cell: ({ row }) => <img src={row.original.avatarUrl ?? "/default-avatar.png"} alt="Avatar" className="w-10 h-10 rounded-full object-cover" />,
+    },
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => <div>{row.original.name ?? "-"}</div>,
+    },
+    {
       accessorKey: "name",
       header: ({ column }) => {
         return (
           <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
             <User className="mr-2 h-4 w-4" />
-            Nama
+            Akun Clerk
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -156,7 +166,7 @@ export default function UserDataTable() {
             )}
             <div>
               <div className="font-medium">{name || "-"}</div>
-              {clerkInfo && <div className="text-xs text-muted-foreground">Clerk User</div>}
+              {clerkInfo ? <div className="text-xs text-muted-foreground">Clerk Assigned</div> : <div className="text-xs text-red-600">No Clerk Assigned</div>}
             </div>
           </div>
         );
