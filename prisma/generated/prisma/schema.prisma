@@ -29,16 +29,16 @@ model User {
   classId        String?
   clerkId        String?       @unique
   createdAt      DateTime      @default(now())
-  email          String?       @unique
-  employeeId     String?       @unique
+  email          String?
+  employeeId     String?
   endDate        DateTime?
   enrollmentDate DateTime?
   gender         String?
   graduationDate DateTime?
   majorId        String?
   name           String
-  nik            String?       @unique
-  nisn           String?       @unique
+  nik            String?
+  nisn           String?
   parentPhone    String?
   position       String?
   relation       String?

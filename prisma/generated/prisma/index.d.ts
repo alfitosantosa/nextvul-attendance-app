@@ -18143,10 +18143,6 @@ export namespace Prisma {
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     clerkId?: string
-    email?: string
-    employeeId?: string
-    nik?: string
-    nisn?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
@@ -18157,12 +18153,16 @@ export namespace Prisma {
     birthPlace?: StringNullableFilter<"User"> | string | null
     classId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
+    email?: StringNullableFilter<"User"> | string | null
+    employeeId?: StringNullableFilter<"User"> | string | null
     endDate?: DateTimeNullableFilter<"User"> | Date | string | null
     enrollmentDate?: DateTimeNullableFilter<"User"> | Date | string | null
     gender?: StringNullableFilter<"User"> | string | null
     graduationDate?: DateTimeNullableFilter<"User"> | Date | string | null
     majorId?: StringNullableFilter<"User"> | string | null
     name?: StringFilter<"User"> | string
+    nik?: StringNullableFilter<"User"> | string | null
+    nisn?: StringNullableFilter<"User"> | string | null
     parentPhone?: StringNullableFilter<"User"> | string | null
     position?: StringNullableFilter<"User"> | string | null
     relation?: StringNullableFilter<"User"> | string | null
@@ -18181,7 +18181,7 @@ export namespace Prisma {
     violations?: ViolationListRelationFilter
     users_A?: UserListRelationFilter
     users_B?: UserListRelationFilter
-  }, "id" | "clerkId" | "email" | "employeeId" | "nik" | "nisn">
+  }, "id" | "clerkId">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
