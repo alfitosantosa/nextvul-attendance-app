@@ -25,8 +25,13 @@ export async function GET(request: NextRequest) {
       include: {
         academicYear: true,
         major: true,
+        students: true,
+        schedules: true,
+        violations: true,
+
         _count: { select: { students: true, schedules: true, violations: true } },
       },
+      orderBy: { name: "asc" },
     });
     return NextResponse.json(classes);
   } catch (error) {

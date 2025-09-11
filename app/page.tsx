@@ -181,8 +181,8 @@ export default function Home() {
           {/* Header Card */}
           <Card className="overflow-hidden shadow-xl border-0">
             <div
-              className="bg-gradient-to-r -mt-10 from-blue-600 to-purple-600 h-32
-             md:h-48"
+              className="bg-gradient-to-r -mt-25 sm:-mt-6 from-blue-600 to-purple-600
+              h-32"
             ></div>
             {/* Background Header */}
 

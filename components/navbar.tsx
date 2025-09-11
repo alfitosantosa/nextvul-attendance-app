@@ -21,9 +21,13 @@ const navigationItems = [
   { href: "/dashboard/typeviolations", label: "Jenis Pelanggaran" },
   { href: "/dashboard/violations", label: "Pelanggaran" },
   { href: "/dashboard/payments", label: "Pembayaran" },
+  { href: "/teacher/schedule", label: "Schedule for Teacher" },
+  {
+    href: "/teacher/attendance",
+    label: "Attendance for Teacher",
+  },
   // { href: "/dashboard/teachers", label: "Guru" },
   // { href: "/dashboard/students", label: "Siswa" },
-  ,
 ];
 
 export default function Navbar() {
