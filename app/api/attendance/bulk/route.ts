@@ -32,3 +32,25 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Failed to create bulk attendance" }, { status: 500 });
   }
 }
+
+// put many attendance
+
+export async function PUT(request: NextRequest) {
+  const { attendances } = await request.json();
+
+  try {
+    const updatePromises = attendances.map((attendance: any) =>
+      prisma.attendance.update({
+        where: {
+          id: attendance.id,
+        },
+        data: attendance,
+      })
+    );
+    const updatedAttendances = await Promise.all(updatePromises);
+    return NextResponse.json(updatedAttendances);
+  } catch (error) {
+    console.error("Error updating bulk attendance:", error);
+    return NextResponse.json({ error: "Failed to update bulk attendance" }, { status: 500 });
+  }
+}

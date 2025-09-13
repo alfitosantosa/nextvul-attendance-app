@@ -27,7 +27,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
   const { id } = await params;
   try {
     const schedules = await prisma.schedule.findMany({
-      where: { teacherId: id },
+      where: { id: id },
       include: { class: true, subject: true, teacher: true, academicYear: true },
     });
     return NextResponse.json(schedules);
