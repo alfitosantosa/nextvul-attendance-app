@@ -8,6 +8,20 @@ export const useGetScheduleById = (id: string) => {
     queryKey: ["schedules", id],
     queryFn: async () => {
       try {
+        const res = await axios.get(`/api/schedules/${id}`);
+        return res.data;
+      } catch (error: any) {
+        throw new Error(error?.response?.data?.message || "Failed to fetch schedule");
+      }
+    },
+  });
+};
+
+export const useGetScheduleByIdTeacher = (id: string) => {
+  return useQuery({
+    queryKey: ["schedules", id],
+    queryFn: async () => {
+      try {
         const res = await axios.get(`/api/schedules/teacher/${id}`);
         return res.data;
       } catch (error: any) {
