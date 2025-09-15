@@ -22,20 +22,6 @@ interface Subject {
   name: string;
 }
 
-interface Schedule {
-  id: string;
-  subject: Subject;
-  startTime: string;
-  endTime: string;
-  classId: string;
-}
-
-interface ClassData {
-  name: string;
-  description: string;
-  students: Student[];
-}
-
 export default function AttendanceModule() {
   const params = useParams();
   const [attendanceData, setAttendanceData] = useState<Record<string, { status: string; notes?: string; evidenceUrl?: string }>>({});
