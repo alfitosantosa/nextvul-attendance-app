@@ -26,6 +26,8 @@ import { useGetSchedules } from "@/app/hooks/useSchedules";
 import { useGetUsers } from "@/app/hooks/useUsers"; // Assuming you have this hook for students
 import Navbar from "@/components/navbar";
 import { useGetStudents } from "@/app/hooks/useStudents";
+import { useGetAttendanceByIdSchedule } from "@/app/hooks/useAttendanceByIdShcedule";
+import { useParams } from "next/navigation";
 
 // Type definitions
 export type AttendanceData = {
@@ -310,7 +312,9 @@ export default function AttendanceDataTable() {
   const [dateFilter, setDateFilter] = React.useState<string>("");
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
 
-  const { data: attendances = [], isLoading, refetch } = useGetAttendance();
+  const params = useParams();
+
+  const { data: attendances = [], isLoading, refetch } = useGetAttendanceByIdSchedule(params.id as string);
   const { data: schedules = [] } = useGetSchedules();
 
   const handleSuccess = () => {
@@ -626,7 +630,17 @@ export default function AttendanceDataTable() {
     <>
       <Navbar />
       <div className="mx-auto my-8 p-6 max-w-7xl">
-        <div className="font-bold text-3xl mb-6">Data Kehadiran Siswa</div>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-2">
+          <div>
+            <div className="font-bold text-4xl md:text-3xl">Data Kehadiran Siswa</div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <Badge className="px-3 py-1.5 text-sm font-medium">
+                Kelas: {classFilter !== "all" ? uniqueClasses?.find((c: any) => c.id === classFilter)?.name : schedules.find((s: any) => s.id === (attendances[0]?.scheduleId || ""))?.class?.name || "-"}
+              </Badge>
+              <Badge className="px-3 py-1.5 text-sm font-medium">Mata Pelajaran: {schedules.find((s: any) => s.id === (attendances[0]?.scheduleId || ""))?.subject?.name || "-"}</Badge>
+            </div>
+          </div>
+        </div>
 
         <div className="flex items-center justify-between py-4">
           <div className="flex items-center space-x-2 flex-wrap gap-y-2">
