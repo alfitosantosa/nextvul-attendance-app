@@ -22,6 +22,15 @@ interface Subject {
   name: string;
 }
 
+// Status mapping to match dashboard
+const STATUS_MAP = {
+  present: { label: "Hadir", color: "bg-green-500" },
+  absent: { label: "Tidak Hadir", color: "bg-red-500" },
+  late: { label: "Terlambat", color: "bg-yellow-500" },
+  excused: { label: "Izin", color: "bg-blue-500" },
+  sick: { label: "Sakit", color: "bg-purple-500" },
+};
+
 export default function AttendanceModule() {
   const params = useParams();
   const [attendanceData, setAttendanceData] = useState<Record<string, { status: string; notes?: string; evidenceUrl?: string }>>({});
@@ -34,6 +43,9 @@ export default function AttendanceModule() {
 
   // Fetch class by id from schedule
   const { data: classData, isLoading: isLoadingClass, isError: isErrorClass } = useGetClassById(classId as string);
+
+  // Initialize mutation hook
+  const createAttendanceMutation = useCreateAttendanceBulk();
 
   const currentSession = scheduleDataById[0]
     ? {
@@ -53,66 +65,57 @@ export default function AttendanceModule() {
 
   const saveAttendance = async () => {
     try {
-      const attendanceArray = Object.entries(attendanceData).map(([studentId, data]) => ({
+      // Validate that we have schedule data
+      if (!scheduleDataById[0]?.id) {
+        alert("Error: Schedule data not available");
+        return;
+      }
+
+      // Filter only students with attendance status set
+      const studentsWithAttendance = Object.entries(attendanceData).filter(([_, data]) => data.status);
+
+      if (studentsWithAttendance.length === 0) {
+        alert("Please set attendance status for at least one student");
+        return;
+      }
+
+      const attendanceArray = studentsWithAttendance.map(([studentId, data]) => ({
         studentId,
-        scheduleId: scheduleDataById[0]?.id,
-        attendanceDate: new Date().toISOString(),
-        status: data.status,
-        notes: data.notes,
-        evidenceUrl: data.evidenceUrl,
+        scheduleId: scheduleDataById[0].id,
+        status: data.status, // This will now be 'present', 'absent', 'late', 'excused', or 'sick'
+        notes: data.notes || null,
+        date: new Date(), // This should match your database date field
       }));
 
-      // [
-      //   model Attendance {
-      //     id         String   @id @default(cuid())
-      //     studentId  String
-      //     scheduleId String
-      //     status     String
-      //     notes      String?
-      //     createdAt  DateTime @default(now())
-      //     date       DateTime
-      //     schedule   Schedule @relation(fields: [scheduleId], references: [id])
-      //     student    User     @relation("StudentAttendance", fields: [studentId], references: [id])
-      //     @@unique([studentId, scheduleId, date])
-      //     @@map("attendances")
-      //   }
-      // ];
+      console.log("Saving attendance with English status values:", attendanceArray);
 
-      useCreateAttendanceBulk().mutate(attendanceArray);
+      // Use the mutation with proper payload structure
+      await createAttendanceMutation.mutateAsync({ attendances: attendanceArray });
 
-      // Replace with your actual API call
-      console.log("Saving attendance:", attendanceArray);
-      // await apiClient.saveAttendance(attendanceArray);
       alert("Absensi berhasil disimpan!");
+
+      // Optional: Clear attendance data after successful save
+      // setAttendanceData({});
     } catch (error) {
+      console.error("Error saving attendance:", error);
       alert("Error saving attendance: " + (error instanceof Error ? error.message : String(error)));
     }
   };
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case "hadir":
-        return "bg-green-500";
-      case "izin":
-        return "bg-yellow-500";
-      case "sakit":
-        return "bg-blue-500";
-      case "alfa":
-        return "bg-red-500";
-      default:
-        return "bg-gray-300";
-    }
+    return STATUS_MAP[status as keyof typeof STATUS_MAP]?.color || "bg-gray-300";
   };
 
   // Get attendance statistics
   const getAttendanceStats = () => {
     const students = classData?.students || [];
-    const hadir = students.filter((s: { id: string | number }) => attendanceData[s.id]?.status === "hadir").length;
-    const izin = students.filter((s: { id: string | number }) => attendanceData[s.id]?.status === "izin").length;
-    const sakit = students.filter((s: { id: string | number }) => attendanceData[s.id]?.status === "sakit").length;
-    const alfa = students.filter((s: { id: string | number }) => attendanceData[s.id]?.status === "alfa").length;
+    const present = students.filter((s: { id: string | number }) => attendanceData[s.id]?.status === "present").length;
+    const excused = students.filter((s: { id: string | number }) => attendanceData[s.id]?.status === "excused").length;
+    const sick = students.filter((s: { id: string | number }) => attendanceData[s.id]?.status === "sick").length;
+    const late = students.filter((s: { id: string | number }) => attendanceData[s.id]?.status === "late").length;
+    const absent = students.filter((s: { id: string | number }) => attendanceData[s.id]?.status === "absent").length;
 
-    return { hadir, izin, sakit, alfa };
+    return { present, excused, sick, late, absent };
   };
 
   const stats = getAttendanceStats();
@@ -121,7 +124,7 @@ export default function AttendanceModule() {
     return (
       <>
         <Navbar />
-        <div className="container mx-auto p-6">
+        <div className="max-w-7xl mx-auto p-6">
           <Alert className="max-w-2xl">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>Error loading data. Please try refreshing the page or contact support.</AlertDescription>
@@ -134,7 +137,7 @@ export default function AttendanceModule() {
   return (
     <>
       <Navbar />
-      <div className="container mx-auto p-6 space-y-6">
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
         {/* Mobile Attendance Interface */}
         <Card>
           <CardHeader>
@@ -192,7 +195,7 @@ export default function AttendanceModule() {
                         </div>
                       </div>
                       <div className="flex space-x-1">
-                        {Array.from({ length: 4 }).map((_, i) => (
+                        {Array.from({ length: 5 }).map((_, i) => (
                           <div key={i} className="h-8 w-12 bg-gray-300 rounded"></div>
                         ))}
                       </div>
@@ -217,9 +220,9 @@ export default function AttendanceModule() {
                         </div>
                       </div>
                       <div className="flex space-x-1">
-                        {["hadir", "izin", "sakit", "alfa"].map((status) => (
+                        {Object.entries(STATUS_MAP).map(([status, config]) => (
                           <Button key={status} size="sm" variant={attendanceData[student.id]?.status === status ? "default" : "outline"} onClick={() => updateAttendance(student.id, status)} className="text-xs px-2 py-1">
-                            {status.charAt(0).toUpperCase() + status.slice(1)}
+                            {config.label}
                           </Button>
                         ))}
                       </div>
@@ -228,10 +231,14 @@ export default function AttendanceModule() {
             </div>
 
             <div className="mt-4 flex justify-between items-center">
-              <Button onClick={saveAttendance} disabled={isLoadingClass}>
+              <Button onClick={saveAttendance} disabled={isLoadingClass || createAttendanceMutation.isPending}>
                 <CheckCircle className="h-4 w-4 mr-2" />
-                Simpan Absensi
+                {createAttendanceMutation.isPending ? "Menyimpan..." : "Simpan Absensi"}
               </Button>
+
+              {/* Show success/error states */}
+              {createAttendanceMutation.isSuccess && <span className="text-green-600 text-sm">✓ Berhasil disimpan</span>}
+              {createAttendanceMutation.isError && <span className="text-red-600 text-sm">✗ Gagal menyimpan</span>}
             </div>
           </CardContent>
         </Card>
@@ -246,22 +253,26 @@ export default function AttendanceModule() {
             {isLoadingClass ? (
               <div className="text-center py-8">Loading attendance data...</div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">{stats.hadir}</div>
+                  <div className="text-2xl font-bold text-green-600">{stats.present}</div>
                   <div className="text-sm text-gray-600">Hadir</div>
                 </div>
-                <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                  <div className="text-2xl font-bold text-yellow-600">{stats.izin}</div>
+                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">{stats.excused}</div>
                   <div className="text-sm text-gray-600">Izin</div>
                 </div>
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">{stats.sakit}</div>
+                <div className="text-center p-4 bg-purple-50 rounded-lg">
+                  <div className="text-2xl font-bold text-purple-600">{stats.sick}</div>
                   <div className="text-sm text-gray-600">Sakit</div>
                 </div>
+                <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                  <div className="text-2xl font-bold text-yellow-600">{stats.late}</div>
+                  <div className="text-sm text-gray-600">Terlambat</div>
+                </div>
                 <div className="text-center p-4 bg-red-50 rounded-lg">
-                  <div className="text-2xl font-bold text-red-600">{stats.alfa}</div>
-                  <div className="text-sm text-gray-600">Alfa</div>
+                  <div className="text-2xl font-bold text-red-600">{stats.absent}</div>
+                  <div className="text-sm text-gray-600">Tidak Hadir</div>
                 </div>
               </div>
             )}
