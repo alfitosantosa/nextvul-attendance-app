@@ -669,7 +669,7 @@ export default function AttendanceDataTable() {
             </Select>
 
             {/* Class Filter */}
-            <Select value={classFilter} onValueChange={setClassFilter}>
+            {/* <Select value={classFilter} onValueChange={setClassFilter}>
               <SelectTrigger className="w-[140px]">
                 <SelectValue placeholder="Filter Kelas" />
               </SelectTrigger>
@@ -681,7 +681,7 @@ export default function AttendanceDataTable() {
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>
+            </Select> */}
 
             {/* Date Filter */}
             <Input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)} className="w-[150px]" placeholder="Filter Tanggal" />
@@ -743,10 +743,10 @@ export default function AttendanceDataTable() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button onClick={() => setCreateDialogOpen(true)}>
+            {/* <Button onClick={() => setCreateDialogOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
               Catat Kehadiran
-            </Button>
+            </Button> */}
           </div>
         </div>
 
