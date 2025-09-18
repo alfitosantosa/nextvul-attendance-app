@@ -211,11 +211,11 @@ export default function Home() {
                 <div className="text-center xl:text-left flex-1 space-y-4 w-full">
                   <div className="space-y-3">
                     <div className="flex flex-col xl:flex-row xl:items-center gap-3 xl:gap-4">
-                      <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black text-gray-900 tracking-tight leading-tight bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">{user?.name}</h1>
+                      <h1 className="relative text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black">{user?.name}</h1>
                       {user?.status && (
                         <div className="flex items-center justify-center xl:justify-start">
-                          <Badge variant={getStatusVariant(user?.status)} className="px-4 py-2 text-sm font-semibold shadow-lg hover:shadow-xl transition-all rounded-4xl duration-300 hover:scale-105">
-                            <div className="w-2 h-2 rounded-full bg-current mr-2 animate-pulse"></div>
+                          <Badge variant={getStatusVariant(user?.status)} className="px-4 py-2 text-sm font-semibold shadow-lg  transition-all rounded-4xl duration-300 ">
+                            <div className="w-2 h-2 rounded-full bg-current mr-2 "></div>
                             {user?.status?.charAt(0).toUpperCase() + user?.status?.slice(1)}
                           </Badge>
                         </div>
