@@ -12,9 +12,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CalendarDays, Clock, MapPin, BookOpen, Users, GraduationCap, Eye, Plus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useGetAttendance } from "@/app/hooks/useAttendance";
 
 export default function TeacherAttendancePage() {
-  const [selectedDay, setSelectedDay] = useState<string>("all");
+  const today = new Date().getDay();
+  const [selectedDay, setSelectedDay] = useState<string>(today.toString());
 
   const { data: scheduleData = [], isLoading: isLoadingSchedule, error: scheduleError } = useGetScheduleByIdTeacher("cmeh3pgni000ggqr6dnurzoaf");
 
@@ -40,6 +42,37 @@ export default function TeacherAttendancePage() {
   ];
 
   const filteredScheduleData = selectedDay === "all" ? scheduleData : scheduleData.filter((schedule: any) => schedule.dayOfWeek.toString() === selectedDay);
+
+  const isTodaySchedule = (dayOfWeek: number) => {
+    const today = new Date().getDay();
+    return dayOfWeek === today;
+  };
+
+  const { data: attendanceData = [] } = useGetAttendance();
+
+  const isAttendanceSubmitted = (scheduleId: string) => {
+    const today = new Date();
+    const todayString = today.toISOString().split("T")[0]; // format: YYYY-MM-DD
+    return attendanceData.some((attendance: any) => {
+      // Map attendance.date to YYYY-MM-DD if it's a Date object or ISO string
+      const attendanceDate = typeof attendance.date === "string" ? attendance.date.split("T")[0] : attendance.date instanceof Date ? attendance.date.toISOString().split("T")[0] : "";
+      return attendanceDate === todayString && attendance.scheduleId === scheduleId;
+    });
+  };
+
+  const isButtonDisabled = (schedule: any) => {
+    return !isTodaySchedule(schedule.dayOfWeek) || isAttendanceSubmitted(schedule.id);
+  };
+
+  const getButtonText = (schedule: any) => {
+    if (isAttendanceSubmitted(schedule.id)) {
+      return "Sudah Diabsen";
+    }
+    if (!isTodaySchedule(schedule.dayOfWeek)) {
+      return "Bukan Hari Ini";
+    }
+    return "Buat Absensi Hari Ini";
+  };
 
   const ScheduleCardSkeleton = () => (
     <Card>
@@ -197,12 +230,21 @@ export default function TeacherAttendancePage() {
                             Lihat Absensi
                           </Button>
                         </Link>
-                        <Link href={`/teacher/attendance/${schedule.id}`} passHref>
-                          <Button className="flex items-center gap-2">
+
+                        <div className="flex items-center gap-2">
+                          <Button
+                            disabled={isButtonDisabled(schedule)}
+                            className={`flex items-center gap-2 ${isButtonDisabled(schedule) ? "opacity-10 cursor-not-allowed bg-gray-300 text-gray-1000 hover:bg-gray-300" : ""}`}
+                            onClick={() => {
+                              if (!isButtonDisabled(schedule)) {
+                                window.location.href = `/teacher/attendance/${schedule.id}`;
+                              }
+                            }}
+                          >
                             <Plus className="h-4 w-4" />
-                            Buat Absensi Hari Ini
+                            {getButtonText(schedule)}
                           </Button>
-                        </Link>
+                        </div>
                       </CardFooter>
                     </Card>
                   ))}

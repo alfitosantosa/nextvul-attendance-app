@@ -96,8 +96,6 @@ export default function UserDataTable() {
 
       // Refetch the user data (not clerk data)
       await refetch();
-
-      console.log("Data refetched successfully");
     } catch (error) {
       console.error("Error refetching data:", error);
     }

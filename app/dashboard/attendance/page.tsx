@@ -101,7 +101,7 @@ function AttendanceFormDialog({ open, onOpenChange, editData, onSuccess }: { ope
   const createAttendance = useCreateAttendance();
   const updateAttendance = useUpdateAttendance();
   const { data: schedules = [] } = useGetSchedules();
-  console.log(schedules);
+
   const { data: students = [] } = useGetStudents();
 
   const {
