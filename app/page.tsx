@@ -7,30 +7,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { User, Mail, Calendar, MapPin, Phone, GraduationCap, Building2, Shield, Clock, UserCheck, Briefcase } from "lucide-react";
+import { User, Mail, Calendar, MapPin, Phone, GraduationCap, Building2, Shield, Clock, UserCheck, Briefcase, Star, Award, CheckCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Loading Component
 const UserProfileSkeleton = () => (
-  <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+  <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
     <Navbar />
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-10">
+      <div className="max-w-7xl mx-auto space-y-8">
         {/* Header Skeleton */}
-        <Card className="overflow-hidden shadow-xl border-0">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 h-32"></div>
-          <CardContent className="pt-0">
-            <div className="flex flex-col md:flex-row items-center md:items-end gap-6 -mt-16 md:-mt-12">
-              <Skeleton className="w-28 h-28 rounded-full border-4 border-white shadow-2xl" />
-              <div className="text-center md:text-left space-y-3 flex-1">
-                <div className="space-y-2">
-                  <Skeleton className="h-10 w-64 mx-auto md:mx-0" />
-                  <Skeleton className="h-6 w-48 mx-auto md:mx-0" />
+        <Card className="overflow-hidden shadow-2xl border-0 backdrop-blur-sm bg-white/90">
+          <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 h-40 lg:h-48 relative">
+            <div className="absolute inset-0 bg-black/10"></div>
+          </div>
+          <CardContent className="pt-0 px-6 lg:px-8">
+            <div className="flex flex-col xl:flex-row items-center xl:items-end gap-6 xl:gap-8 -mt-20 lg:-mt-24">
+              <Skeleton className="w-32 h-32 lg:w-40 lg:h-40 rounded-full border-4 border-white shadow-2xl" />
+              <div className="text-center xl:text-left space-y-4 flex-1">
+                <div className="space-y-3">
+                  <Skeleton className="h-12 lg:h-16 w-72 lg:w-96 mx-auto xl:mx-0" />
+                  <Skeleton className="h-6 lg:h-8 w-56 lg:w-72 mx-auto xl:mx-0" />
                 </div>
-                <div className="flex flex-col md:flex-row items-center gap-4">
-                  <Skeleton className="h-8 w-32" />
-                  <Skeleton className="h-8 w-40" />
-                  <Skeleton className="h-8 w-36" />
+                <div className="flex flex-col sm:flex-row items-center justify-center xl:justify-start gap-3">
+                  <Skeleton className="h-9 w-28" />
+                  <Skeleton className="h-9 w-36" />
+                  <Skeleton className="h-9 w-32" />
                 </div>
               </div>
             </div>
@@ -38,67 +40,48 @@ const UserProfileSkeleton = () => (
         </Card>
 
         {/* Content Skeletons */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="shadow-md">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <Skeleton className="w-5 h-5" />
-                <Skeleton className="h-6 w-48" />
-              </div>
-              <Skeleton className="h-4 w-64" />
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
-                  <Skeleton className="w-5 h-5" />
-                  <div className="flex-1 space-y-1">
-                    <Skeleton className="h-3 w-16" />
-                    <Skeleton className="h-4 w-full max-w-48" />
-                  </div>
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+          {[1, 2].map((card) => (
+            <Card key={card} className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3">
+                  <Skeleton className="w-6 h-6" />
+                  <Skeleton className="h-7 w-52" />
                 </div>
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-md">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <Skeleton className="w-5 h-5" />
-                <Skeleton className="h-6 w-48" />
-              </div>
-              <Skeleton className="h-4 w-64" />
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
-                  <Skeleton className="w-5 h-5" />
-                  <div className="flex-1 space-y-1">
-                    <Skeleton className="h-3 w-16" />
-                    <Skeleton className="h-4 w-full max-w-48" />
+                <Skeleton className="h-5 w-72" />
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-gray-50/80">
+                    <Skeleton className="w-5 h-5" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-4 w-20" />
+                      <Skeleton className="h-5 w-48" />
+                    </div>
                   </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+                ))}
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
         {/* System Information Skeleton */}
-        <Card className="shadow-md">
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Skeleton className="w-5 h-5" />
-              <Skeleton className="h-6 w-48" />
+        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+          <CardHeader className="pb-4">
+            <div className="flex items-center gap-3">
+              <Skeleton className="w-6 h-6" />
+              <Skeleton className="h-7 w-52" />
             </div>
-            <Skeleton className="h-4 w-64" />
+            <Skeleton className="h-5 w-72" />
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
+                <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-gray-50/80">
                   <Skeleton className="w-5 h-5" />
-                  <div className="flex-1 space-y-1">
-                    <Skeleton className="h-3 w-20" />
-                    <Skeleton className="h-4 w-32" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-5 w-36" />
                   </div>
                 </div>
               ))}
@@ -112,20 +95,49 @@ const UserProfileSkeleton = () => (
 
 // Error Component
 const ErrorComponent = ({ error }: { error: any }) => (
-  <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-100">
+  <div className="min-h-screen bg-gradient-to-br from-red-50 via-pink-50 to-rose-50">
     <Navbar />
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-md mx-auto">
-        <Card className="border-red-200 shadow-lg">
-          <CardHeader className="text-center">
-            <div className="w-16 h-16 mx-auto bg-red-100 rounded-full flex items-center justify-center mb-4">
-              <UserCheck className="w-8 h-8 text-red-600" />
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="max-w-lg mx-auto">
+        <Card className="border-red-200 shadow-2xl bg-white/90 backdrop-blur-sm">
+          <CardHeader className="text-center pb-8">
+            <div className="w-20 h-20 mx-auto bg-gradient-to-r from-red-400 to-pink-500 rounded-full flex items-center justify-center mb-6 shadow-lg">
+              <UserCheck className="w-10 h-10 text-white" />
             </div>
-            <CardTitle className="text-red-900">Error Loading Profile</CardTitle>
-            <CardDescription className="text-red-700">{error?.message || "Failed to load user data"}</CardDescription>
+            <CardTitle className="text-2xl text-red-900 mb-2">Error Loading Profile</CardTitle>
+            <CardDescription className="text-red-700 text-lg">{error?.message || "Failed to load user data"}</CardDescription>
           </CardHeader>
         </Card>
       </div>
+    </div>
+  </div>
+);
+
+// Info Item Component
+const InfoItem = ({
+  icon: Icon,
+  label,
+  value,
+  bgColor = "bg-gray-50",
+  iconColor = "text-gray-600",
+  textColor = "text-gray-800",
+  labelColor = "text-gray-500",
+}: {
+  icon: any;
+  label: string;
+  value: string;
+  bgColor?: string;
+  iconColor?: string;
+  textColor?: string;
+  labelColor?: string;
+}) => (
+  <div className={`flex items-center gap-4 p-4 lg:p-5 rounded-xl ${bgColor} hover:shadow-md transition-all duration-300 hover:scale-[1.02]`}>
+    <div className="flex-shrink-0">
+      <Icon className={`w-5 h-5 lg:w-6 lg:h-6 ${iconColor}`} />
+    </div>
+    <div className="flex-1 min-w-0">
+      <p className={`text-sm font-medium ${labelColor} mb-1`}>{label}</p>
+      <p className={`font-semibold ${textColor} break-words text-sm lg:text-base`}>{value}</p>
     </div>
   </div>
 );
@@ -137,8 +149,6 @@ export default function Home() {
 
   if (isLoading) return <UserProfileSkeleton />;
   if (error) return <ErrorComponent error={error} />;
-
-  console.log("Fetched user:", user);
 
   // Helper function to format date
   const formatDate = (dateString: string | null) => {
@@ -173,65 +183,64 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       <Navbar />
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-7xl mx-auto space-y-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-10">
+        <div className="max-w-7xl mx-auto space-y-8">
           {/* Header Card */}
-          <Card className="overflow-hidden shadow-xl border-0">
-            <div
-              className="bg-gradient-to-r -mt-25 sm:-mt-6 from-blue-600 to-purple-600
-              h-32"
-            ></div>
-            {/* Background Header */}
+          <Card className="overflow-hidden shadow-2xl border-0 backdrop-blur-sm bg-white/90 hover:shadow-3xl transition-all duration-500">
+            {/* Enhanced Background Header */}
+            <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 h-40 lg:h-48 relative overflow-hidden">{/* Decorative elements */}</div>
 
-            {/* Profile Content */}
-            <CardContent className="pt-0 px-4 md:px-6">
-              <div className="flex flex-col md:flex-row items-center md:items-end gap-4 md:gap-6 -mt-20 md:-mt-12">
-                {/* Avatar */}
-                <div className="relative">
-                  <Avatar className="w-32 h-32 md:w-28 md:h-28 border-4 border-white shadow-2xl ring-2 ring-blue-100">
+            {/* Enhanced Profile Content */}
+            <CardContent className="pt-0 px-6 lg:px-8 pb-8">
+              <div className="flex flex-col xl:flex-row items-center xl:items-end gap-6 xl:gap-8 -mt-20 lg:-mt-24">
+                {/* Enhanced Avatar */}
+                <div className="relative group">
+                  <Avatar className="w-32 h-32 lg:w-40 lg:h-40 border-4 lg:border-6 border-white shadow-2xl ring-4 ring-blue-100 transition-all duration-300 group-hover:ring-blue-200 group-hover:shadow-3xl">
                     <AvatarImage src={user?.avatarUrl} alt={user?.name} className="object-cover" />
-                    <AvatarFallback className="text-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">{getInitials(user?.name || "User")}</AvatarFallback>
+                    <AvatarFallback className="text-2xl lg:text-3xl bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold">{getInitials(user?.name || "User")}</AvatarFallback>
                   </Avatar>
-                  <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-green-500 border-4 border-white rounded-full flex items-center justify-center">
-                    <div className="w-3 h-3 bg-white rounded-full"></div>
+                  <div className="absolute -bottom-1 -right-2 w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-green-400 to-emerald-500 border-4 border-white rounded-full flex items-center justify-center shadow-lg">
+                    <CheckCircle className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
                   </div>
                 </div>
 
-                {/* User Info */}
-                <div className="text-center md:text-left flex-1 space-y-3 w-full">
-                  <div className="space-y-2">
-                    <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
-                      <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">{user?.name}</h1>
+                {/* Enhanced User Info */}
+                <div className="text-center xl:text-left flex-1 space-y-4 w-full">
+                  <div className="space-y-3">
+                    <div className="flex flex-col xl:flex-row xl:items-center gap-3 xl:gap-4">
+                      <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black text-gray-900 tracking-tight leading-tight bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">{user?.name}</h1>
                       {user?.status && (
-                        <Badge variant={getStatusVariant(user?.status)} className="w-fit mx-auto md:mx-0 px-3 py-1 font-medium shadow-sm">
-                          <div className="w-2 h-2 rounded-full bg-current mr-2"></div>
-                          {user?.status?.charAt(0).toUpperCase() + user?.status?.slice(1)}
-                        </Badge>
+                        <div className="flex items-center justify-center xl:justify-start">
+                          <Badge variant={getStatusVariant(user?.status)} className="px-4 py-2 text-sm font-semibold shadow-lg hover:shadow-xl transition-all rounded-4xl duration-300 hover:scale-105">
+                            <div className="w-2 h-2 rounded-full bg-current mr-2 animate-pulse"></div>
+                            {user?.status?.charAt(0).toUpperCase() + user?.status?.slice(1)}
+                          </Badge>
+                        </div>
                       )}
                     </div>
-                    <p className="text-lg md:text-xl text-gray-600 font-medium">{user?.position || "Position not specified"}</p>
+                    <p className="text-xl sm:text-2xl lg:text-3xl text-gray-600 font-semibold">{user?.position || "Position not specified"}</p>
                   </div>
 
-                  {/* Meta Info */}
-                  <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 text-sm text-gray-500">
+                  {/* Enhanced Meta Info */}
+                  <div className="flex flex-col sm:flex-row items-center justify-center xl:justify-start gap-4 text-sm lg:text-base">
                     {user?.role?.name && (
-                      <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-full">
-                        <Shield className="w-4 h-4 text-blue-600" />
-                        <span className="font-medium">{user.role.name}</span>
+                      <div className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-3 rounded-full border border-blue-100 shadow-sm hover:shadow-md transition-all duration-300">
+                        <Shield className="w-5 h-5 text-blue-600" />
+                        <span className="font-semibold text-blue-800">{user.role.name}</span>
                       </div>
                     )}
                     {user?.employeeId && (
-                      <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-full">
-                        <Briefcase className="w-4 h-4 text-purple-600" />
-                        <span className="font-medium">ID: {user.employeeId}</span>
+                      <div className="flex items-center gap-3 bg-gradient-to-r from-purple-50 to-pink-50 px-4 py-3 rounded-full border border-purple-100 shadow-sm hover:shadow-md transition-all duration-300">
+                        <Briefcase className="w-5 h-5 text-purple-600" />
+                        <span className="font-semibold text-purple-800">ID: {user.employeeId}</span>
                       </div>
                     )}
-                    <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-full">
-                      <Calendar className="w-4 h-4 text-green-600" />
-                      <span className="font-medium">Since {formatDate(user?.startDate)}</span>
+                    <div className="flex items-center gap-3 bg-gradient-to-r from-green-50 to-emerald-50 px-4 py-3 rounded-full border border-green-100 shadow-sm hover:shadow-md transition-all duration-300">
+                      <Calendar className="w-5 h-5 text-green-600" />
+                      <span className="font-semibold text-green-800">Since {formatDate(user?.startDate)}</span>
                     </div>
                   </div>
                 </div>
@@ -239,163 +248,115 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          {/* Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Personal Information */}
-            <Card className="shadow-md">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5 text-blue-600" />
-                  Personal Information
+          {/* Enhanced Content Grid */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            {/* Enhanced Personal Information */}
+            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-500 hover:bg-white/90">
+              <CardHeader className="pb-6">
+                <CardTitle className="flex items-center gap-3 text-xl lg:text-2xl">
+                  <div className="p-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg">
+                    <User className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
+                  </div>
+                  <span className="bg-gradient-to-r from-blue-700 to-blue-500 bg-clip-text text-transparent font-bold">Personal Information</span>
                 </CardTitle>
-                <CardDescription>Basic personal details and contact information</CardDescription>
+                <CardDescription className="text-base lg:text-lg text-gray-600">Basic personal details and contact information</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
-                  <Mail className="w-5 h-5 text-gray-600" />
-                  <div>
-                    <p className="text-sm text-gray-500">Email</p>
-                    <p className="font-medium">{user?.email || "Not provided"}</p>
-                  </div>
-                </div>
+                <InfoItem icon={Mail} label="Email Address" value={user?.email || "Not provided"} bgColor="bg-gradient-to-r from-blue-50 to-cyan-50" iconColor="text-blue-600" textColor="text-blue-800" labelColor="text-blue-600" />
 
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
-                  <User className="w-5 h-5 text-gray-600" />
-                  <div>
-                    <p className="text-sm text-gray-500">Gender</p>
-                    <p className="font-medium">{user?.gender === "L" ? "Laki-laki" : user?.gender === "P" ? "Perempuan" : "Not specified"}</p>
-                  </div>
-                </div>
+                <InfoItem
+                  icon={User}
+                  label="Gender"
+                  value={user?.gender === "L" ? "Laki-laki" : user?.gender === "P" ? "Perempuan" : "Not specified"}
+                  bgColor="bg-gradient-to-r from-purple-50 to-pink-50"
+                  iconColor="text-purple-600"
+                  textColor="text-purple-800"
+                  labelColor="text-purple-600"
+                />
 
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
-                  <MapPin className="w-5 h-5 text-gray-600" />
-                  <div>
-                    <p className="text-sm text-gray-500">Address</p>
-                    <p className="font-medium">{user?.address || "Not provided"}</p>
-                  </div>
-                </div>
+                <InfoItem icon={MapPin} label="Address" value={user?.address || "Not provided"} bgColor="bg-gradient-to-r from-green-50 to-emerald-50" iconColor="text-green-600" textColor="text-green-800" labelColor="text-green-600" />
 
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
-                  <Phone className="w-5 h-5 text-gray-600" />
-                  <div>
-                    <p className="text-sm text-gray-500">Parent Phone</p>
-                    <p className="font-medium">{user?.parentPhone || "Not provided"}</p>
-                  </div>
-                </div>
+                <InfoItem
+                  icon={Phone}
+                  label="Parent Phone"
+                  value={user?.parentPhone || "Not provided"}
+                  bgColor="bg-gradient-to-r from-orange-50 to-yellow-50"
+                  iconColor="text-orange-600"
+                  textColor="text-orange-800"
+                  labelColor="text-orange-600"
+                />
 
-                <Separator className="my-4" />
+                <Separator className="my-6" />
 
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
-                  <Calendar className="w-5 h-5 text-gray-600" />
-                  <div>
-                    <p className="text-sm text-gray-500">Birth Date</p>
-                    <p className="font-medium">{formatDate(user?.birthDate)}</p>
-                  </div>
-                </div>
+                <InfoItem icon={Calendar} label="Birth Date" value={formatDate(user?.birthDate)} bgColor="bg-gradient-to-r from-indigo-50 to-blue-50" iconColor="text-indigo-600" textColor="text-indigo-800" labelColor="text-indigo-600" />
 
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
-                  <MapPin className="w-5 h-5 text-gray-600" />
-                  <div>
-                    <p className="text-sm text-gray-500">Birth Place</p>
-                    <p className="font-medium">{user?.birthPlace || "Not provided"}</p>
-                  </div>
-                </div>
+                <InfoItem icon={MapPin} label="Birth Place" value={user?.birthPlace || "Not provided"} bgColor="bg-gradient-to-r from-teal-50 to-cyan-50" iconColor="text-teal-600" textColor="text-teal-800" labelColor="text-teal-600" />
               </CardContent>
             </Card>
 
-            {/* Professional Information */}
-            <Card className="shadow-md">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="w-5 h-5 text-green-600" />
-                  Professional Information
+            {/* Enhanced Professional Information */}
+            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-500 hover:bg-white/90">
+              <CardHeader className="pb-6">
+                <CardTitle className="flex items-center gap-3 text-xl lg:text-2xl">
+                  <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl shadow-lg">
+                    <Building2 className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
+                  </div>
+                  <span className="bg-gradient-to-r from-green-700 to-emerald-500 bg-clip-text text-transparent font-bold">Professional Information</span>
                 </CardTitle>
-                <CardDescription>Work-related details and academic information</CardDescription>
+                <CardDescription className="text-base lg:text-lg text-gray-600">Work-related details and academic information</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-green-50">
-                  <Briefcase className="w-5 h-5 text-green-600" />
-                  <div>
-                    <p className="text-sm text-green-600">Position</p>
-                    <p className="font-medium text-green-800">{user?.position || "Not specified"}</p>
-                  </div>
-                </div>
+                <InfoItem
+                  icon={Briefcase}
+                  label="Position"
+                  value={user?.position || "Not specified"}
+                  bgColor="bg-gradient-to-r from-green-50 to-emerald-50"
+                  iconColor="text-green-600"
+                  textColor="text-green-800"
+                  labelColor="text-green-600"
+                />
 
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-green-50">
-                  <Shield className="w-5 h-5 text-green-600" />
-                  <div>
-                    <p className="text-sm text-green-600">Role</p>
-                    <p className="font-medium text-green-800">{user?.role?.name || "Not specified"}</p>
-                    {user?.role?.description && <p className="text-sm text-green-600">{user.role.description}</p>}
-                  </div>
-                </div>
+                <InfoItem icon={Shield} label="Role" value={user?.role?.name || "Not specified"} bgColor="bg-gradient-to-r from-blue-50 to-indigo-50" iconColor="text-blue-600" textColor="text-blue-800" labelColor="text-blue-600" />
 
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-green-50">
-                  <Calendar className="w-5 h-5 text-green-600" />
-                  <div>
-                    <p className="text-sm text-green-600">Start Date</p>
-                    <p className="font-medium text-green-800">{formatDate(user?.startDate)}</p>
-                  </div>
-                </div>
+                <InfoItem icon={Calendar} label="Start Date" value={formatDate(user?.startDate)} bgColor="bg-gradient-to-r from-purple-50 to-pink-50" iconColor="text-purple-600" textColor="text-purple-800" labelColor="text-purple-600" />
 
-                {user?.endDate && (
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-green-50">
-                    <Calendar className="w-5 h-5 text-green-600" />
-                    <div>
-                      <p className="text-sm text-green-600">End Date</p>
-                      <p className="font-medium text-green-800">{formatDate(user?.endDate)}</p>
-                    </div>
-                  </div>
-                )}
+                {user?.endDate && <InfoItem icon={Calendar} label="End Date" value={formatDate(user?.endDate)} bgColor="bg-gradient-to-r from-red-50 to-pink-50" iconColor="text-red-600" textColor="text-red-800" labelColor="text-red-600" />}
 
-                <Separator className="my-4" />
+                <Separator className="my-6" />
 
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-blue-50">
-                  <GraduationCap className="w-5 h-5 text-blue-600" />
-                  <div>
-                    <p className="text-sm text-blue-600">Academic Information</p>
-                    <p className="font-medium text-blue-800">{user?.class ? `Class: ${user.class}` : "No class assigned"}</p>
-                    {user?.major && <p className="text-sm text-blue-600">Major: {user.major}</p>}
-                  </div>
-                </div>
+                <InfoItem
+                  icon={GraduationCap}
+                  label="Academic Information"
+                  value={user?.class ? `Class: ${user.class}` : "No class assigned"}
+                  bgColor="bg-gradient-to-r from-amber-50 to-orange-50"
+                  iconColor="text-amber-600"
+                  textColor="text-amber-800"
+                  labelColor="text-amber-600"
+                />
+
+                {user?.major && <InfoItem icon={Award} label="Major" value={user.major} bgColor="bg-gradient-to-r from-cyan-50 to-teal-50" iconColor="text-cyan-600" textColor="text-cyan-800" labelColor="text-cyan-600" />}
               </CardContent>
             </Card>
           </div>
 
-          {/* System Information */}
-          <Card className="shadow-md">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="w-5 h-5 text-purple-600" />
-                System Information
+          {/* Enhanced System Information */}
+          <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-500 hover:bg-white/90">
+            <CardHeader className="pb-6">
+              <CardTitle className="flex items-center gap-3 text-xl lg:text-2xl">
+                <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl shadow-lg">
+                  <Clock className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
+                </div>
+                <span className="bg-gradient-to-r from-purple-700 to-pink-500 bg-clip-text text-transparent font-bold">System Information</span>
               </CardTitle>
-              <CardDescription>Account creation and last update information</CardDescription>
+              <CardDescription className="text-base lg:text-lg text-gray-600">Account creation and last update information</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-purple-50">
-                  <Calendar className="w-5 h-5 text-purple-600" />
-                  <div>
-                    <p className="text-sm text-purple-600">Created At</p>
-                    <p className="font-medium text-purple-800">{formatDate(user?.createdAt)}</p>
-                  </div>
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <InfoItem icon={Calendar} label="Created At" value={formatDate(user?.createdAt)} bgColor="bg-gradient-to-r from-purple-50 to-pink-50" iconColor="text-purple-600" textColor="text-purple-800" labelColor="text-purple-600" />
 
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-purple-50">
-                  <Clock className="w-5 h-5 text-purple-600" />
-                  <div>
-                    <p className="text-sm text-purple-600">Last Updated</p>
-                    <p className="font-medium text-purple-800">{formatDate(user?.updatedAt)}</p>
-                  </div>
-                </div>
+                <InfoItem icon={Clock} label="Last Updated" value={formatDate(user?.updatedAt)} bgColor="bg-gradient-to-r from-indigo-50 to-purple-50" iconColor="text-indigo-600" textColor="text-indigo-800" labelColor="text-indigo-600" />
 
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-purple-50">
-                  <User className="w-5 h-5 text-purple-600" />
-                  <div>
-                    <p className="text-sm text-purple-600">User ID</p>
-                    <p className="font-medium text-purple-800 text-xs break-all">{user?.id}</p>
-                  </div>
-                </div>
+                <InfoItem icon={User} label="User ID" value={user?.id} bgColor="bg-gradient-to-r from-gray-50 to-slate-50" iconColor="text-gray-600" textColor="text-gray-800" labelColor="text-gray-600" />
               </div>
             </CardContent>
           </Card>

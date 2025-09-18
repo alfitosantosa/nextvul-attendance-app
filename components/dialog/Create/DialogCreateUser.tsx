@@ -331,7 +331,7 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
       }
 
       const data = await res.json();
-      console.log("Avatar URL:", data.fileUrl);
+
       setValue("avatarUrl", data.fileUrl);
       toast.success("Avatar berhasil diunggah!");
     } catch (error: any) {

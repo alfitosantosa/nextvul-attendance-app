@@ -157,19 +157,6 @@ model Attendance {
   @@map("attendances")
 }
 
-// model logAttendance {
-//   id         String   @id @default(cuid())
-//   scheduleId String
-//   teacherId  String
-//   status     Boolean
-//   createdAt  DateTime @default(now())
-//   date       DateTime
-//   schedule   Schedule @relation(fields: [scheduleId], references: [id])
-//   teacher    User     @relation("TeacherSchedule", fields: [teacherId], references: [id])
-
-//   @@map("log_attendance")
-// }
-
 model ViolationType {
   id             String       @id @default(cuid())
   name           String

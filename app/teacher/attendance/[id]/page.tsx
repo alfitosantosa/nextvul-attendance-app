@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useGetClassById } from "@/app/hooks/useGetClassById";
 import { useGetScheduleById } from "@/app/hooks/useGetScheduleById";
 import Navbar from "@/components/navbar";
@@ -11,6 +11,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Smartphone, Clock, AlertTriangle, CheckCircle, User, BookOpen, Users } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useCreateAttendanceBulk } from "@/app/hooks/useBulkAttendance";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 interface Student {
   id: string;
@@ -87,8 +89,6 @@ export default function AttendanceModule() {
         date: new Date(), // This should match your database date field
       }));
 
-      console.log("Saving attendance with English status values:", attendanceArray);
-
       // Use the mutation with proper payload structure
       await createAttendanceMutation.mutateAsync({ attendances: attendanceArray });
 
@@ -96,6 +96,9 @@ export default function AttendanceModule() {
 
       // Optional: Clear attendance data after successful save
       // setAttendanceData({});
+
+      // Redirect to /dashboard after success
+      window.location.href = "/dashboard";
     } catch (error) {
       console.error("Error saving attendance:", error);
       alert("Error saving attendance: " + (error instanceof Error ? error.message : String(error)));

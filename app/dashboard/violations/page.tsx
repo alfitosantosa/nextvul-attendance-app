@@ -444,14 +444,6 @@ export default function ViolationDataTable() {
   const { data: violations = [], isLoading, refetch } = useGetViolations();
   const { data: classes } = useGetClasses();
 
-  // Debug logs
-  React.useEffect(() => {
-    console.log("Violations data:", violations);
-    if (violations.length > 0) {
-      console.log("Sample violation structure:", violations[0]);
-    }
-  }, [violations]);
-
   const handleSuccess = () => {
     refetch();
   };

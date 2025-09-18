@@ -20,7 +20,7 @@ export const useCreateRole = () => {
   return useMutation({
     mutationFn: async (data: any) => {
       const res = await axios.post("/api/roles", data);
-      console.log(data);
+
       return res.data;
     },
     onSuccess: () => {
