@@ -53,10 +53,10 @@ model User {
   violations     Violation[]   @relation("StudentViolation")
   users_A        User[]        @relation("ParentStudent")
   users_B        User[]        @relation("ParentStudent")
-  academicYears   AcademicYear? @relation(fields: [academicYearId], references: [id])
-  class         Class?        @relation(fields: [classId], references: [id])
-  major         Major?        @relation(fields: [majorId], references: [id])
-  role          Role?         @relation(fields: [roleId], references: [id])
+  academicYear   AcademicYear? @relation("UserAcademicYear", fields: [academicYearId], references: [id])
+  class          Class?        @relation("UserClass", fields: [classId], references: [id])
+  major          Major?        @relation("UserMajor", fields: [majorId], references: [id])
+  role           Role?         @relation(fields: [roleId], references: [id])
 
   @@map("users")
 }
@@ -72,7 +72,7 @@ model AcademicYear {
   calendarEvents CalendarEvent[]
   classes        Class[]
   schedules      Schedule[]
-  students       User[]          @relation("StudentAcademicYear")
+  students       User[]          @relation("UserAcademicYear")
   violationTypes ViolationType[]
 
   @@map("academic_years")
@@ -86,7 +86,7 @@ model Major {
   isActive    Boolean   @default(true)
   classes     Class[]
   subjects    Subject[]
-  students    User[]    @relation("StudentMajor")
+  students    User[]    @relation("UserMajor")
 
   @@map("majors")
 }
@@ -101,7 +101,7 @@ model Class {
   academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
   major          Major        @relation(fields: [majorId], references: [id])
   schedules      Schedule[]
-  students       User[]       @relation("StudentClass")
+  students       User[]       @relation("UserClass")
   violations     Violation[]
 
   @@unique([name, academicYearId])

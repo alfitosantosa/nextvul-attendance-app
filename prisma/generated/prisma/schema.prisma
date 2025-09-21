@@ -53,10 +53,10 @@ model User {
   violations     Violation[]   @relation("StudentViolation")
   users_A        User[]        @relation("ParentStudent")
   users_B        User[]        @relation("ParentStudent")
-  academicYear   AcademicYear? @relation("StudentAcademicYear", fields: [academicYearId], references: [id], onDelete: SetNull)
-  class          Class?        @relation("StudentClass", fields: [classId], references: [id], onDelete: SetNull)
-  major          Major?        @relation("StudentMajor", fields: [majorId], references: [id])
-  role           Role?         @relation(fields: [roleId], references: [id], onDelete: SetNull)
+  academicYear   AcademicYear? @relation("UserAcademicYear", fields: [academicYearId], references: [id])
+  class          Class?        @relation("UserClass", fields: [classId], references: [id])
+  major          Major?        @relation("UserMajor", fields: [majorId], references: [id])
+  role           Role?         @relation(fields: [roleId], references: [id])
 
   @@map("users")
 }
@@ -72,7 +72,7 @@ model AcademicYear {
   calendarEvents CalendarEvent[]
   classes        Class[]
   schedules      Schedule[]
-  students       User[]          @relation("StudentAcademicYear")
+  students       User[]          @relation("UserAcademicYear")
   violationTypes ViolationType[]
 
   @@map("academic_years")
@@ -86,7 +86,7 @@ model Major {
   isActive    Boolean   @default(true)
   classes     Class[]
   subjects    Subject[]
-  students    User[]    @relation("StudentMajor")
+  students    User[]    @relation("UserMajor")
 
   @@map("majors")
 }
@@ -98,10 +98,10 @@ model Class {
   majorId        String
   academicYearId String
   capacity       Int          @default(36)
-  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: SetNull)
-  major          Major        @relation(fields: [majorId], references: [id], onDelete: SetNull)
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
+  major          Major        @relation(fields: [majorId], references: [id])
   schedules      Schedule[]
-  students       User[]       @relation("StudentClass")
+  students       User[]       @relation("UserClass")
   violations     Violation[]
 
   @@unique([name, academicYearId])
@@ -133,10 +133,10 @@ model Schedule {
   endTime        String
   room           String?
   attendances    Attendance[]
-  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: SetNull)
-  class          Class        @relation(fields: [classId], references: [id], onDelete: SetNull)
-  subject        Subject      @relation(fields: [subjectId], references: [id], onDelete: SetNull)
-  teacher        User         @relation("TeacherSchedule", fields: [teacherId], references: [id], onDelete: SetNull)
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
+  class          Class        @relation(fields: [classId], references: [id])
+  subject        Subject      @relation(fields: [subjectId], references: [id])
+  teacher        User         @relation("TeacherSchedule", fields: [teacherId], references: [id])
 
   @@unique([classId, subjectId, teacherId, dayOfWeek, startTime])
   @@map("schedules")
@@ -164,7 +164,7 @@ model ViolationType {
   points         Int
   category       String
   academicYearId String
-  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: SetNull)
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
   violations     Violation[]
 
   @@map("violation_types")
@@ -182,9 +182,9 @@ model Violation {
   date            DateTime
   resolutionDate  DateTime?
   resolutionNotes String?
-  class           Class         @relation(fields: [classId], references: [id], onDelete: SetNull)
+  class           Class         @relation(fields: [classId], references: [id])
   student         User          @relation("StudentViolation", fields: [studentId], references: [id], onDelete: Cascade)
-  violationType   ViolationType @relation(fields: [violationTypeId], references: [id], onDelete: SetNull)
+  violationType   ViolationType @relation(fields: [violationTypeId], references: [id])
 
   @@map("violations")
 }
@@ -212,7 +212,7 @@ model Payment {
   createdAt     DateTime    @default(now())
   paymentDate   DateTime
   receiptNumber String?
-  paymentType   PaymentType @relation(fields: [paymentTypeId], references: [id], onDelete: SetNull)
+  paymentType   PaymentType @relation(fields: [paymentTypeId], references: [id])
   student       User        @relation("StudentPayment", fields: [studentId], references: [id], onDelete: Cascade)
 
   @@map("payments")
@@ -228,7 +228,7 @@ model CalendarEvent {
   academicYearId String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
-  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: SetNull)
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
 
   @@map("calendar_events")
 }
