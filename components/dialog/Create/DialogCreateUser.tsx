@@ -466,6 +466,69 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
                 <Label htmlFor="position">Jabatan</Label>
                 <Input id="position" placeholder="Guru Matematika" {...register("position")} />
               </div>
+              <div className="space-y-2">
+                <Label>Tahun Akademik *</Label>
+                <Select onValueChange={(value) => setValue("academicYearId", value)} value={watch("academicYearId")}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih tahun akademik" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {academicYearsLoading ? (
+                      <SelectItem value="" disabled>
+                        Loading...
+                      </SelectItem>
+                    ) : (
+                      academicYears.map((year: any) => (
+                        <SelectItem key={year.id} value={year.id}>
+                          {year.year}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Wali Kelas *</Label>
+                <Select onValueChange={(value) => setValue("classId", value)} value={watch("classId")}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih kelas" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {classesLoading ? (
+                      <SelectItem value="" disabled>
+                        Loading...
+                      </SelectItem>
+                    ) : (
+                      classes.map((cls: any) => (
+                        <SelectItem key={cls.id} value={cls.id}>
+                          {cls.name}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Wali Jurusan *</Label>
+                <Select onValueChange={(value) => setValue("majorId", value)} value={watch("majorId")}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih jurusan" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {majorsLoading ? (
+                      <SelectItem value="" disabled>
+                        Loading...
+                      </SelectItem>
+                    ) : (
+                      majors.map((major: any) => (
+                        <SelectItem key={major.id} value={major.id}>
+                          {major.name}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </>
         );

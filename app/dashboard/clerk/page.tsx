@@ -34,7 +34,7 @@ const columns: ColumnDef<User>[] = [
   {
     id: "profile",
     header: "Avatar",
-    cell: ({ row }) => <img src={row.original.profile_image_url ?? "/default-avatar.png"} alt="Avatar" className="w-10 h-10 rounded-full object-cover" />,
+    cell: ({ row }) => <img src={row.original.profile_image_url ?? "https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png"} alt="Avatar" className="w-10 h-10 rounded-full object-cover" />,
   },
   {
     accessorKey: "first_name",
