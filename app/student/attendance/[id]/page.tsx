@@ -26,8 +26,9 @@ import { useGetSchedules } from "@/app/hooks/useSchedules";
 import { useGetUsers } from "@/app/hooks/useUsers"; // Assuming you have this hook for students
 import Navbar from "@/components/navbar";
 import { useGetStudents } from "@/app/hooks/useStudents";
-import { useGetAttendanceByIdSchedule } from "@/app/hooks/useAttendanceByIdShcedule";
+import { useGetAttendanceByIdStudent } from "@/app/hooks/useAttendaceByIdStudent";
 import { useParams } from "next/navigation";
+import { useGetStudentById } from "@/app/hooks/useGetStudentById";
 
 // Type definitions
 export type AttendanceData = {
@@ -65,19 +66,6 @@ export type AttendanceData = {
   };
 };
 
-// Form schema
-const attendanceSchema = z.object({
-  studentId: z.string().min(1, "Siswa wajib dipilih"),
-  scheduleId: z.string().min(1, "Jadwal wajib dipilih"),
-  status: z.enum(["present", "absent", "late", "excused"], {
-    error: "Status kehadiran wajib dipilih",
-  }),
-  notes: z.string().optional(),
-  date: z.string().min(1, "Tanggal wajib diisi"),
-});
-
-type AttendanceFormValues = z.infer<typeof attendanceSchema>;
-
 // Status mapping
 const STATUS_MAP = {
   present: { label: "Hadir", color: "bg-green-100 text-green-800", icon: CheckCircle },
@@ -98,201 +86,6 @@ const DAYS_MAP = {
   6: "Sabtu",
 };
 
-// Create/Edit Dialog Component
-function AttendanceFormDialog({ open, onOpenChange, editData, onSuccess }: { open: boolean; onOpenChange: (open: boolean) => void; editData?: AttendanceData | null; onSuccess: () => void }) {
-  const createAttendance = useCreateAttendance();
-  const updateAttendance = useUpdateAttendance();
-  const { data: schedules = [] } = useGetSchedules();
-
-  const { data: students = [] } = useGetStudents();
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-    reset,
-  } = useForm<AttendanceFormValues>({
-    resolver: zodResolver(attendanceSchema),
-    defaultValues: {
-      status: "present",
-      date: new Date().toISOString().split("T")[0],
-    },
-  });
-
-  const selectedStudentId = watch("studentId");
-  const selectedScheduleId = watch("scheduleId");
-  const selectedStatus = watch("status");
-  const selectedDate = watch("date");
-
-  React.useEffect(() => {
-    if (editData) {
-      setValue("studentId", editData.studentId);
-      setValue("scheduleId", editData.scheduleId);
-      setValue("status", editData.status as any);
-      setValue("notes", editData.notes || "");
-      setValue("date", editData.date.split("T")[0]);
-    } else {
-      reset({
-        status: "present",
-        date: new Date().toISOString().split("T")[0],
-      });
-    }
-  }, [editData, setValue, reset]);
-
-  const onSubmit = async (data: AttendanceFormValues) => {
-    try {
-      const submitData = {
-        ...data,
-        date: new Date(data.date).toISOString(),
-        notes: data.notes || null,
-      };
-
-      if (editData) {
-        await updateAttendance.mutateAsync({ id: editData.id, ...submitData });
-        toast.success("Kehadiran berhasil diperbarui!");
-      } else {
-        await createAttendance.mutateAsync(submitData);
-        toast.success("Kehadiran berhasil dicatat!");
-      }
-      reset();
-      onOpenChange(false);
-      onSuccess();
-    } catch (error: any) {
-      toast.error(error.message || "Terjadi kesalahan");
-    }
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{editData ? "Edit Kehadiran" : "Catat Kehadiran Baru"}</DialogTitle>
-        </DialogHeader>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Siswa</Label>
-              <Select value={selectedStudentId || ""} onValueChange={(value) => setValue("studentId", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih Siswa" />
-                </SelectTrigger>
-                <SelectContent>
-                  {students.map((student: any) => (
-                    <SelectItem key={student.id} value={student.id}>
-                      {student.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.studentId && <p className="text-sm text-red-500">{errors.studentId.message}</p>}
-            </div>
-
-            {/* <div className="space-y-2">
-              <Label>Jadwal</Label>
-              <Select value={selectedScheduleId || ""} onValueChange={(value) => setValue("scheduleId", value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih Jadwal" />
-                </SelectTrigger>
-                <SelectContent>
-                  {schedules?.map((schedule: any) => (
-                    <SelectItem key={schedule.id} value={schedule.id}>
-                      {schedule.class?.name} - {schedule.subject?.name} ({DAYS_MAP[schedule.dayOfWeek as keyof typeof DAYS_MAP]} {schedule.startTime})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.scheduleId && <p className="text-sm text-red-500">{errors.scheduleId.message}</p>}
-            </div> */}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Status Kehadiran</Label>
-              <Select value={selectedStatus || ""} onValueChange={(value) => setValue("status", value as any)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(STATUS_MAP).map(([value, config]) => (
-                    <SelectItem key={value} value={value}>
-                      <div className="flex items-center space-x-2">
-                        <config.icon className="h-4 w-4" />
-                        <span>{config.label}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.status && <p className="text-sm text-red-500">{errors.status.message}</p>}
-            </div>
-
-            {/* <div className="space-y-2">
-              <Label htmlFor="date">Tanggal</Label>
-              <Input id="date" type="date" {...register("date")} />
-              {errors.date && <p className="text-sm text-red-500">{errors.date.message}</p>}
-            </div> */}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="notes">Catatan (Opsional)</Label>
-            <Textarea id="notes" placeholder="Tambahkan catatan kehadiran..." {...register("notes")} rows={3} />
-          </div>
-
-          <div className="flex justify-end gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Batal
-            </Button>
-            <Button type="submit" disabled={createAttendance.isPending || updateAttendance.isPending}>
-              {createAttendance.isPending || updateAttendance.isPending ? "Menyimpan..." : editData ? "Perbarui" : "Simpan"}
-            </Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-// Delete Confirmation Dialog
-function DeleteAttendanceDialog({ open, onOpenChange, attendanceData, onSuccess }: { open: boolean; onOpenChange: (open: boolean) => void; attendanceData: AttendanceData | null; onSuccess: () => void }) {
-  const deleteAttendance = useDeleteAttendance();
-
-  const handleDelete = async () => {
-    if (!attendanceData) return;
-
-    try {
-      await deleteAttendance.mutateAsync(attendanceData.id);
-      toast.success("Data kehadiran berhasil dihapus!");
-      onOpenChange(false);
-      onSuccess();
-    } catch (error: any) {
-      toast.error(error.message || "Gagal menghapus data kehadiran");
-    }
-  };
-
-  return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Hapus Data Kehadiran</AlertDialogTitle>
-          <AlertDialogDescription>
-            Apakah Anda yakin ingin menghapus data kehadiran "{attendanceData?.student?.name}" untuk mata pelajaran "{attendanceData?.schedule?.subject?.name}" pada tanggal{" "}
-            {attendanceData?.date ? new Date(attendanceData.date).toLocaleDateString("id-ID") : ""}? Tindakan ini tidak dapat dibatalkan.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Batal</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete} disabled={deleteAttendance.isPending} className="bg-red-600 hover:bg-red-700">
-            {deleteAttendance.isPending ? "Menghapus..." : "Hapus"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-}
-
 // Main DataTable Component
 export default function AttendanceDataTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -300,22 +93,18 @@ export default function AttendanceDataTable() {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  // Dialog states
-  const [createDialogOpen, setCreateDialogOpen] = React.useState(false);
-  const [editDialogOpen, setEditDialogOpen] = React.useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
-  const [selectedAttendance, setSelectedAttendance] = React.useState<AttendanceData | null>(null);
-
   // Filter states
   const [statusFilter, setStatusFilter] = React.useState<string>("all");
   const [classFilter, setClassFilter] = React.useState<string>("all");
+  const [subjectFilter, setSubjectFilter] = React.useState<string>("all");
   const [dateFilter, setDateFilter] = React.useState<string>("");
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
 
   const params = useParams();
 
-  const { data: attendances = [], isLoading, refetch } = useGetAttendanceByIdSchedule(params.id as string);
+  const { data: attendances = [], isLoading, refetch } = useGetAttendanceByIdStudent(params.id as string);
   const { data: schedules = [] } = useGetSchedules();
+  const { data: studentData } = useGetStudentById(params.id as string);
 
   const handleSuccess = () => {
     refetch();
@@ -328,6 +117,15 @@ export default function AttendanceDataTable() {
       .map((schedule: any) => schedule.class)
       .filter((cls: any, index: number, arr: any[]) => arr.findIndex((c: any) => c.id === cls.id) === index);
     return classes;
+  }, [schedules]);
+
+  // Get unique subjects from schedules
+  const uniqueSubjects = React.useMemo(() => {
+    const subjects = schedules
+      .filter((schedule: any) => schedule.subject)
+      .map((schedule: any) => schedule.subject)
+      .filter((subject: any, index: number, arr: any[]) => arr.findIndex((s: any) => s.id === subject.id) === index);
+    return subjects;
   }, [schedules]);
 
   // Custom global filter function
@@ -376,6 +174,20 @@ export default function AttendanceDataTable() {
     [schedules]
   );
 
+  // Custom subject filter function
+  const subjectFilterFn = React.useCallback(
+    (row: any, columnId: string, filterValue: string) => {
+      if (filterValue === "all") return true;
+
+      // Find the schedule for this attendance
+      const scheduleId = row.original.scheduleId;
+      const schedule = schedules.find((s: any) => s.id === scheduleId);
+
+      return schedule?.subject?.id === filterValue;
+    },
+    [schedules]
+  );
+
   const columns: ColumnDef<AttendanceData>[] = [
     {
       id: "select",
@@ -418,7 +230,7 @@ export default function AttendanceDataTable() {
     },
     {
       id: "student",
-      accessorFn: (row) => row.student?.name || "",
+      accessorFn: (row) => row.student?.name || studentData?.name || "",
       header: ({ column }) => {
         return (
           <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
@@ -430,8 +242,8 @@ export default function AttendanceDataTable() {
       },
       cell: ({ row }) => (
         <div>
-          <div className="font-medium">{row.original.student?.name}</div>
-          {row.original.student?.email && <div className="text-sm text-muted-foreground">{row.original.student.email}</div>}
+          <div className="font-medium">{row.original.student?.name || studentData?.name || "Nama tidak tersedia"}</div>
+          {(row.original.student?.email || studentData?.email) && <div className="text-sm text-muted-foreground">{row.original.student?.email || studentData?.email}</div>}
         </div>
       ),
     },
@@ -447,7 +259,15 @@ export default function AttendanceDataTable() {
 
         return (
           <div className="space-y-1">
-            <div className="font-medium">{schedule.subject?.name}</div>
+            <div className="font-medium flex items-center gap-2">
+              <BookOpen className="h-4 w-4 text-blue-500" />
+              {schedule.subject?.name}
+              {schedule.subject?.code && (
+                <Badge variant="outline" className="text-xs">
+                  {schedule.subject.code}
+                </Badge>
+              )}
+            </div>
             <div className="text-sm text-muted-foreground">
               {schedule.class?.name} • {schedule.teacher?.name}
             </div>
@@ -458,7 +278,45 @@ export default function AttendanceDataTable() {
           </div>
         );
       },
-      filterFn: classFilterFn,
+      filterFn: (row, id, value) => {
+        // Handle both class and subject filters
+        if (value === "all") return true;
+
+        const scheduleId = row.original.scheduleId;
+        const schedule = schedules.find((s: any) => s.id === scheduleId);
+
+        // Check if it's a class filter or subject filter based on the column
+        if (id === "schedule") {
+          return schedule?.class?.id === value;
+        }
+
+        return true;
+      },
+    },
+    {
+      id: "subject",
+      header: "Mata Pelajaran",
+      cell: ({ row }) => {
+        const scheduleId = row.original.scheduleId;
+        const schedule = schedules.find((s: any) => s.id === scheduleId);
+
+        if (!schedule?.subject) return "-";
+
+        return (
+          <div className="space-y-1">
+            <div className="font-medium flex items-center gap-2">
+              <GraduationCap className="h-4 w-4 text-green-500" />
+              {schedule.subject.name}
+            </div>
+            {schedule.subject.code && (
+              <Badge variant="outline" className="text-xs">
+                {schedule.subject.code}
+              </Badge>
+            )}
+          </div>
+        );
+      },
+      filterFn: subjectFilterFn,
     },
     {
       id: "status",
@@ -507,48 +365,6 @@ export default function AttendanceDataTable() {
         );
       },
     },
-    {
-      id: "actions",
-      enableHiding: false,
-      cell: ({ row }) => {
-        const attendanceData = row.original;
-
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(attendanceData.id)}>Copy ID Kehadiran</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => {
-                  setSelectedAttendance(attendanceData);
-                  setEditDialogOpen(true);
-                }}
-              >
-                <Pencil className="mr-2 h-4 w-4" />
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  setSelectedAttendance(attendanceData);
-                  setDeleteDialogOpen(true);
-                }}
-                className="text-red-600"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Hapus
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
-      },
-    },
   ];
 
   const table = useReactTable({
@@ -591,6 +407,15 @@ export default function AttendanceDataTable() {
     }
   }, [classFilter, table]);
 
+  // Apply subject filter
+  React.useEffect(() => {
+    if (subjectFilter !== "all") {
+      table.getColumn("subject")?.setFilterValue(subjectFilter);
+    } else {
+      table.getColumn("subject")?.setFilterValue(undefined);
+    }
+  }, [subjectFilter, table]);
+
   // Apply date filter
   React.useEffect(() => {
     if (dateFilter) {
@@ -630,24 +455,26 @@ export default function AttendanceDataTable() {
     <>
       <Navbar />
       <div className="mx-auto my-8 p-6 max-w-7xl">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-2">
-          <div>
-            <div className="font-bold text-4xl md:text-3xl">Data Kehadiran Siswa</div>
-            <div className="mt-2 flex flex-wrap gap-2">
-              <Badge className="px-3 py-1.5 text-sm font-medium">
-                Kelas: {classFilter !== "all" ? uniqueClasses?.find((c: any) => c.id === classFilter)?.name : schedules.find((s: any) => s.id === (attendances[0]?.scheduleId || ""))?.class?.name || "-"}
-              </Badge>
-              <Badge className="px-3 py-1.5 text-sm font-medium">Mata Pelajaran: {schedules.find((s: any) => s.id === (attendances[0]?.scheduleId || ""))?.subject?.name || "-"}</Badge>
+        <div className="font-bold text-3xl mb-2">Data Kehadiran Siswa</div>
+        {studentData && (
+          <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="flex items-center gap-3">
+              <Users className="h-6 w-6 text-blue-600" />
+              <div>
+                <h2 className="text-xl font-semibold text-blue-900">{studentData.name}</h2>
+                {studentData.email && <p className="text-sm text-blue-700">{studentData.email}</p>}
+                {studentData.studentId && <p className="text-sm text-blue-700">NIS: {studentData.studentId}</p>}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="flex items-center justify-between py-4">
           <div className="flex items-center space-x-2 flex-wrap gap-y-2">
             {/* Global Search */}
             <div className="relative">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Cari siswa, mata pelajaran, atau kelas..." value={globalFilter ?? ""} onChange={(event) => setGlobalFilter(event.target.value)} className="max-w-sm pl-8" disabled={isLoading} />
+              <Input placeholder="Cari mata pelajaran, kelas, atau catatan..." value={globalFilter ?? ""} onChange={(event) => setGlobalFilter(event.target.value)} className="max-w-sm pl-8" disabled={isLoading} />
             </div>
 
             {/* Status Filter */}
@@ -668,26 +495,52 @@ export default function AttendanceDataTable() {
               </SelectContent>
             </Select>
 
+            {/* Subject Filter */}
+            <Select value={subjectFilter} onValueChange={setSubjectFilter}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Filter Mata Pelajaran" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Semua Mata Pelajaran</SelectItem>
+                {uniqueSubjects.map((subject: any) => (
+                  <SelectItem key={subject.id} value={subject.id}>
+                    <div className="flex items-center space-x-2">
+                      <GraduationCap className="h-4 w-4" />
+                      <span>{subject.name}</span>
+                      {subject.code && (
+                        <Badge variant="outline" className="text-xs ml-1">
+                          {subject.code}
+                        </Badge>
+                      )}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
             {/* Class Filter */}
-            {/* <Select value={classFilter} onValueChange={setClassFilter}>
-              <SelectTrigger className="w-[140px]">
+            <Select value={classFilter} onValueChange={setClassFilter}>
+              <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder="Filter Kelas" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Semua Kelas</SelectItem>
-                {uniqueClasses?.map((cls: any) => (
+                {uniqueClasses.map((cls: any) => (
                   <SelectItem key={cls.id} value={cls.id}>
-                    {cls.name}
+                    <div className="flex items-center space-x-2">
+                      <Users className="h-4 w-4" />
+                      <span>{cls.name}</span>
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select> */}
+            </Select>
 
             {/* Date Filter */}
             <Input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)} className="w-[150px]" placeholder="Filter Tanggal" />
 
             {/* Clear Filters */}
-            {(globalFilter || statusFilter !== "all" || classFilter !== "all" || dateFilter) && (
+            {(globalFilter || statusFilter !== "all" || classFilter !== "all" || subjectFilter !== "all" || dateFilter) && (
               <Button
                 variant="outline"
                 size="sm"
@@ -695,6 +548,7 @@ export default function AttendanceDataTable() {
                   setGlobalFilter("");
                   setStatusFilter("all");
                   setClassFilter("all");
+                  setSubjectFilter("all");
                   setDateFilter("");
                   table.resetColumnFilters();
                 }}
@@ -725,6 +579,8 @@ export default function AttendanceDataTable() {
                           return "Siswa";
                         case "schedule":
                           return "Jadwal Pelajaran";
+                        case "subject":
+                          return "Mata Pelajaran";
                         case "status":
                           return "Status";
                         case "notes":
@@ -742,16 +598,11 @@ export default function AttendanceDataTable() {
                   })}
               </DropdownMenuContent>
             </DropdownMenu>
-
-            {/* <Button onClick={() => setCreateDialogOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Catat Kehadiran
-            </Button> */}
           </div>
         </div>
 
         {/* Active Filters Display */}
-        {(globalFilter || statusFilter !== "all" || classFilter !== "all" || dateFilter) && (
+        {(globalFilter || statusFilter !== "all" || classFilter !== "all" || subjectFilter !== "all" || dateFilter) && (
           <div className="flex items-center space-x-2 py-2">
             <span className="text-sm text-muted-foreground">Filter aktif:</span>
             {globalFilter && (
@@ -764,6 +615,12 @@ export default function AttendanceDataTable() {
               <Badge variant="secondary" className="gap-1">
                 Status: {STATUS_MAP[statusFilter as keyof typeof STATUS_MAP]?.label}
                 <X className="h-3 w-3 cursor-pointer" onClick={() => setStatusFilter("all")} />
+              </Badge>
+            )}
+            {subjectFilter !== "all" && (
+              <Badge variant="secondary" className="gap-1">
+                Mata Pelajaran: {uniqueSubjects?.find((s: any) => s.id === subjectFilter)?.name}
+                <X className="h-3 w-3 cursor-pointer" onClick={() => setSubjectFilter("all")} />
               </Badge>
             )}
             {classFilter !== "all" && (
@@ -807,9 +664,9 @@ export default function AttendanceDataTable() {
                     <div className="flex flex-col items-center justify-center space-y-2">
                       <CheckCircle className="h-8 w-8 text-muted-foreground" />
                       <p className="text-muted-foreground">
-                        {globalFilter || statusFilter !== "all" || classFilter !== "all" || dateFilter ? "Tidak ada data kehadiran yang sesuai dengan filter." : "Tidak ada data kehadiran yang ditemukan."}
+                        {globalFilter || statusFilter !== "all" || classFilter !== "all" || subjectFilter !== "all" || dateFilter ? "Tidak ada data kehadiran yang sesuai dengan filter." : "Tidak ada data kehadiran yang ditemukan."}
                       </p>
-                      {(globalFilter || statusFilter !== "all" || classFilter !== "all" || dateFilter) && (
+                      {(globalFilter || statusFilter !== "all" || classFilter !== "all" || subjectFilter !== "all" || dateFilter) && (
                         <Button
                           variant="outline"
                           size="sm"
@@ -817,6 +674,7 @@ export default function AttendanceDataTable() {
                             setGlobalFilter("");
                             setStatusFilter("all");
                             setClassFilter("all");
+                            setSubjectFilter("all");
                             setDateFilter("");
                             table.resetColumnFilters();
                           }}
@@ -899,14 +757,9 @@ export default function AttendanceDataTable() {
             <p className="text-sm text-muted-foreground">{stats.total > 0 ? `${Math.round((stats.excused / stats.total) * 100)}%` : "0%"}</p>
           </div>
         </div>
-
-        {/* Dialogs */}
-        <AttendanceFormDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} onSuccess={handleSuccess} />
-
-        <AttendanceFormDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} editData={selectedAttendance} onSuccess={handleSuccess} />
-
-        <DeleteAttendanceDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} attendanceData={selectedAttendance} onSuccess={handleSuccess} />
       </div>
+
+      {/* Dialogs */}
     </>
   );
 }

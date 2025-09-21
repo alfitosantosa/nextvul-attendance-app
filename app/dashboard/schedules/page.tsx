@@ -108,7 +108,7 @@ function ScheduleFormDialog({ open, onOpenChange, editData, onSuccess }: { open:
   const { data: classes = [] } = useGetClasses();
   const { data: subjects = [] } = useGetSubjects();
   const { data: teachers = [] } = useGetTeachers();
- 
+
   const { data: academicYears = [] } = useGetAcademicYears();
 
   const {
@@ -245,7 +245,7 @@ function ScheduleFormDialog({ open, onOpenChange, editData, onSuccess }: { open:
                 <SelectContent>
                   {academicYears?.map((year: any) => (
                     <SelectItem key={year.id} value={year.id}>
-                      {year.year} - {year.semester}
+                      {year.year}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -499,11 +499,7 @@ export default function ScheduleDataTable() {
       id: "academicYear",
       accessorFn: (row) => `${row.academicYear?.year} - ${row.academicYear?.semester}` || "",
       header: "Tahun Akademik",
-      cell: ({ row }) => (
-        <div className="text-sm">
-          {row.original.academicYear?.year} - {row.original.academicYear?.semester}
-        </div>
-      ),
+      cell: ({ row }) => <div className="text-sm">{row.original.academicYear?.year}</div>,
     },
     {
       id: "actions",

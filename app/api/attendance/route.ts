@@ -22,7 +22,14 @@ export async function GET(request: NextRequest) {
     const attendances = await prisma.attendance.findMany({
       include: {
         student: true,
-        schedule: true,
+        schedule: {
+          include: {
+            class: true,
+            subject: true,
+            teacher: true,
+            academicYear: true,
+          },
+        },
       },
       orderBy: { date: "desc" },
     });

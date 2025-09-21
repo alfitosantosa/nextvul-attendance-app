@@ -64,7 +64,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
   const { id } = await params;
   try {
     const student = await prisma.user.findUnique({
-      where: { id },
+      where: { id: id },
       include: {
         role: true,
         academicYear: true,
