@@ -153,9 +153,9 @@ exports.Prisma.UserScalarFieldEnum = {
   relation: 'relation',
   roleId: 'roleId',
   startDate: 'startDate',
-  status: 'status',
   studentIds: 'studentIds',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  status: 'status'
 };
 
 exports.Prisma.AcademicYearScalarFieldEnum = {

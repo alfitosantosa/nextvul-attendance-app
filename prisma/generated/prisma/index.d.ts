@@ -3457,8 +3457,8 @@ export namespace Prisma {
     relation: string | null
     roleId: string | null
     startDate: Date | null
-    status: string | null
     updatedAt: Date | null
+    status: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -3486,8 +3486,8 @@ export namespace Prisma {
     relation: string | null
     roleId: string | null
     startDate: Date | null
-    status: string | null
     updatedAt: Date | null
+    status: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -3515,9 +3515,9 @@ export namespace Prisma {
     relation: number
     roleId: number
     startDate: number
-    status: number
     studentIds: number
     updatedAt: number
+    status: number
     _all: number
   }
 
@@ -3547,8 +3547,8 @@ export namespace Prisma {
     relation?: true
     roleId?: true
     startDate?: true
-    status?: true
     updatedAt?: true
+    status?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -3576,8 +3576,8 @@ export namespace Prisma {
     relation?: true
     roleId?: true
     startDate?: true
-    status?: true
     updatedAt?: true
+    status?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -3605,9 +3605,9 @@ export namespace Prisma {
     relation?: true
     roleId?: true
     startDate?: true
-    status?: true
     studentIds?: true
     updatedAt?: true
+    status?: true
     _all?: true
   }
 
@@ -3706,11 +3706,11 @@ export namespace Prisma {
     parentPhone: string | null
     position: string | null
     relation: string | null
-    roleId: string
+    roleId: string | null
     startDate: Date | null
-    status: string | null
     studentIds: string[]
     updatedAt: Date
+    status: string | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -3755,19 +3755,19 @@ export namespace Prisma {
     relation?: boolean
     roleId?: boolean
     startDate?: boolean
-    status?: boolean
     studentIds?: boolean
     updatedAt?: boolean
+    status?: boolean
     attendances?: boolean | User$attendancesArgs<ExtArgs>
     payments?: boolean | User$paymentsArgs<ExtArgs>
     schedules?: boolean | User$schedulesArgs<ExtArgs>
-    academicYear?: boolean | User$academicYearArgs<ExtArgs>
-    class?: boolean | User$classArgs<ExtArgs>
-    major?: boolean | User$majorArgs<ExtArgs>
-    role?: boolean | RoleDefaultArgs<ExtArgs>
     violations?: boolean | User$violationsArgs<ExtArgs>
     users_A?: boolean | User$users_AArgs<ExtArgs>
     users_B?: boolean | User$users_BArgs<ExtArgs>
+    academicYear?: boolean | User$academicYearArgs<ExtArgs>
+    class?: boolean | User$classArgs<ExtArgs>
+    major?: boolean | User$majorArgs<ExtArgs>
+    role?: boolean | User$roleArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3796,13 +3796,13 @@ export namespace Prisma {
     relation?: boolean
     roleId?: boolean
     startDate?: boolean
-    status?: boolean
     studentIds?: boolean
     updatedAt?: boolean
+    status?: boolean
     academicYear?: boolean | User$academicYearArgs<ExtArgs>
     class?: boolean | User$classArgs<ExtArgs>
     major?: boolean | User$majorArgs<ExtArgs>
-    role?: boolean | RoleDefaultArgs<ExtArgs>
+    role?: boolean | User$roleArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3830,13 +3830,13 @@ export namespace Prisma {
     relation?: boolean
     roleId?: boolean
     startDate?: boolean
-    status?: boolean
     studentIds?: boolean
     updatedAt?: boolean
+    status?: boolean
     academicYear?: boolean | User$academicYearArgs<ExtArgs>
     class?: boolean | User$classArgs<ExtArgs>
     major?: boolean | User$majorArgs<ExtArgs>
-    role?: boolean | RoleDefaultArgs<ExtArgs>
+    role?: boolean | User$roleArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -3864,36 +3864,36 @@ export namespace Prisma {
     relation?: boolean
     roleId?: boolean
     startDate?: boolean
-    status?: boolean
     studentIds?: boolean
     updatedAt?: boolean
+    status?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "academicYearId" | "address" | "avatarUrl" | "birthDate" | "birthPlace" | "classId" | "clerkId" | "createdAt" | "email" | "employeeId" | "endDate" | "enrollmentDate" | "gender" | "graduationDate" | "majorId" | "name" | "nik" | "nisn" | "parentPhone" | "position" | "relation" | "roleId" | "startDate" | "status" | "studentIds" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "academicYearId" | "address" | "avatarUrl" | "birthDate" | "birthPlace" | "classId" | "clerkId" | "createdAt" | "email" | "employeeId" | "endDate" | "enrollmentDate" | "gender" | "graduationDate" | "majorId" | "name" | "nik" | "nisn" | "parentPhone" | "position" | "relation" | "roleId" | "startDate" | "studentIds" | "updatedAt" | "status", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     attendances?: boolean | User$attendancesArgs<ExtArgs>
     payments?: boolean | User$paymentsArgs<ExtArgs>
     schedules?: boolean | User$schedulesArgs<ExtArgs>
-    academicYear?: boolean | User$academicYearArgs<ExtArgs>
-    class?: boolean | User$classArgs<ExtArgs>
-    major?: boolean | User$majorArgs<ExtArgs>
-    role?: boolean | RoleDefaultArgs<ExtArgs>
     violations?: boolean | User$violationsArgs<ExtArgs>
     users_A?: boolean | User$users_AArgs<ExtArgs>
     users_B?: boolean | User$users_BArgs<ExtArgs>
+    academicYear?: boolean | User$academicYearArgs<ExtArgs>
+    class?: boolean | User$classArgs<ExtArgs>
+    major?: boolean | User$majorArgs<ExtArgs>
+    role?: boolean | User$roleArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     academicYear?: boolean | User$academicYearArgs<ExtArgs>
     class?: boolean | User$classArgs<ExtArgs>
     major?: boolean | User$majorArgs<ExtArgs>
-    role?: boolean | RoleDefaultArgs<ExtArgs>
+    role?: boolean | User$roleArgs<ExtArgs>
   }
   export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     academicYear?: boolean | User$academicYearArgs<ExtArgs>
     class?: boolean | User$classArgs<ExtArgs>
     major?: boolean | User$majorArgs<ExtArgs>
-    role?: boolean | RoleDefaultArgs<ExtArgs>
+    role?: boolean | User$roleArgs<ExtArgs>
   }
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3902,13 +3902,13 @@ export namespace Prisma {
       attendances: Prisma.$AttendancePayload<ExtArgs>[]
       payments: Prisma.$PaymentPayload<ExtArgs>[]
       schedules: Prisma.$SchedulePayload<ExtArgs>[]
-      academicYear: Prisma.$AcademicYearPayload<ExtArgs> | null
-      class: Prisma.$ClassPayload<ExtArgs> | null
-      major: Prisma.$MajorPayload<ExtArgs> | null
-      role: Prisma.$RolePayload<ExtArgs>
       violations: Prisma.$ViolationPayload<ExtArgs>[]
       users_A: Prisma.$UserPayload<ExtArgs>[]
       users_B: Prisma.$UserPayload<ExtArgs>[]
+      academicYear: Prisma.$AcademicYearPayload<ExtArgs> | null
+      class: Prisma.$ClassPayload<ExtArgs> | null
+      major: Prisma.$MajorPayload<ExtArgs> | null
+      role: Prisma.$RolePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3933,11 +3933,11 @@ export namespace Prisma {
       parentPhone: string | null
       position: string | null
       relation: string | null
-      roleId: string
+      roleId: string | null
       startDate: Date | null
-      status: string | null
       studentIds: string[]
       updatedAt: Date
+      status: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -4335,13 +4335,13 @@ export namespace Prisma {
     attendances<T extends User$attendancesArgs<ExtArgs> = {}>(args?: Subset<T, User$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     payments<T extends User$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, User$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     schedules<T extends User$schedulesArgs<ExtArgs> = {}>(args?: Subset<T, User$schedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    academicYear<T extends User$academicYearArgs<ExtArgs> = {}>(args?: Subset<T, User$academicYearArgs<ExtArgs>>): Prisma__AcademicYearClient<$Result.GetResult<Prisma.$AcademicYearPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    class<T extends User$classArgs<ExtArgs> = {}>(args?: Subset<T, User$classArgs<ExtArgs>>): Prisma__ClassClient<$Result.GetResult<Prisma.$ClassPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    major<T extends User$majorArgs<ExtArgs> = {}>(args?: Subset<T, User$majorArgs<ExtArgs>>): Prisma__MajorClient<$Result.GetResult<Prisma.$MajorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    role<T extends RoleDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RoleDefaultArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     violations<T extends User$violationsArgs<ExtArgs> = {}>(args?: Subset<T, User$violationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ViolationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     users_A<T extends User$users_AArgs<ExtArgs> = {}>(args?: Subset<T, User$users_AArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     users_B<T extends User$users_BArgs<ExtArgs> = {}>(args?: Subset<T, User$users_BArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    academicYear<T extends User$academicYearArgs<ExtArgs> = {}>(args?: Subset<T, User$academicYearArgs<ExtArgs>>): Prisma__AcademicYearClient<$Result.GetResult<Prisma.$AcademicYearPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    class<T extends User$classArgs<ExtArgs> = {}>(args?: Subset<T, User$classArgs<ExtArgs>>): Prisma__ClassClient<$Result.GetResult<Prisma.$ClassPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    major<T extends User$majorArgs<ExtArgs> = {}>(args?: Subset<T, User$majorArgs<ExtArgs>>): Prisma__MajorClient<$Result.GetResult<Prisma.$MajorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    role<T extends User$roleArgs<ExtArgs> = {}>(args?: Subset<T, User$roleArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4395,9 +4395,9 @@ export namespace Prisma {
     readonly relation: FieldRef<"User", 'String'>
     readonly roleId: FieldRef<"User", 'String'>
     readonly startDate: FieldRef<"User", 'DateTime'>
-    readonly status: FieldRef<"User", 'String'>
     readonly studentIds: FieldRef<"User", 'String[]'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
+    readonly status: FieldRef<"User", 'String'>
   }
     
 
@@ -4866,63 +4866,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.academicYear
-   */
-  export type User$academicYearArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the AcademicYear
-     */
-    select?: AcademicYearSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the AcademicYear
-     */
-    omit?: AcademicYearOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: AcademicYearInclude<ExtArgs> | null
-    where?: AcademicYearWhereInput
-  }
-
-  /**
-   * User.class
-   */
-  export type User$classArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Class
-     */
-    select?: ClassSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Class
-     */
-    omit?: ClassOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ClassInclude<ExtArgs> | null
-    where?: ClassWhereInput
-  }
-
-  /**
-   * User.major
-   */
-  export type User$majorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Major
-     */
-    select?: MajorSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Major
-     */
-    omit?: MajorOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MajorInclude<ExtArgs> | null
-    where?: MajorWhereInput
-  }
-
-  /**
    * User.violations
    */
   export type User$violationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4992,6 +4935,82 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * User.academicYear
+   */
+  export type User$academicYearArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AcademicYear
+     */
+    select?: AcademicYearSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AcademicYear
+     */
+    omit?: AcademicYearOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AcademicYearInclude<ExtArgs> | null
+    where?: AcademicYearWhereInput
+  }
+
+  /**
+   * User.class
+   */
+  export type User$classArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Class
+     */
+    select?: ClassSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Class
+     */
+    omit?: ClassOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClassInclude<ExtArgs> | null
+    where?: ClassWhereInput
+  }
+
+  /**
+   * User.major
+   */
+  export type User$majorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Major
+     */
+    select?: MajorSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Major
+     */
+    omit?: MajorOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MajorInclude<ExtArgs> | null
+    where?: MajorWhereInput
+  }
+
+  /**
+   * User.role
+   */
+  export type User$roleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Role
+     */
+    select?: RoleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Role
+     */
+    omit?: RoleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RoleInclude<ExtArgs> | null
+    where?: RoleWhereInput
   }
 
   /**
@@ -17736,9 +17755,9 @@ export namespace Prisma {
     relation: 'relation',
     roleId: 'roleId',
     startDate: 'startDate',
-    status: 'status',
     studentIds: 'studentIds',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    status: 'status'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -18083,21 +18102,21 @@ export namespace Prisma {
     parentPhone?: StringNullableFilter<"User"> | string | null
     position?: StringNullableFilter<"User"> | string | null
     relation?: StringNullableFilter<"User"> | string | null
-    roleId?: StringFilter<"User"> | string
+    roleId?: StringNullableFilter<"User"> | string | null
     startDate?: DateTimeNullableFilter<"User"> | Date | string | null
-    status?: StringNullableFilter<"User"> | string | null
     studentIds?: StringNullableListFilter<"User">
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    status?: StringNullableFilter<"User"> | string | null
     attendances?: AttendanceListRelationFilter
     payments?: PaymentListRelationFilter
     schedules?: ScheduleListRelationFilter
-    academicYear?: XOR<AcademicYearNullableScalarRelationFilter, AcademicYearWhereInput> | null
-    class?: XOR<ClassNullableScalarRelationFilter, ClassWhereInput> | null
-    major?: XOR<MajorNullableScalarRelationFilter, MajorWhereInput> | null
-    role?: XOR<RoleScalarRelationFilter, RoleWhereInput>
     violations?: ViolationListRelationFilter
     users_A?: UserListRelationFilter
     users_B?: UserListRelationFilter
+    academicYear?: XOR<AcademicYearNullableScalarRelationFilter, AcademicYearWhereInput> | null
+    class?: XOR<ClassNullableScalarRelationFilter, ClassWhereInput> | null
+    major?: XOR<MajorNullableScalarRelationFilter, MajorWhereInput> | null
+    role?: XOR<RoleNullableScalarRelationFilter, RoleWhereInput> | null
   }
 
   export type UserOrderByWithRelationInput = {
@@ -18123,26 +18142,25 @@ export namespace Prisma {
     parentPhone?: SortOrderInput | SortOrder
     position?: SortOrderInput | SortOrder
     relation?: SortOrderInput | SortOrder
-    roleId?: SortOrder
+    roleId?: SortOrderInput | SortOrder
     startDate?: SortOrderInput | SortOrder
-    status?: SortOrderInput | SortOrder
     studentIds?: SortOrder
     updatedAt?: SortOrder
+    status?: SortOrderInput | SortOrder
     attendances?: AttendanceOrderByRelationAggregateInput
     payments?: PaymentOrderByRelationAggregateInput
     schedules?: ScheduleOrderByRelationAggregateInput
+    violations?: ViolationOrderByRelationAggregateInput
+    users_A?: UserOrderByRelationAggregateInput
+    users_B?: UserOrderByRelationAggregateInput
     academicYear?: AcademicYearOrderByWithRelationInput
     class?: ClassOrderByWithRelationInput
     major?: MajorOrderByWithRelationInput
     role?: RoleOrderByWithRelationInput
-    violations?: ViolationOrderByRelationAggregateInput
-    users_A?: UserOrderByRelationAggregateInput
-    users_B?: UserOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    clerkId?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
@@ -18152,6 +18170,7 @@ export namespace Prisma {
     birthDate?: DateTimeNullableFilter<"User"> | Date | string | null
     birthPlace?: StringNullableFilter<"User"> | string | null
     classId?: StringNullableFilter<"User"> | string | null
+    clerkId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     email?: StringNullableFilter<"User"> | string | null
     employeeId?: StringNullableFilter<"User"> | string | null
@@ -18166,22 +18185,22 @@ export namespace Prisma {
     parentPhone?: StringNullableFilter<"User"> | string | null
     position?: StringNullableFilter<"User"> | string | null
     relation?: StringNullableFilter<"User"> | string | null
-    roleId?: StringFilter<"User"> | string
+    roleId?: StringNullableFilter<"User"> | string | null
     startDate?: DateTimeNullableFilter<"User"> | Date | string | null
-    status?: StringNullableFilter<"User"> | string | null
     studentIds?: StringNullableListFilter<"User">
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    status?: StringNullableFilter<"User"> | string | null
     attendances?: AttendanceListRelationFilter
     payments?: PaymentListRelationFilter
     schedules?: ScheduleListRelationFilter
-    academicYear?: XOR<AcademicYearNullableScalarRelationFilter, AcademicYearWhereInput> | null
-    class?: XOR<ClassNullableScalarRelationFilter, ClassWhereInput> | null
-    major?: XOR<MajorNullableScalarRelationFilter, MajorWhereInput> | null
-    role?: XOR<RoleScalarRelationFilter, RoleWhereInput>
     violations?: ViolationListRelationFilter
     users_A?: UserListRelationFilter
     users_B?: UserListRelationFilter
-  }, "id" | "clerkId">
+    academicYear?: XOR<AcademicYearNullableScalarRelationFilter, AcademicYearWhereInput> | null
+    class?: XOR<ClassNullableScalarRelationFilter, ClassWhereInput> | null
+    major?: XOR<MajorNullableScalarRelationFilter, MajorWhereInput> | null
+    role?: XOR<RoleNullableScalarRelationFilter, RoleWhereInput> | null
+  }, "id">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
@@ -18206,11 +18225,11 @@ export namespace Prisma {
     parentPhone?: SortOrderInput | SortOrder
     position?: SortOrderInput | SortOrder
     relation?: SortOrderInput | SortOrder
-    roleId?: SortOrder
+    roleId?: SortOrderInput | SortOrder
     startDate?: SortOrderInput | SortOrder
-    status?: SortOrderInput | SortOrder
     studentIds?: SortOrder
     updatedAt?: SortOrder
+    status?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -18242,11 +18261,11 @@ export namespace Prisma {
     parentPhone?: StringNullableWithAggregatesFilter<"User"> | string | null
     position?: StringNullableWithAggregatesFilter<"User"> | string | null
     relation?: StringNullableWithAggregatesFilter<"User"> | string | null
-    roleId?: StringWithAggregatesFilter<"User"> | string
+    roleId?: StringNullableWithAggregatesFilter<"User"> | string | null
     startDate?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
-    status?: StringNullableWithAggregatesFilter<"User"> | string | null
     studentIds?: StringNullableListFilter<"User">
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    status?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type AcademicYearWhereInput = {
@@ -19150,19 +19169,19 @@ export namespace Prisma {
     position?: string | null
     relation?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     payments?: PaymentCreateNestedManyWithoutStudentInput
     schedules?: ScheduleCreateNestedManyWithoutTeacherInput
-    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
-    class?: ClassCreateNestedOneWithoutStudentsInput
-    major?: MajorCreateNestedOneWithoutStudentsInput
-    role: RoleCreateNestedOneWithoutUsersInput
     violations?: ViolationCreateNestedManyWithoutStudentInput
     users_A?: UserCreateNestedManyWithoutUsers_BInput
     users_B?: UserCreateNestedManyWithoutUsers_AInput
+    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
+    class?: ClassCreateNestedOneWithoutStudentsInput
+    major?: MajorCreateNestedOneWithoutStudentsInput
+    role?: RoleCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -19188,11 +19207,11 @@ export namespace Prisma {
     parentPhone?: string | null
     position?: string | null
     relation?: string | null
-    roleId: string
+    roleId?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     payments?: PaymentUncheckedCreateNestedManyWithoutStudentInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutTeacherInput
@@ -19222,19 +19241,19 @@ export namespace Prisma {
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     payments?: PaymentUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUpdateManyWithoutTeacherNestedInput
-    academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
-    class?: ClassUpdateOneWithoutStudentsNestedInput
-    major?: MajorUpdateOneWithoutStudentsNestedInput
-    role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     violations?: ViolationUpdateManyWithoutStudentNestedInput
     users_A?: UserUpdateManyWithoutUsers_BNestedInput
     users_B?: UserUpdateManyWithoutUsers_ANestedInput
+    academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
+    class?: ClassUpdateOneWithoutStudentsNestedInput
+    major?: MajorUpdateOneWithoutStudentsNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -19260,11 +19279,11 @@ export namespace Prisma {
     parentPhone?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: StringFieldUpdateOperationsInput | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutTeacherNestedInput
@@ -19296,11 +19315,11 @@ export namespace Prisma {
     parentPhone?: string | null
     position?: string | null
     relation?: string | null
-    roleId: string
+    roleId?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -19324,9 +19343,9 @@ export namespace Prisma {
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -19352,11 +19371,11 @@ export namespace Prisma {
     parentPhone?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: StringFieldUpdateOperationsInput | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AcademicYearCreateInput = {
@@ -20356,6 +20375,12 @@ export namespace Prisma {
     none?: ScheduleWhereInput
   }
 
+  export type ViolationListRelationFilter = {
+    every?: ViolationWhereInput
+    some?: ViolationWhereInput
+    none?: ViolationWhereInput
+  }
+
   export type AcademicYearNullableScalarRelationFilter = {
     is?: AcademicYearWhereInput | null
     isNot?: AcademicYearWhereInput | null
@@ -20371,15 +20396,9 @@ export namespace Prisma {
     isNot?: MajorWhereInput | null
   }
 
-  export type RoleScalarRelationFilter = {
-    is?: RoleWhereInput
-    isNot?: RoleWhereInput
-  }
-
-  export type ViolationListRelationFilter = {
-    every?: ViolationWhereInput
-    some?: ViolationWhereInput
-    none?: ViolationWhereInput
+  export type RoleNullableScalarRelationFilter = {
+    is?: RoleWhereInput | null
+    isNot?: RoleWhereInput | null
   }
 
   export type SortOrderInput = {
@@ -20428,9 +20447,9 @@ export namespace Prisma {
     relation?: SortOrder
     roleId?: SortOrder
     startDate?: SortOrder
-    status?: SortOrder
     studentIds?: SortOrder
     updatedAt?: SortOrder
+    status?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -20458,8 +20477,8 @@ export namespace Prisma {
     relation?: SortOrder
     roleId?: SortOrder
     startDate?: SortOrder
-    status?: SortOrder
     updatedAt?: SortOrder
+    status?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -20487,8 +20506,8 @@ export namespace Prisma {
     relation?: SortOrder
     roleId?: SortOrder
     startDate?: SortOrder
-    status?: SortOrder
     updatedAt?: SortOrder
+    status?: SortOrder
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -21172,6 +21191,25 @@ export namespace Prisma {
     connect?: ScheduleWhereUniqueInput | ScheduleWhereUniqueInput[]
   }
 
+  export type ViolationCreateNestedManyWithoutStudentInput = {
+    create?: XOR<ViolationCreateWithoutStudentInput, ViolationUncheckedCreateWithoutStudentInput> | ViolationCreateWithoutStudentInput[] | ViolationUncheckedCreateWithoutStudentInput[]
+    connectOrCreate?: ViolationCreateOrConnectWithoutStudentInput | ViolationCreateOrConnectWithoutStudentInput[]
+    createMany?: ViolationCreateManyStudentInputEnvelope
+    connect?: ViolationWhereUniqueInput | ViolationWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedManyWithoutUsers_BInput = {
+    create?: XOR<UserCreateWithoutUsers_BInput, UserUncheckedCreateWithoutUsers_BInput> | UserCreateWithoutUsers_BInput[] | UserUncheckedCreateWithoutUsers_BInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutUsers_BInput | UserCreateOrConnectWithoutUsers_BInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedManyWithoutUsers_AInput = {
+    create?: XOR<UserCreateWithoutUsers_AInput, UserUncheckedCreateWithoutUsers_AInput> | UserCreateWithoutUsers_AInput[] | UserUncheckedCreateWithoutUsers_AInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutUsers_AInput | UserCreateOrConnectWithoutUsers_AInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
   export type AcademicYearCreateNestedOneWithoutStudentsInput = {
     create?: XOR<AcademicYearCreateWithoutStudentsInput, AcademicYearUncheckedCreateWithoutStudentsInput>
     connectOrCreate?: AcademicYearCreateOrConnectWithoutStudentsInput
@@ -21194,25 +21232,6 @@ export namespace Prisma {
     create?: XOR<RoleCreateWithoutUsersInput, RoleUncheckedCreateWithoutUsersInput>
     connectOrCreate?: RoleCreateOrConnectWithoutUsersInput
     connect?: RoleWhereUniqueInput
-  }
-
-  export type ViolationCreateNestedManyWithoutStudentInput = {
-    create?: XOR<ViolationCreateWithoutStudentInput, ViolationUncheckedCreateWithoutStudentInput> | ViolationCreateWithoutStudentInput[] | ViolationUncheckedCreateWithoutStudentInput[]
-    connectOrCreate?: ViolationCreateOrConnectWithoutStudentInput | ViolationCreateOrConnectWithoutStudentInput[]
-    createMany?: ViolationCreateManyStudentInputEnvelope
-    connect?: ViolationWhereUniqueInput | ViolationWhereUniqueInput[]
-  }
-
-  export type UserCreateNestedManyWithoutUsers_BInput = {
-    create?: XOR<UserCreateWithoutUsers_BInput, UserUncheckedCreateWithoutUsers_BInput> | UserCreateWithoutUsers_BInput[] | UserUncheckedCreateWithoutUsers_BInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutUsers_BInput | UserCreateOrConnectWithoutUsers_BInput[]
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-  }
-
-  export type UserCreateNestedManyWithoutUsers_AInput = {
-    create?: XOR<UserCreateWithoutUsers_AInput, UserUncheckedCreateWithoutUsers_AInput> | UserCreateWithoutUsers_AInput[] | UserUncheckedCreateWithoutUsers_AInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutUsers_AInput | UserCreateOrConnectWithoutUsers_AInput[]
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
   export type AttendanceUncheckedCreateNestedManyWithoutStudentInput = {
@@ -21314,44 +21333,6 @@ export namespace Prisma {
     deleteMany?: ScheduleScalarWhereInput | ScheduleScalarWhereInput[]
   }
 
-  export type AcademicYearUpdateOneWithoutStudentsNestedInput = {
-    create?: XOR<AcademicYearCreateWithoutStudentsInput, AcademicYearUncheckedCreateWithoutStudentsInput>
-    connectOrCreate?: AcademicYearCreateOrConnectWithoutStudentsInput
-    upsert?: AcademicYearUpsertWithoutStudentsInput
-    disconnect?: AcademicYearWhereInput | boolean
-    delete?: AcademicYearWhereInput | boolean
-    connect?: AcademicYearWhereUniqueInput
-    update?: XOR<XOR<AcademicYearUpdateToOneWithWhereWithoutStudentsInput, AcademicYearUpdateWithoutStudentsInput>, AcademicYearUncheckedUpdateWithoutStudentsInput>
-  }
-
-  export type ClassUpdateOneWithoutStudentsNestedInput = {
-    create?: XOR<ClassCreateWithoutStudentsInput, ClassUncheckedCreateWithoutStudentsInput>
-    connectOrCreate?: ClassCreateOrConnectWithoutStudentsInput
-    upsert?: ClassUpsertWithoutStudentsInput
-    disconnect?: ClassWhereInput | boolean
-    delete?: ClassWhereInput | boolean
-    connect?: ClassWhereUniqueInput
-    update?: XOR<XOR<ClassUpdateToOneWithWhereWithoutStudentsInput, ClassUpdateWithoutStudentsInput>, ClassUncheckedUpdateWithoutStudentsInput>
-  }
-
-  export type MajorUpdateOneWithoutStudentsNestedInput = {
-    create?: XOR<MajorCreateWithoutStudentsInput, MajorUncheckedCreateWithoutStudentsInput>
-    connectOrCreate?: MajorCreateOrConnectWithoutStudentsInput
-    upsert?: MajorUpsertWithoutStudentsInput
-    disconnect?: MajorWhereInput | boolean
-    delete?: MajorWhereInput | boolean
-    connect?: MajorWhereUniqueInput
-    update?: XOR<XOR<MajorUpdateToOneWithWhereWithoutStudentsInput, MajorUpdateWithoutStudentsInput>, MajorUncheckedUpdateWithoutStudentsInput>
-  }
-
-  export type RoleUpdateOneRequiredWithoutUsersNestedInput = {
-    create?: XOR<RoleCreateWithoutUsersInput, RoleUncheckedCreateWithoutUsersInput>
-    connectOrCreate?: RoleCreateOrConnectWithoutUsersInput
-    upsert?: RoleUpsertWithoutUsersInput
-    connect?: RoleWhereUniqueInput
-    update?: XOR<XOR<RoleUpdateToOneWithWhereWithoutUsersInput, RoleUpdateWithoutUsersInput>, RoleUncheckedUpdateWithoutUsersInput>
-  }
-
   export type ViolationUpdateManyWithoutStudentNestedInput = {
     create?: XOR<ViolationCreateWithoutStudentInput, ViolationUncheckedCreateWithoutStudentInput> | ViolationCreateWithoutStudentInput[] | ViolationUncheckedCreateWithoutStudentInput[]
     connectOrCreate?: ViolationCreateOrConnectWithoutStudentInput | ViolationCreateOrConnectWithoutStudentInput[]
@@ -21390,6 +21371,46 @@ export namespace Prisma {
     update?: UserUpdateWithWhereUniqueWithoutUsers_AInput | UserUpdateWithWhereUniqueWithoutUsers_AInput[]
     updateMany?: UserUpdateManyWithWhereWithoutUsers_AInput | UserUpdateManyWithWhereWithoutUsers_AInput[]
     deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type AcademicYearUpdateOneWithoutStudentsNestedInput = {
+    create?: XOR<AcademicYearCreateWithoutStudentsInput, AcademicYearUncheckedCreateWithoutStudentsInput>
+    connectOrCreate?: AcademicYearCreateOrConnectWithoutStudentsInput
+    upsert?: AcademicYearUpsertWithoutStudentsInput
+    disconnect?: AcademicYearWhereInput | boolean
+    delete?: AcademicYearWhereInput | boolean
+    connect?: AcademicYearWhereUniqueInput
+    update?: XOR<XOR<AcademicYearUpdateToOneWithWhereWithoutStudentsInput, AcademicYearUpdateWithoutStudentsInput>, AcademicYearUncheckedUpdateWithoutStudentsInput>
+  }
+
+  export type ClassUpdateOneWithoutStudentsNestedInput = {
+    create?: XOR<ClassCreateWithoutStudentsInput, ClassUncheckedCreateWithoutStudentsInput>
+    connectOrCreate?: ClassCreateOrConnectWithoutStudentsInput
+    upsert?: ClassUpsertWithoutStudentsInput
+    disconnect?: ClassWhereInput | boolean
+    delete?: ClassWhereInput | boolean
+    connect?: ClassWhereUniqueInput
+    update?: XOR<XOR<ClassUpdateToOneWithWhereWithoutStudentsInput, ClassUpdateWithoutStudentsInput>, ClassUncheckedUpdateWithoutStudentsInput>
+  }
+
+  export type MajorUpdateOneWithoutStudentsNestedInput = {
+    create?: XOR<MajorCreateWithoutStudentsInput, MajorUncheckedCreateWithoutStudentsInput>
+    connectOrCreate?: MajorCreateOrConnectWithoutStudentsInput
+    upsert?: MajorUpsertWithoutStudentsInput
+    disconnect?: MajorWhereInput | boolean
+    delete?: MajorWhereInput | boolean
+    connect?: MajorWhereUniqueInput
+    update?: XOR<XOR<MajorUpdateToOneWithWhereWithoutStudentsInput, MajorUpdateWithoutStudentsInput>, MajorUncheckedUpdateWithoutStudentsInput>
+  }
+
+  export type RoleUpdateOneWithoutUsersNestedInput = {
+    create?: XOR<RoleCreateWithoutUsersInput, RoleUncheckedCreateWithoutUsersInput>
+    connectOrCreate?: RoleCreateOrConnectWithoutUsersInput
+    upsert?: RoleUpsertWithoutUsersInput
+    disconnect?: RoleWhereInput | boolean
+    delete?: RoleWhereInput | boolean
+    connect?: RoleWhereUniqueInput
+    update?: XOR<XOR<RoleUpdateToOneWithWhereWithoutUsersInput, RoleUpdateWithoutUsersInput>, RoleUncheckedUpdateWithoutUsersInput>
   }
 
   export type AttendanceUncheckedUpdateManyWithoutStudentNestedInput = {
@@ -22568,18 +22589,18 @@ export namespace Prisma {
     position?: string | null
     relation?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     payments?: PaymentCreateNestedManyWithoutStudentInput
     schedules?: ScheduleCreateNestedManyWithoutTeacherInput
-    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
-    class?: ClassCreateNestedOneWithoutStudentsInput
-    major?: MajorCreateNestedOneWithoutStudentsInput
     violations?: ViolationCreateNestedManyWithoutStudentInput
     users_A?: UserCreateNestedManyWithoutUsers_BInput
     users_B?: UserCreateNestedManyWithoutUsers_AInput
+    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
+    class?: ClassCreateNestedOneWithoutStudentsInput
+    major?: MajorCreateNestedOneWithoutStudentsInput
   }
 
   export type UserUncheckedCreateWithoutRoleInput = {
@@ -22606,9 +22627,9 @@ export namespace Prisma {
     position?: string | null
     relation?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     payments?: PaymentUncheckedCreateNestedManyWithoutStudentInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutTeacherInput
@@ -22669,11 +22690,11 @@ export namespace Prisma {
     parentPhone?: StringNullableFilter<"User"> | string | null
     position?: StringNullableFilter<"User"> | string | null
     relation?: StringNullableFilter<"User"> | string | null
-    roleId?: StringFilter<"User"> | string
+    roleId?: StringNullableFilter<"User"> | string | null
     startDate?: DateTimeNullableFilter<"User"> | Date | string | null
-    status?: StringNullableFilter<"User"> | string | null
     studentIds?: StringNullableListFilter<"User">
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    status?: StringNullableFilter<"User"> | string | null
   }
 
   export type AttendanceCreateWithoutStudentInput = {
@@ -22770,6 +22791,192 @@ export namespace Prisma {
   export type ScheduleCreateManyTeacherInputEnvelope = {
     data: ScheduleCreateManyTeacherInput | ScheduleCreateManyTeacherInput[]
     skipDuplicates?: boolean
+  }
+
+  export type ViolationCreateWithoutStudentInput = {
+    id?: string
+    description?: string | null
+    status?: string
+    reportedBy: string
+    createdAt?: Date | string
+    date: Date | string
+    resolutionDate?: Date | string | null
+    resolutionNotes?: string | null
+    class: ClassCreateNestedOneWithoutViolationsInput
+    violationType: ViolationTypeCreateNestedOneWithoutViolationsInput
+  }
+
+  export type ViolationUncheckedCreateWithoutStudentInput = {
+    id?: string
+    violationTypeId: string
+    classId: string
+    description?: string | null
+    status?: string
+    reportedBy: string
+    createdAt?: Date | string
+    date: Date | string
+    resolutionDate?: Date | string | null
+    resolutionNotes?: string | null
+  }
+
+  export type ViolationCreateOrConnectWithoutStudentInput = {
+    where: ViolationWhereUniqueInput
+    create: XOR<ViolationCreateWithoutStudentInput, ViolationUncheckedCreateWithoutStudentInput>
+  }
+
+  export type ViolationCreateManyStudentInputEnvelope = {
+    data: ViolationCreateManyStudentInput | ViolationCreateManyStudentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserCreateWithoutUsers_BInput = {
+    id?: string
+    address?: string | null
+    avatarUrl?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    clerkId?: string | null
+    createdAt?: Date | string
+    email?: string | null
+    employeeId?: string | null
+    endDate?: Date | string | null
+    enrollmentDate?: Date | string | null
+    gender?: string | null
+    graduationDate?: Date | string | null
+    name: string
+    nik?: string | null
+    nisn?: string | null
+    parentPhone?: string | null
+    position?: string | null
+    relation?: string | null
+    startDate?: Date | string | null
+    studentIds?: UserCreatestudentIdsInput | string[]
+    updatedAt?: Date | string
+    status?: string | null
+    attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    payments?: PaymentCreateNestedManyWithoutStudentInput
+    schedules?: ScheduleCreateNestedManyWithoutTeacherInput
+    violations?: ViolationCreateNestedManyWithoutStudentInput
+    users_A?: UserCreateNestedManyWithoutUsers_BInput
+    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
+    class?: ClassCreateNestedOneWithoutStudentsInput
+    major?: MajorCreateNestedOneWithoutStudentsInput
+    role?: RoleCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutUsers_BInput = {
+    id?: string
+    academicYearId?: string | null
+    address?: string | null
+    avatarUrl?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    classId?: string | null
+    clerkId?: string | null
+    createdAt?: Date | string
+    email?: string | null
+    employeeId?: string | null
+    endDate?: Date | string | null
+    enrollmentDate?: Date | string | null
+    gender?: string | null
+    graduationDate?: Date | string | null
+    majorId?: string | null
+    name: string
+    nik?: string | null
+    nisn?: string | null
+    parentPhone?: string | null
+    position?: string | null
+    relation?: string | null
+    roleId?: string | null
+    startDate?: Date | string | null
+    studentIds?: UserCreatestudentIdsInput | string[]
+    updatedAt?: Date | string
+    status?: string | null
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutStudentInput
+    schedules?: ScheduleUncheckedCreateNestedManyWithoutTeacherInput
+    violations?: ViolationUncheckedCreateNestedManyWithoutStudentInput
+    users_A?: UserUncheckedCreateNestedManyWithoutUsers_BInput
+  }
+
+  export type UserCreateOrConnectWithoutUsers_BInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutUsers_BInput, UserUncheckedCreateWithoutUsers_BInput>
+  }
+
+  export type UserCreateWithoutUsers_AInput = {
+    id?: string
+    address?: string | null
+    avatarUrl?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    clerkId?: string | null
+    createdAt?: Date | string
+    email?: string | null
+    employeeId?: string | null
+    endDate?: Date | string | null
+    enrollmentDate?: Date | string | null
+    gender?: string | null
+    graduationDate?: Date | string | null
+    name: string
+    nik?: string | null
+    nisn?: string | null
+    parentPhone?: string | null
+    position?: string | null
+    relation?: string | null
+    startDate?: Date | string | null
+    studentIds?: UserCreatestudentIdsInput | string[]
+    updatedAt?: Date | string
+    status?: string | null
+    attendances?: AttendanceCreateNestedManyWithoutStudentInput
+    payments?: PaymentCreateNestedManyWithoutStudentInput
+    schedules?: ScheduleCreateNestedManyWithoutTeacherInput
+    violations?: ViolationCreateNestedManyWithoutStudentInput
+    users_B?: UserCreateNestedManyWithoutUsers_AInput
+    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
+    class?: ClassCreateNestedOneWithoutStudentsInput
+    major?: MajorCreateNestedOneWithoutStudentsInput
+    role?: RoleCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutUsers_AInput = {
+    id?: string
+    academicYearId?: string | null
+    address?: string | null
+    avatarUrl?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    classId?: string | null
+    clerkId?: string | null
+    createdAt?: Date | string
+    email?: string | null
+    employeeId?: string | null
+    endDate?: Date | string | null
+    enrollmentDate?: Date | string | null
+    gender?: string | null
+    graduationDate?: Date | string | null
+    majorId?: string | null
+    name: string
+    nik?: string | null
+    nisn?: string | null
+    parentPhone?: string | null
+    position?: string | null
+    relation?: string | null
+    roleId?: string | null
+    startDate?: Date | string | null
+    studentIds?: UserCreatestudentIdsInput | string[]
+    updatedAt?: Date | string
+    status?: string | null
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutStudentInput
+    schedules?: ScheduleUncheckedCreateNestedManyWithoutTeacherInput
+    violations?: ViolationUncheckedCreateNestedManyWithoutStudentInput
+    users_B?: UserUncheckedCreateNestedManyWithoutUsers_AInput
+  }
+
+  export type UserCreateOrConnectWithoutUsers_AInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutUsers_AInput, UserUncheckedCreateWithoutUsers_AInput>
   }
 
   export type AcademicYearCreateWithoutStudentsInput = {
@@ -22878,192 +23085,6 @@ export namespace Prisma {
     create: XOR<RoleCreateWithoutUsersInput, RoleUncheckedCreateWithoutUsersInput>
   }
 
-  export type ViolationCreateWithoutStudentInput = {
-    id?: string
-    description?: string | null
-    status?: string
-    reportedBy: string
-    createdAt?: Date | string
-    date: Date | string
-    resolutionDate?: Date | string | null
-    resolutionNotes?: string | null
-    class: ClassCreateNestedOneWithoutViolationsInput
-    violationType: ViolationTypeCreateNestedOneWithoutViolationsInput
-  }
-
-  export type ViolationUncheckedCreateWithoutStudentInput = {
-    id?: string
-    violationTypeId: string
-    classId: string
-    description?: string | null
-    status?: string
-    reportedBy: string
-    createdAt?: Date | string
-    date: Date | string
-    resolutionDate?: Date | string | null
-    resolutionNotes?: string | null
-  }
-
-  export type ViolationCreateOrConnectWithoutStudentInput = {
-    where: ViolationWhereUniqueInput
-    create: XOR<ViolationCreateWithoutStudentInput, ViolationUncheckedCreateWithoutStudentInput>
-  }
-
-  export type ViolationCreateManyStudentInputEnvelope = {
-    data: ViolationCreateManyStudentInput | ViolationCreateManyStudentInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type UserCreateWithoutUsers_BInput = {
-    id?: string
-    address?: string | null
-    avatarUrl?: string | null
-    birthDate?: Date | string | null
-    birthPlace?: string | null
-    clerkId?: string | null
-    createdAt?: Date | string
-    email?: string | null
-    employeeId?: string | null
-    endDate?: Date | string | null
-    enrollmentDate?: Date | string | null
-    gender?: string | null
-    graduationDate?: Date | string | null
-    name: string
-    nik?: string | null
-    nisn?: string | null
-    parentPhone?: string | null
-    position?: string | null
-    relation?: string | null
-    startDate?: Date | string | null
-    status?: string | null
-    studentIds?: UserCreatestudentIdsInput | string[]
-    updatedAt?: Date | string
-    attendances?: AttendanceCreateNestedManyWithoutStudentInput
-    payments?: PaymentCreateNestedManyWithoutStudentInput
-    schedules?: ScheduleCreateNestedManyWithoutTeacherInput
-    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
-    class?: ClassCreateNestedOneWithoutStudentsInput
-    major?: MajorCreateNestedOneWithoutStudentsInput
-    role: RoleCreateNestedOneWithoutUsersInput
-    violations?: ViolationCreateNestedManyWithoutStudentInput
-    users_A?: UserCreateNestedManyWithoutUsers_BInput
-  }
-
-  export type UserUncheckedCreateWithoutUsers_BInput = {
-    id?: string
-    academicYearId?: string | null
-    address?: string | null
-    avatarUrl?: string | null
-    birthDate?: Date | string | null
-    birthPlace?: string | null
-    classId?: string | null
-    clerkId?: string | null
-    createdAt?: Date | string
-    email?: string | null
-    employeeId?: string | null
-    endDate?: Date | string | null
-    enrollmentDate?: Date | string | null
-    gender?: string | null
-    graduationDate?: Date | string | null
-    majorId?: string | null
-    name: string
-    nik?: string | null
-    nisn?: string | null
-    parentPhone?: string | null
-    position?: string | null
-    relation?: string | null
-    roleId: string
-    startDate?: Date | string | null
-    status?: string | null
-    studentIds?: UserCreatestudentIdsInput | string[]
-    updatedAt?: Date | string
-    attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
-    payments?: PaymentUncheckedCreateNestedManyWithoutStudentInput
-    schedules?: ScheduleUncheckedCreateNestedManyWithoutTeacherInput
-    violations?: ViolationUncheckedCreateNestedManyWithoutStudentInput
-    users_A?: UserUncheckedCreateNestedManyWithoutUsers_BInput
-  }
-
-  export type UserCreateOrConnectWithoutUsers_BInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutUsers_BInput, UserUncheckedCreateWithoutUsers_BInput>
-  }
-
-  export type UserCreateWithoutUsers_AInput = {
-    id?: string
-    address?: string | null
-    avatarUrl?: string | null
-    birthDate?: Date | string | null
-    birthPlace?: string | null
-    clerkId?: string | null
-    createdAt?: Date | string
-    email?: string | null
-    employeeId?: string | null
-    endDate?: Date | string | null
-    enrollmentDate?: Date | string | null
-    gender?: string | null
-    graduationDate?: Date | string | null
-    name: string
-    nik?: string | null
-    nisn?: string | null
-    parentPhone?: string | null
-    position?: string | null
-    relation?: string | null
-    startDate?: Date | string | null
-    status?: string | null
-    studentIds?: UserCreatestudentIdsInput | string[]
-    updatedAt?: Date | string
-    attendances?: AttendanceCreateNestedManyWithoutStudentInput
-    payments?: PaymentCreateNestedManyWithoutStudentInput
-    schedules?: ScheduleCreateNestedManyWithoutTeacherInput
-    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
-    class?: ClassCreateNestedOneWithoutStudentsInput
-    major?: MajorCreateNestedOneWithoutStudentsInput
-    role: RoleCreateNestedOneWithoutUsersInput
-    violations?: ViolationCreateNestedManyWithoutStudentInput
-    users_B?: UserCreateNestedManyWithoutUsers_AInput
-  }
-
-  export type UserUncheckedCreateWithoutUsers_AInput = {
-    id?: string
-    academicYearId?: string | null
-    address?: string | null
-    avatarUrl?: string | null
-    birthDate?: Date | string | null
-    birthPlace?: string | null
-    classId?: string | null
-    clerkId?: string | null
-    createdAt?: Date | string
-    email?: string | null
-    employeeId?: string | null
-    endDate?: Date | string | null
-    enrollmentDate?: Date | string | null
-    gender?: string | null
-    graduationDate?: Date | string | null
-    majorId?: string | null
-    name: string
-    nik?: string | null
-    nisn?: string | null
-    parentPhone?: string | null
-    position?: string | null
-    relation?: string | null
-    roleId: string
-    startDate?: Date | string | null
-    status?: string | null
-    studentIds?: UserCreatestudentIdsInput | string[]
-    updatedAt?: Date | string
-    attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
-    payments?: PaymentUncheckedCreateNestedManyWithoutStudentInput
-    schedules?: ScheduleUncheckedCreateNestedManyWithoutTeacherInput
-    violations?: ViolationUncheckedCreateNestedManyWithoutStudentInput
-    users_B?: UserUncheckedCreateNestedManyWithoutUsers_AInput
-  }
-
-  export type UserCreateOrConnectWithoutUsers_AInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutUsers_AInput, UserUncheckedCreateWithoutUsers_AInput>
-  }
-
   export type AttendanceUpsertWithWhereUniqueWithoutStudentInput = {
     where: AttendanceWhereUniqueInput
     update: XOR<AttendanceUpdateWithoutStudentInput, AttendanceUncheckedUpdateWithoutStudentInput>
@@ -23154,6 +23175,71 @@ export namespace Prisma {
     startTime?: StringFilter<"Schedule"> | string
     endTime?: StringFilter<"Schedule"> | string
     room?: StringNullableFilter<"Schedule"> | string | null
+  }
+
+  export type ViolationUpsertWithWhereUniqueWithoutStudentInput = {
+    where: ViolationWhereUniqueInput
+    update: XOR<ViolationUpdateWithoutStudentInput, ViolationUncheckedUpdateWithoutStudentInput>
+    create: XOR<ViolationCreateWithoutStudentInput, ViolationUncheckedCreateWithoutStudentInput>
+  }
+
+  export type ViolationUpdateWithWhereUniqueWithoutStudentInput = {
+    where: ViolationWhereUniqueInput
+    data: XOR<ViolationUpdateWithoutStudentInput, ViolationUncheckedUpdateWithoutStudentInput>
+  }
+
+  export type ViolationUpdateManyWithWhereWithoutStudentInput = {
+    where: ViolationScalarWhereInput
+    data: XOR<ViolationUpdateManyMutationInput, ViolationUncheckedUpdateManyWithoutStudentInput>
+  }
+
+  export type ViolationScalarWhereInput = {
+    AND?: ViolationScalarWhereInput | ViolationScalarWhereInput[]
+    OR?: ViolationScalarWhereInput[]
+    NOT?: ViolationScalarWhereInput | ViolationScalarWhereInput[]
+    id?: StringFilter<"Violation"> | string
+    studentId?: StringFilter<"Violation"> | string
+    violationTypeId?: StringFilter<"Violation"> | string
+    classId?: StringFilter<"Violation"> | string
+    description?: StringNullableFilter<"Violation"> | string | null
+    status?: StringFilter<"Violation"> | string
+    reportedBy?: StringFilter<"Violation"> | string
+    createdAt?: DateTimeFilter<"Violation"> | Date | string
+    date?: DateTimeFilter<"Violation"> | Date | string
+    resolutionDate?: DateTimeNullableFilter<"Violation"> | Date | string | null
+    resolutionNotes?: StringNullableFilter<"Violation"> | string | null
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutUsers_BInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutUsers_BInput, UserUncheckedUpdateWithoutUsers_BInput>
+    create: XOR<UserCreateWithoutUsers_BInput, UserUncheckedCreateWithoutUsers_BInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutUsers_BInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutUsers_BInput, UserUncheckedUpdateWithoutUsers_BInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutUsers_BInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutUsers_BInput>
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutUsers_AInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutUsers_AInput, UserUncheckedUpdateWithoutUsers_AInput>
+    create: XOR<UserCreateWithoutUsers_AInput, UserUncheckedCreateWithoutUsers_AInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutUsers_AInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutUsers_AInput, UserUncheckedUpdateWithoutUsers_AInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutUsers_AInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutUsers_AInput>
   }
 
   export type AcademicYearUpsertWithoutStudentsInput = {
@@ -23286,71 +23372,6 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
-  export type ViolationUpsertWithWhereUniqueWithoutStudentInput = {
-    where: ViolationWhereUniqueInput
-    update: XOR<ViolationUpdateWithoutStudentInput, ViolationUncheckedUpdateWithoutStudentInput>
-    create: XOR<ViolationCreateWithoutStudentInput, ViolationUncheckedCreateWithoutStudentInput>
-  }
-
-  export type ViolationUpdateWithWhereUniqueWithoutStudentInput = {
-    where: ViolationWhereUniqueInput
-    data: XOR<ViolationUpdateWithoutStudentInput, ViolationUncheckedUpdateWithoutStudentInput>
-  }
-
-  export type ViolationUpdateManyWithWhereWithoutStudentInput = {
-    where: ViolationScalarWhereInput
-    data: XOR<ViolationUpdateManyMutationInput, ViolationUncheckedUpdateManyWithoutStudentInput>
-  }
-
-  export type ViolationScalarWhereInput = {
-    AND?: ViolationScalarWhereInput | ViolationScalarWhereInput[]
-    OR?: ViolationScalarWhereInput[]
-    NOT?: ViolationScalarWhereInput | ViolationScalarWhereInput[]
-    id?: StringFilter<"Violation"> | string
-    studentId?: StringFilter<"Violation"> | string
-    violationTypeId?: StringFilter<"Violation"> | string
-    classId?: StringFilter<"Violation"> | string
-    description?: StringNullableFilter<"Violation"> | string | null
-    status?: StringFilter<"Violation"> | string
-    reportedBy?: StringFilter<"Violation"> | string
-    createdAt?: DateTimeFilter<"Violation"> | Date | string
-    date?: DateTimeFilter<"Violation"> | Date | string
-    resolutionDate?: DateTimeNullableFilter<"Violation"> | Date | string | null
-    resolutionNotes?: StringNullableFilter<"Violation"> | string | null
-  }
-
-  export type UserUpsertWithWhereUniqueWithoutUsers_BInput = {
-    where: UserWhereUniqueInput
-    update: XOR<UserUpdateWithoutUsers_BInput, UserUncheckedUpdateWithoutUsers_BInput>
-    create: XOR<UserCreateWithoutUsers_BInput, UserUncheckedCreateWithoutUsers_BInput>
-  }
-
-  export type UserUpdateWithWhereUniqueWithoutUsers_BInput = {
-    where: UserWhereUniqueInput
-    data: XOR<UserUpdateWithoutUsers_BInput, UserUncheckedUpdateWithoutUsers_BInput>
-  }
-
-  export type UserUpdateManyWithWhereWithoutUsers_BInput = {
-    where: UserScalarWhereInput
-    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutUsers_BInput>
-  }
-
-  export type UserUpsertWithWhereUniqueWithoutUsers_AInput = {
-    where: UserWhereUniqueInput
-    update: XOR<UserUpdateWithoutUsers_AInput, UserUncheckedUpdateWithoutUsers_AInput>
-    create: XOR<UserCreateWithoutUsers_AInput, UserUncheckedCreateWithoutUsers_AInput>
-  }
-
-  export type UserUpdateWithWhereUniqueWithoutUsers_AInput = {
-    where: UserWhereUniqueInput
-    data: XOR<UserUpdateWithoutUsers_AInput, UserUncheckedUpdateWithoutUsers_AInput>
-  }
-
-  export type UserUpdateManyWithWhereWithoutUsers_AInput = {
-    where: UserScalarWhereInput
-    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutUsers_AInput>
-  }
-
   export type CalendarEventCreateWithoutAcademicYearInput = {
     id?: string
     title: string
@@ -23470,18 +23491,18 @@ export namespace Prisma {
     position?: string | null
     relation?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     payments?: PaymentCreateNestedManyWithoutStudentInput
     schedules?: ScheduleCreateNestedManyWithoutTeacherInput
-    class?: ClassCreateNestedOneWithoutStudentsInput
-    major?: MajorCreateNestedOneWithoutStudentsInput
-    role: RoleCreateNestedOneWithoutUsersInput
     violations?: ViolationCreateNestedManyWithoutStudentInput
     users_A?: UserCreateNestedManyWithoutUsers_BInput
     users_B?: UserCreateNestedManyWithoutUsers_AInput
+    class?: ClassCreateNestedOneWithoutStudentsInput
+    major?: MajorCreateNestedOneWithoutStudentsInput
+    role?: RoleCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutAcademicYearInput = {
@@ -23506,11 +23527,11 @@ export namespace Prisma {
     parentPhone?: string | null
     position?: string | null
     relation?: string | null
-    roleId: string
+    roleId?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     payments?: PaymentUncheckedCreateNestedManyWithoutStudentInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutTeacherInput
@@ -23759,18 +23780,18 @@ export namespace Prisma {
     position?: string | null
     relation?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     payments?: PaymentCreateNestedManyWithoutStudentInput
     schedules?: ScheduleCreateNestedManyWithoutTeacherInput
-    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
-    class?: ClassCreateNestedOneWithoutStudentsInput
-    role: RoleCreateNestedOneWithoutUsersInput
     violations?: ViolationCreateNestedManyWithoutStudentInput
     users_A?: UserCreateNestedManyWithoutUsers_BInput
     users_B?: UserCreateNestedManyWithoutUsers_AInput
+    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
+    class?: ClassCreateNestedOneWithoutStudentsInput
+    role?: RoleCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutMajorInput = {
@@ -23795,11 +23816,11 @@ export namespace Prisma {
     parentPhone?: string | null
     position?: string | null
     relation?: string | null
-    roleId: string
+    roleId?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     payments?: PaymentUncheckedCreateNestedManyWithoutStudentInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutTeacherInput
@@ -23992,18 +24013,18 @@ export namespace Prisma {
     position?: string | null
     relation?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     payments?: PaymentCreateNestedManyWithoutStudentInput
     schedules?: ScheduleCreateNestedManyWithoutTeacherInput
-    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
-    major?: MajorCreateNestedOneWithoutStudentsInput
-    role: RoleCreateNestedOneWithoutUsersInput
     violations?: ViolationCreateNestedManyWithoutStudentInput
     users_A?: UserCreateNestedManyWithoutUsers_BInput
     users_B?: UserCreateNestedManyWithoutUsers_AInput
+    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
+    major?: MajorCreateNestedOneWithoutStudentsInput
+    role?: RoleCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutClassInput = {
@@ -24028,11 +24049,11 @@ export namespace Prisma {
     parentPhone?: string | null
     position?: string | null
     relation?: string | null
-    roleId: string
+    roleId?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     payments?: PaymentUncheckedCreateNestedManyWithoutStudentInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutTeacherInput
@@ -24445,18 +24466,18 @@ export namespace Prisma {
     position?: string | null
     relation?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     payments?: PaymentCreateNestedManyWithoutStudentInput
-    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
-    class?: ClassCreateNestedOneWithoutStudentsInput
-    major?: MajorCreateNestedOneWithoutStudentsInput
-    role: RoleCreateNestedOneWithoutUsersInput
     violations?: ViolationCreateNestedManyWithoutStudentInput
     users_A?: UserCreateNestedManyWithoutUsers_BInput
     users_B?: UserCreateNestedManyWithoutUsers_AInput
+    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
+    class?: ClassCreateNestedOneWithoutStudentsInput
+    major?: MajorCreateNestedOneWithoutStudentsInput
+    role?: RoleCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutSchedulesInput = {
@@ -24482,11 +24503,11 @@ export namespace Prisma {
     parentPhone?: string | null
     position?: string | null
     relation?: string | null
-    roleId: string
+    roleId?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     payments?: PaymentUncheckedCreateNestedManyWithoutStudentInput
     violations?: ViolationUncheckedCreateNestedManyWithoutStudentInput
@@ -24650,18 +24671,18 @@ export namespace Prisma {
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     payments?: PaymentUpdateManyWithoutStudentNestedInput
-    academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
-    class?: ClassUpdateOneWithoutStudentsNestedInput
-    major?: MajorUpdateOneWithoutStudentsNestedInput
-    role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     violations?: ViolationUpdateManyWithoutStudentNestedInput
     users_A?: UserUpdateManyWithoutUsers_BNestedInput
     users_B?: UserUpdateManyWithoutUsers_ANestedInput
+    academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
+    class?: ClassUpdateOneWithoutStudentsNestedInput
+    major?: MajorUpdateOneWithoutStudentsNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSchedulesInput = {
@@ -24687,11 +24708,11 @@ export namespace Prisma {
     parentPhone?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: StringFieldUpdateOperationsInput | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutStudentNestedInput
     violations?: ViolationUncheckedUpdateManyWithoutStudentNestedInput
@@ -24749,18 +24770,18 @@ export namespace Prisma {
     position?: string | null
     relation?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     payments?: PaymentCreateNestedManyWithoutStudentInput
     schedules?: ScheduleCreateNestedManyWithoutTeacherInput
-    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
-    class?: ClassCreateNestedOneWithoutStudentsInput
-    major?: MajorCreateNestedOneWithoutStudentsInput
-    role: RoleCreateNestedOneWithoutUsersInput
     violations?: ViolationCreateNestedManyWithoutStudentInput
     users_A?: UserCreateNestedManyWithoutUsers_BInput
     users_B?: UserCreateNestedManyWithoutUsers_AInput
+    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
+    class?: ClassCreateNestedOneWithoutStudentsInput
+    major?: MajorCreateNestedOneWithoutStudentsInput
+    role?: RoleCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutAttendancesInput = {
@@ -24786,11 +24807,11 @@ export namespace Prisma {
     parentPhone?: string | null
     position?: string | null
     relation?: string | null
-    roleId: string
+    roleId?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     payments?: PaymentUncheckedCreateNestedManyWithoutStudentInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutTeacherInput
     violations?: ViolationUncheckedCreateNestedManyWithoutStudentInput
@@ -24870,18 +24891,18 @@ export namespace Prisma {
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     payments?: PaymentUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUpdateManyWithoutTeacherNestedInput
-    academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
-    class?: ClassUpdateOneWithoutStudentsNestedInput
-    major?: MajorUpdateOneWithoutStudentsNestedInput
-    role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     violations?: ViolationUpdateManyWithoutStudentNestedInput
     users_A?: UserUpdateManyWithoutUsers_BNestedInput
     users_B?: UserUpdateManyWithoutUsers_ANestedInput
+    academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
+    class?: ClassUpdateOneWithoutStudentsNestedInput
+    major?: MajorUpdateOneWithoutStudentsNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAttendancesInput = {
@@ -24907,11 +24928,11 @@ export namespace Prisma {
     parentPhone?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: StringFieldUpdateOperationsInput | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     payments?: PaymentUncheckedUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutTeacherNestedInput
     violations?: ViolationUncheckedUpdateManyWithoutStudentNestedInput
@@ -25091,18 +25112,18 @@ export namespace Prisma {
     position?: string | null
     relation?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     payments?: PaymentCreateNestedManyWithoutStudentInput
     schedules?: ScheduleCreateNestedManyWithoutTeacherInput
+    users_A?: UserCreateNestedManyWithoutUsers_BInput
+    users_B?: UserCreateNestedManyWithoutUsers_AInput
     academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
     class?: ClassCreateNestedOneWithoutStudentsInput
     major?: MajorCreateNestedOneWithoutStudentsInput
-    role: RoleCreateNestedOneWithoutUsersInput
-    users_A?: UserCreateNestedManyWithoutUsers_BInput
-    users_B?: UserCreateNestedManyWithoutUsers_AInput
+    role?: RoleCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutViolationsInput = {
@@ -25128,11 +25149,11 @@ export namespace Prisma {
     parentPhone?: string | null
     position?: string | null
     relation?: string | null
-    roleId: string
+    roleId?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     payments?: PaymentUncheckedCreateNestedManyWithoutStudentInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutTeacherInput
@@ -25233,18 +25254,18 @@ export namespace Prisma {
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     payments?: PaymentUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUpdateManyWithoutTeacherNestedInput
+    users_A?: UserUpdateManyWithoutUsers_BNestedInput
+    users_B?: UserUpdateManyWithoutUsers_ANestedInput
     academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
     class?: ClassUpdateOneWithoutStudentsNestedInput
     major?: MajorUpdateOneWithoutStudentsNestedInput
-    role?: RoleUpdateOneRequiredWithoutUsersNestedInput
-    users_A?: UserUpdateManyWithoutUsers_BNestedInput
-    users_B?: UserUpdateManyWithoutUsers_ANestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutViolationsInput = {
@@ -25270,11 +25291,11 @@ export namespace Prisma {
     parentPhone?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: StringFieldUpdateOperationsInput | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutTeacherNestedInput
@@ -25405,18 +25426,18 @@ export namespace Prisma {
     position?: string | null
     relation?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     attendances?: AttendanceCreateNestedManyWithoutStudentInput
     schedules?: ScheduleCreateNestedManyWithoutTeacherInput
-    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
-    class?: ClassCreateNestedOneWithoutStudentsInput
-    major?: MajorCreateNestedOneWithoutStudentsInput
-    role: RoleCreateNestedOneWithoutUsersInput
     violations?: ViolationCreateNestedManyWithoutStudentInput
     users_A?: UserCreateNestedManyWithoutUsers_BInput
     users_B?: UserCreateNestedManyWithoutUsers_AInput
+    academicYear?: AcademicYearCreateNestedOneWithoutStudentsInput
+    class?: ClassCreateNestedOneWithoutStudentsInput
+    major?: MajorCreateNestedOneWithoutStudentsInput
+    role?: RoleCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutPaymentsInput = {
@@ -25442,11 +25463,11 @@ export namespace Prisma {
     parentPhone?: string | null
     position?: string | null
     relation?: string | null
-    roleId: string
+    roleId?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
     attendances?: AttendanceUncheckedCreateNestedManyWithoutStudentInput
     schedules?: ScheduleUncheckedCreateNestedManyWithoutTeacherInput
     violations?: ViolationUncheckedCreateNestedManyWithoutStudentInput
@@ -25520,18 +25541,18 @@ export namespace Prisma {
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUpdateManyWithoutTeacherNestedInput
-    academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
-    class?: ClassUpdateOneWithoutStudentsNestedInput
-    major?: MajorUpdateOneWithoutStudentsNestedInput
-    role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     violations?: ViolationUpdateManyWithoutStudentNestedInput
     users_A?: UserUpdateManyWithoutUsers_BNestedInput
     users_B?: UserUpdateManyWithoutUsers_ANestedInput
+    academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
+    class?: ClassUpdateOneWithoutStudentsNestedInput
+    major?: MajorUpdateOneWithoutStudentsNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPaymentsInput = {
@@ -25557,11 +25578,11 @@ export namespace Prisma {
     parentPhone?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: StringFieldUpdateOperationsInput | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutTeacherNestedInput
     violations?: ViolationUncheckedUpdateManyWithoutStudentNestedInput
@@ -25665,9 +25686,9 @@ export namespace Prisma {
     position?: string | null
     relation?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
   }
 
   export type UserUpdateWithoutRoleInput = {
@@ -25691,18 +25712,18 @@ export namespace Prisma {
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     payments?: PaymentUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUpdateManyWithoutTeacherNestedInput
-    academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
-    class?: ClassUpdateOneWithoutStudentsNestedInput
-    major?: MajorUpdateOneWithoutStudentsNestedInput
     violations?: ViolationUpdateManyWithoutStudentNestedInput
     users_A?: UserUpdateManyWithoutUsers_BNestedInput
     users_B?: UserUpdateManyWithoutUsers_ANestedInput
+    academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
+    class?: ClassUpdateOneWithoutStudentsNestedInput
+    major?: MajorUpdateOneWithoutStudentsNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRoleInput = {
@@ -25729,9 +25750,9 @@ export namespace Prisma {
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutTeacherNestedInput
@@ -25764,9 +25785,9 @@ export namespace Prisma {
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AttendanceCreateManyStudentInput = {
@@ -25972,18 +25993,18 @@ export namespace Prisma {
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     payments?: PaymentUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUpdateManyWithoutTeacherNestedInput
+    violations?: ViolationUpdateManyWithoutStudentNestedInput
+    users_A?: UserUpdateManyWithoutUsers_BNestedInput
     academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
     class?: ClassUpdateOneWithoutStudentsNestedInput
     major?: MajorUpdateOneWithoutStudentsNestedInput
-    role?: RoleUpdateOneRequiredWithoutUsersNestedInput
-    violations?: ViolationUpdateManyWithoutStudentNestedInput
-    users_A?: UserUpdateManyWithoutUsers_BNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUsers_BInput = {
@@ -26009,11 +26030,11 @@ export namespace Prisma {
     parentPhone?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: StringFieldUpdateOperationsInput | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutTeacherNestedInput
@@ -26044,11 +26065,11 @@ export namespace Prisma {
     parentPhone?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: StringFieldUpdateOperationsInput | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUpdateWithoutUsers_AInput = {
@@ -26072,18 +26093,18 @@ export namespace Prisma {
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     payments?: PaymentUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUpdateManyWithoutTeacherNestedInput
+    violations?: ViolationUpdateManyWithoutStudentNestedInput
+    users_B?: UserUpdateManyWithoutUsers_ANestedInput
     academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
     class?: ClassUpdateOneWithoutStudentsNestedInput
     major?: MajorUpdateOneWithoutStudentsNestedInput
-    role?: RoleUpdateOneRequiredWithoutUsersNestedInput
-    violations?: ViolationUpdateManyWithoutStudentNestedInput
-    users_B?: UserUpdateManyWithoutUsers_ANestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutUsers_AInput = {
@@ -26109,11 +26130,11 @@ export namespace Prisma {
     parentPhone?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: StringFieldUpdateOperationsInput | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutTeacherNestedInput
@@ -26144,11 +26165,11 @@ export namespace Prisma {
     parentPhone?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: StringFieldUpdateOperationsInput | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CalendarEventCreateManyAcademicYearInput = {
@@ -26203,11 +26224,11 @@ export namespace Prisma {
     parentPhone?: string | null
     position?: string | null
     relation?: string | null
-    roleId: string
+    roleId?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
   }
 
   export type ViolationTypeCreateManyAcademicYearInput = {
@@ -26337,18 +26358,18 @@ export namespace Prisma {
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     payments?: PaymentUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUpdateManyWithoutTeacherNestedInput
-    class?: ClassUpdateOneWithoutStudentsNestedInput
-    major?: MajorUpdateOneWithoutStudentsNestedInput
-    role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     violations?: ViolationUpdateManyWithoutStudentNestedInput
     users_A?: UserUpdateManyWithoutUsers_BNestedInput
     users_B?: UserUpdateManyWithoutUsers_ANestedInput
+    class?: ClassUpdateOneWithoutStudentsNestedInput
+    major?: MajorUpdateOneWithoutStudentsNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAcademicYearInput = {
@@ -26373,11 +26394,11 @@ export namespace Prisma {
     parentPhone?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: StringFieldUpdateOperationsInput | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutTeacherNestedInput
@@ -26408,11 +26429,11 @@ export namespace Prisma {
     parentPhone?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: StringFieldUpdateOperationsInput | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ViolationTypeUpdateWithoutAcademicYearInput = {
@@ -26480,11 +26501,11 @@ export namespace Prisma {
     parentPhone?: string | null
     position?: string | null
     relation?: string | null
-    roleId: string
+    roleId?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
   }
 
   export type ClassUpdateWithoutMajorInput = {
@@ -26567,18 +26588,18 @@ export namespace Prisma {
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     payments?: PaymentUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUpdateManyWithoutTeacherNestedInput
-    academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
-    class?: ClassUpdateOneWithoutStudentsNestedInput
-    role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     violations?: ViolationUpdateManyWithoutStudentNestedInput
     users_A?: UserUpdateManyWithoutUsers_BNestedInput
     users_B?: UserUpdateManyWithoutUsers_ANestedInput
+    academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
+    class?: ClassUpdateOneWithoutStudentsNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMajorInput = {
@@ -26603,11 +26624,11 @@ export namespace Prisma {
     parentPhone?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: StringFieldUpdateOperationsInput | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutTeacherNestedInput
@@ -26638,11 +26659,11 @@ export namespace Prisma {
     parentPhone?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: StringFieldUpdateOperationsInput | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ScheduleCreateManyClassInput = {
@@ -26678,11 +26699,11 @@ export namespace Prisma {
     parentPhone?: string | null
     position?: string | null
     relation?: string | null
-    roleId: string
+    roleId?: string | null
     startDate?: Date | string | null
-    status?: string | null
     studentIds?: UserCreatestudentIdsInput | string[]
     updatedAt?: Date | string
+    status?: string | null
   }
 
   export type ViolationCreateManyClassInput = {
@@ -26754,18 +26775,18 @@ export namespace Prisma {
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUpdateManyWithoutStudentNestedInput
     payments?: PaymentUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUpdateManyWithoutTeacherNestedInput
-    academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
-    major?: MajorUpdateOneWithoutStudentsNestedInput
-    role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     violations?: ViolationUpdateManyWithoutStudentNestedInput
     users_A?: UserUpdateManyWithoutUsers_BNestedInput
     users_B?: UserUpdateManyWithoutUsers_ANestedInput
+    academicYear?: AcademicYearUpdateOneWithoutStudentsNestedInput
+    major?: MajorUpdateOneWithoutStudentsNestedInput
+    role?: RoleUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClassInput = {
@@ -26790,11 +26811,11 @@ export namespace Prisma {
     parentPhone?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: StringFieldUpdateOperationsInput | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
     attendances?: AttendanceUncheckedUpdateManyWithoutStudentNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutStudentNestedInput
     schedules?: ScheduleUncheckedUpdateManyWithoutTeacherNestedInput
@@ -26825,11 +26846,11 @@ export namespace Prisma {
     parentPhone?: NullableStringFieldUpdateOperationsInput | string | null
     position?: NullableStringFieldUpdateOperationsInput | string | null
     relation?: NullableStringFieldUpdateOperationsInput | string | null
-    roleId?: StringFieldUpdateOperationsInput | string
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
     startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: NullableStringFieldUpdateOperationsInput | string | null
     studentIds?: UserUpdatestudentIdsInput | string[]
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ViolationUpdateWithoutClassInput = {

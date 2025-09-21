@@ -128,7 +128,7 @@ export default function UserDataTable() {
     {
       accessorKey: "avatarUrl",
       header: "Avatar",
-      cell: ({ row }) => <img src={row.original.avatarUrl ?? "/default-avatar.png"} alt="Avatar" className="w-10 h-10 rounded-full object-cover" />,
+      cell: ({ row }) => <img src={row.original.avatarUrl ?? "https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png"} alt="Avatar" className="w-10 h-10 rounded-full object-cover" />,
     },
     {
       accessorKey: "name",
