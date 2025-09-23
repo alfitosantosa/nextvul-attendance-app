@@ -529,6 +529,32 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
                   </SelectContent>
                 </Select>
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="address">Alamat *</Label>
+                <Textarea id="address" placeholder="Alamat lengkap guru" {...register("address")} />
+                {errors.address && <p className="text-sm text-red-500">{errors.address.message}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label>Tahun Akademik *</Label>
+                <Select onValueChange={(value) => setValue("academicYearId", value)} value={watch("academicYearId")}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih tahun akademik" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {academicYearsLoading ? (
+                      <SelectItem value="" disabled>
+                        Loading...
+                      </SelectItem>
+                    ) : (
+                      academicYears.map((year: any) => (
+                        <SelectItem key={year.id} value={year.id}>
+                          {year.year}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </>
         );
