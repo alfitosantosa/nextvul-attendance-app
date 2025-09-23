@@ -22,7 +22,8 @@ const navigationItems = [
   { href: "/dashboard/violations", label: "Pelanggaran" },
   { href: "/dashboard/payments", label: "Pembayaran" },
   { href: "/teacher/schedule", label: "Schedule for Teacher" },
-  { href: "/student/attendance/cmejijuzl0001nv9gw9v0mt3a", label: "Attendance for Student" },
+  { href: "/student/attendance/cmftrvnq5000lgq1tauteunhn", label: "Attendance for Student" },
+  { href: "/student/schedule/cmftrvnq5000lgq1tauteunhn", label: "Schedule for Student" },
 
   // { href: "/dashboard/teachers", label: "Guru" },
   // { href: "/dashboard/students", label: "Siswa" },
