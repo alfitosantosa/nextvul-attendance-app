@@ -18,7 +18,7 @@ export default function TeacherAttendancePage() {
   const today = new Date().getDay();
   const [selectedDay, setSelectedDay] = useState<string>(today.toString());
 
-  const { data: scheduleData = [], isLoading: isLoadingSchedule, error: scheduleError } = useGetScheduleByIdTeacher("cmeh3pgni000ggqr6dnurzoaf");
+  const { data: scheduleData = [], isLoading: isLoadingSchedule, error: scheduleError } = useGetScheduleByIdTeacher("cmfts2oct000pgq1tnt2wrvyq");
 
   const getDayName = (dayOfWeek: number) => {
     const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
