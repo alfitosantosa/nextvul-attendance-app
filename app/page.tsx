@@ -327,14 +327,14 @@ export default function Home() {
                 <InfoItem
                   icon={GraduationCap}
                   label="Academic Information"
-                  value={user?.class ? `Class: ${user.class}` : "No class assigned"}
+                  value={user?.class?.name ? `Class: ${user.class.name}` : "No class assigned"}
                   bgColor="bg-gradient-to-r from-amber-50 to-orange-50"
                   iconColor="text-amber-600"
                   textColor="text-amber-800"
                   labelColor="text-amber-600"
                 />
 
-                {user?.major && <InfoItem icon={Award} label="Major" value={user.major} bgColor="bg-gradient-to-r from-cyan-50 to-teal-50" iconColor="text-cyan-600" textColor="text-cyan-800" labelColor="text-cyan-600" />}
+                {user?.major?.name && <InfoItem icon={Award} label="Major" value={user.major.name} bgColor="bg-gradient-to-r from-cyan-50 to-teal-50" iconColor="text-cyan-600" textColor="text-cyan-800" labelColor="text-cyan-600" />}
               </CardContent>
             </Card>
           </div>
