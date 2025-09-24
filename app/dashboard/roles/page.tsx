@@ -52,8 +52,12 @@ const availablePermissions = [
   { id: "dashboard_admin", label: "Dashboard Admin" },
   { id: "dashboard_attendance", label: "Dashboard Attendance" },
   { id: "attendance_for_teacher", label: "Schedule for Teacher" },
+  { id: "attendance_for_Student", label: "Schedule for Student" },
   { id: "attendance_for_student", label: "Attendance for Student" },
   { id: "violation_for_teacher", label: "Violation for Teacher" },
+  { id: "violation_for_student", label: "Violation for Student" },
+  { id: "payment_for_student", label: "Payment for Student" },
+  { id: "dashboard_parent", label: "Dashboard Parent" },
 ];
 
 // Create/Edit Dialog Component
