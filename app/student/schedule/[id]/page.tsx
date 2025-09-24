@@ -364,13 +364,13 @@ export default function ScheduleDataTable() {
 
   //use get class by id user for get class id
   // Get class data for the current user (replace with actual user id or get from auth/session)
-  const { data: classData } = useClassByIdUser("cmftrvnq5000lgq1tauteunhn");
+  const { data: classData, isLoading } = useClassByIdUser("cmftrvnq5000lgq1tauteunhn");
 
   // Get the class id from classData
   const classId = classData?.id;
 
   // Fetch schedules by class id if available
-  const { data: schedules = [], isLoading, refetch } = useGetSchedulesByIdClass(classId ?? "");
+  const { data: schedules = [], refetch } = useGetSchedulesByIdClass(classId ?? "");
   const { data: classes = [] } = useGetClasses();
 
   const handleSuccess = () => {
@@ -623,7 +623,7 @@ export default function ScheduleDataTable() {
             </div>
 
             {/* Class Filter */}
-            <Select value={classFilter} onValueChange={setClassFilter}>
+            {/* <Select value={classFilter} onValueChange={setClassFilter}>
               <SelectTrigger className="w-[140px]">
                 <SelectValue placeholder="Filter Kelas" />
               </SelectTrigger>
@@ -635,7 +635,7 @@ export default function ScheduleDataTable() {
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>
+            </Select> */}
 
             {/* Day Filter */}
             <Select value={dayFilter} onValueChange={setDayFilter}>
