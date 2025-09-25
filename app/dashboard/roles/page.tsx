@@ -49,18 +49,15 @@ type RoleFormValues = z.infer<typeof roleSchema>;
 
 // Available permissions (sesuaikan dengan sistem Anda)
 const availablePermissions = [
-  { id: "user_read", label: "Lihat User" },
-  { id: "user_create", label: "Buat User" },
-  { id: "user_update", label: "Update User" },
-  { id: "user_delete", label: "Hapus User" },
-  { id: "role_read", label: "Lihat Role" },
-  { id: "role_create", label: "Buat Role" },
-  { id: "role_update", label: "Update Role" },
-  { id: "role_delete", label: "Hapus Role" },
-  { id: "class_read", label: "Lihat Kelas" },
-  { id: "class_create", label: "Buat Kelas" },
-  { id: "class_update", label: "Update Kelas" },
-  { id: "class_delete", label: "Hapus Kelas" },
+  { id: "dashboard_admin", label: "Dashboard Admin" },
+  { id: "dashboard_attendance", label: "Dashboard Attendance" },
+  { id: "attendance_for_teacher", label: "Schedule for Teacher" },
+  { id: "attendance_for_Student", label: "Schedule for Student" },
+  { id: "attendance_for_student", label: "Attendance for Student" },
+  { id: "violation_for_teacher", label: "Violation for Teacher" },
+  { id: "violation_for_student", label: "Violation for Student" },
+  { id: "payment_for_student", label: "Payment for Student" },
+  { id: "dashboard_parent", label: "Dashboard Parent" },
 ];
 
 // Create/Edit Dialog Component

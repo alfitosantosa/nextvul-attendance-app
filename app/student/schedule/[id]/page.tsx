@@ -28,6 +28,7 @@ import { useGetAcademicYears } from "@/app/hooks/useAcademicYear";
 import Navbar from "@/components/navbar";
 import { useGetSchedulesByIdClass } from "@/app/hooks/useScheduleByIdClass";
 import { useClassByIdUser } from "@/app/hooks/useClassByIdUser";
+import { useGetStudentById } from "@/app/hooks/useGetStudentById";
 
 // Type definitions
 export type ScheduleData = {
@@ -364,13 +365,18 @@ export default function ScheduleDataTable() {
 
   //use get class by id user for get class id
   // Get class data for the current user (replace with actual user id or get from auth/session)
-  const { data: classData } = useClassByIdUser("cmftrvnq5000lgq1tauteunhn");
+
+  const studentId = "cmftrvnq5000lgq1tauteunhn";
+
+  const { data: classData, isLoading } = useClassByIdUser(studentId);
+
+  const { data: studentData } = useGetStudentById(studentId);
 
   // Get the class id from classData
   const classId = classData?.id;
 
   // Fetch schedules by class id if available
-  const { data: schedules = [], isLoading, refetch } = useGetSchedulesByIdClass(classId ?? "");
+  const { data: schedules = [], refetch } = useGetSchedulesByIdClass(classId ?? "");
   const { data: classes = [] } = useGetClasses();
 
   const handleSuccess = () => {
@@ -613,6 +619,19 @@ export default function ScheduleDataTable() {
       <Navbar />
       <div className="mx-auto my-8 p-6 max-w-7xl">
         <div className="font-bold text-3xl mb-6">Jadwal Pelajaran</div>
+        {/* student data  */}
+
+        {studentData && (
+          <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="flex items-center gap-3">
+              <Users className="h-6 w-6 text-blue-600" />
+              <div>
+                <h2 className="text-xl font-semibold text-blue-900">{studentData.name}</h2>
+                {studentData.email && <p className="text-sm text-blue-700">{studentData.email}</p>}
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="flex items-center justify-between py-4">
           <div className="flex items-center space-x-2 flex-wrap gap-y-2">
@@ -623,7 +642,7 @@ export default function ScheduleDataTable() {
             </div>
 
             {/* Class Filter */}
-            <Select value={classFilter} onValueChange={setClassFilter}>
+            {/* <Select value={classFilter} onValueChange={setClassFilter}>
               <SelectTrigger className="w-[140px]">
                 <SelectValue placeholder="Filter Kelas" />
               </SelectTrigger>
@@ -635,7 +654,7 @@ export default function ScheduleDataTable() {
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>
+            </Select> */}
 
             {/* Day Filter */}
             <Select value={dayFilter} onValueChange={setDayFilter}>
