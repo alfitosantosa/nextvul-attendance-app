@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Search, User } from "lucide-react";
+import { Search, User, X, Upload, Eye } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,19 +11,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
 
 // Import hooks
-import { useCreateUser, useUpdateUser, useDeleteUser } from "@/app/hooks/useUsers";
+import { useGetUsers, useCreateUser, useUpdateUser, useDeleteUser } from "@/app/hooks/useUsers";
 import { useGetRoles } from "@/app/hooks/useRoles";
 import { useGetClasses } from "@/app/hooks/useClass";
 import { useGetAcademicYears } from "@/app/hooks/useAcademicYear";
 import { useGetMajors } from "@/app/hooks/useMajors";
 import { useGetClerk } from "@/app/hooks/useClerk";
-import axios from "axios";
 
 // Type definitions
 export type UserData = {
@@ -76,6 +76,7 @@ export type UserData = {
     name: string;
   };
   academicYear?: {
+    year: string;
     id: string;
     name: string;
   };
@@ -122,10 +123,267 @@ const userSchema = z.object({
   employeeId: z.string().optional(),
   position: z.string().optional(),
 
+  studentIds: z.array(z.string()).optional(),
   relation: z.string().optional(),
 });
 
 type UserFormValues = z.infer<typeof userSchema>;
+
+// Student Selector Component for Parent
+function StudentSelector({ students, selectedStudentIds = [], onSelectionChange, disabled = false }: { students: UserData[]; selectedStudentIds?: string[]; onSelectionChange: (studentIds: string[]) => void; disabled?: boolean }) {
+  const [open, setOpen] = React.useState(false);
+  const [searchTerm, setSearchTerm] = React.useState("");
+
+  const filteredStudents = React.useMemo(() => {
+    if (!searchTerm) return students;
+
+    return students.filter((student) => {
+      const name = student.name.toLowerCase();
+      const nisn = student.nisn?.toLowerCase() || "";
+      const className = student.class?.name?.toLowerCase() || "";
+      return name.includes(searchTerm.toLowerCase()) || nisn.includes(searchTerm.toLowerCase()) || className.includes(searchTerm.toLowerCase());
+    });
+  }, [students, searchTerm]);
+
+  const selectedStudents = React.useMemo(() => {
+    return students.filter((student) => selectedStudentIds.includes(student.id));
+  }, [students, selectedStudentIds]);
+
+  const toggleStudent = (studentId: string) => {
+    if (selectedStudentIds.includes(studentId)) {
+      onSelectionChange(selectedStudentIds.filter((id) => id !== studentId));
+    } else {
+      onSelectionChange([...selectedStudentIds, studentId]);
+    }
+  };
+
+  const removeStudent = (studentId: string) => {
+    onSelectionChange(selectedStudentIds.filter((id) => id !== studentId));
+  };
+
+  return (
+    <div className="space-y-2">
+      <Label>Siswa Yang Diasuh *</Label>
+
+      {/* Selected Students Display */}
+      {selectedStudents.length > 0 && (
+        <div className="flex flex-wrap gap-2 p-3 border rounded-md bg-muted/30">
+          {selectedStudents.map((student) => (
+            <Badge key={student.id} variant="secondary" className="flex items-center gap-2 py-1.5 px-3">
+              <div className="flex flex-col items-start">
+                <span className="font-medium">{student.name}</span>
+                <span className="text-xs text-muted-foreground">
+                  NISN: {student.nisn} • {student.class?.name || "Tanpa Kelas"}
+                </span>
+              </div>
+              <button type="button" onClick={() => removeStudent(student.id)} disabled={disabled} className="ml-1 hover:bg-destructive/20 rounded-full p-0.5">
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          ))}
+        </div>
+      )}
+
+      {/* Select Button */}
+      <Button type="button" variant="outline" onClick={() => setOpen(true)} disabled={disabled} className="w-full justify-start">
+        <Search className="h-4 w-4 mr-2" />
+        {selectedStudents.length === 0 ? "Pilih Siswa" : `${selectedStudents.length} siswa dipilih`}
+      </Button>
+
+      {/* Student Selection Dialog */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Pilih Siswa</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {/* Search Input */}
+            <div className="relative">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input placeholder="Cari nama, NISN, atau kelas..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-8" />
+            </div>
+
+            {/* Student List */}
+            <div className="max-h-96 overflow-y-auto space-y-2 border rounded-md p-2">
+              {filteredStudents.length === 0 ? (
+                <div className="text-center p-8 text-muted-foreground">{searchTerm ? "Tidak ada siswa yang cocok dengan pencarian" : "Tidak ada siswa tersedia"}</div>
+              ) : (
+                filteredStudents.map((student) => (
+                  <div key={student.id} className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-muted cursor-pointer" onClick={() => toggleStudent(student.id)}>
+                    <Checkbox checked={selectedStudentIds.includes(student.id)} onCheckedChange={() => toggleStudent(student.id)} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium">{student.name}</p>
+                      <div className="flex gap-2 mt-1">
+                        <Badge variant="outline" className="text-xs">
+                          NISN: {student.nisn || "N/A"}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          {student.class?.name || "Tanpa Kelas"}
+                        </Badge>
+                        {student.academicYear && (
+                          <Badge variant="outline" className="text-xs">
+                            {student.academicYear.year}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Footer with count */}
+            <div className="flex items-center justify-between pt-2 border-t">
+              <p className="text-sm text-muted-foreground">{selectedStudentIds.length} siswa dipilih</p>
+              <div className="flex gap-2">
+                <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                  Selesai
+                </Button>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+// Avatar Upload Component with Preview
+function AvatarUpload({ currentAvatarUrl, onUploadSuccess, disabled = false }: { currentAvatarUrl?: string; onUploadSuccess: (url: string) => void; disabled?: boolean }) {
+  const [previewUrl, setPreviewUrl] = React.useState<string | null>(currentAvatarUrl || null);
+  const [isUploading, setIsUploading] = React.useState(false);
+  const [showPreview, setShowPreview] = React.useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (currentAvatarUrl) {
+      setPreviewUrl(currentAvatarUrl);
+    }
+  }, [currentAvatarUrl]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File tidak boleh lebih dari 5MB");
+      return;
+    }
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("File harus berupa gambar");
+      return;
+    }
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleUpload = async () => {
+    const file = fileInputRef.current?.files?.[0];
+    if (!file) {
+      toast.error("Silakan pilih file terlebih dahulu");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_FILESERVER_URL}`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to upload avatar");
+      }
+
+      const data = await res.json();
+      onUploadSuccess(data.fileUrl);
+      toast.success("Avatar berhasil diunggah!");
+    } catch (error: any) {
+      toast.error(error.message || "Gagal mengunggah avatar");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleRemove = () => {
+    setPreviewUrl(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <Label htmlFor="picture">Avatar</Label>
+
+      <div className="flex gap-4 items-start">
+        {/* Preview */}
+        <div className="relative">
+          {previewUrl ? (
+            <div className="relative group">
+              <img src={previewUrl} alt="Avatar preview" className="w-24 h-24 rounded-full object-cover border-2" />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button type="button" size="sm" variant="ghost" className="text-white hover:text-white" onClick={() => setShowPreview(true)}>
+                  <Eye className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center border-2 border-dashed">
+              <User className="h-10 w-10 text-muted-foreground" />
+            </div>
+          )}
+        </div>
+
+        {/* Upload Controls */}
+        <div className="flex-1 space-y-2">
+          <Input ref={fileInputRef} id="picture" type="file" accept="image/*" onChange={handleFileChange} disabled={disabled || isUploading} />
+
+          <div className="flex gap-2">
+            <Button type="button" variant="outline" onClick={handleUpload} disabled={disabled || isUploading || !fileInputRef.current?.files?.[0]} className="flex-1">
+              <Upload className="h-4 w-4 mr-2" />
+              {isUploading ? "Mengunggah..." : "Upload Avatar"}
+            </Button>
+
+            {previewUrl && (
+              <Button type="button" variant="outline" onClick={handleRemove} disabled={disabled || isUploading}>
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+
+          <p className="text-xs text-muted-foreground">Format: JPG, PNG, GIF. Maksimal 5MB.</p>
+        </div>
+      </div>
+
+      {/* Preview Dialog */}
+      {previewUrl && (
+        <Dialog open={showPreview} onOpenChange={setShowPreview}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Preview Avatar</DialogTitle>
+            </DialogHeader>
+            <div className="flex items-center justify-center p-4">
+              <img src={previewUrl} alt="Avatar preview" className="max-w-full max-h-[70vh] rounded-lg" />
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
+  );
+}
 
 // Clerk User Selector Component
 function ClerkUserSelector({ onSelect, selectedClerkId, disabled = false }: { onSelect: (clerkUser: ClerkUser | null) => void; selectedClerkId?: string; disabled?: boolean }) {
@@ -144,8 +402,8 @@ function ClerkUserSelector({ onSelect, selectedClerkId, disabled = false }: { on
   }, [clerkUsers, searchTerm]);
 
   const selectedUser = React.useMemo(() => {
-    if (!selectedClerkId) return "";
-    return clerkUsers.find((user: ClerkUser) => user.id === selectedClerkId) || "";
+    if (!selectedClerkId) return null;
+    return clerkUsers.find((user: ClerkUser) => user.id === selectedClerkId);
   }, [clerkUsers, selectedClerkId]);
 
   const handleSelect = (clerkUser: ClerkUser) => {
@@ -157,7 +415,6 @@ function ClerkUserSelector({ onSelect, selectedClerkId, disabled = false }: { on
   const handleClear = () => {
     onSelect(null);
     setSearchTerm("");
-    clerkUsers(null);
   };
 
   return (
@@ -165,7 +422,7 @@ function ClerkUserSelector({ onSelect, selectedClerkId, disabled = false }: { on
       <Label>Clerk User (Opsional)</Label>
       <div className="flex gap-2">
         <Button type="button" variant="outline" onClick={() => setOpen(true)} disabled={disabled || clerkUsersLoading} className="flex-1 justify-start">
-          {clerkUsersLoading ? "Loading..." : selectedUser ? `${selectedUser.first_name} (${selectedUser.email_addresses[0]?.email_address})` : "Pilih Clerk User"}
+          {clerkUsersLoading ? "Loading..." : selectedUser ? `${selectedUser.first_name} ${selectedUser.last_name} (${selectedUser.email_addresses[0]?.email_address})` : "Pilih Clerk User"}
         </Button>
         {selectedUser && (
           <Button type="button" variant="outline" size="sm" onClick={handleClear} disabled={disabled}>
@@ -233,10 +490,15 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
   const updateUser = useUpdateUser();
 
   // Fetch data inside the component
+  const { data: users = [], isLoading: userLoading } = useGetUsers();
   const { data: roles = [], isLoading: rolesLoading } = useGetRoles();
   const { data: classes = [], isLoading: classesLoading } = useGetClasses();
   const { data: academicYears = [], isLoading: academicYearsLoading } = useGetAcademicYears();
   const { data: majors = [], isLoading: majorsLoading } = useGetMajors();
+
+  const students = React.useMemo(() => {
+    return users.filter((user: any) => user.role?.name === "Student");
+  }, [users]);
 
   const {
     register,
@@ -249,11 +511,13 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
     resolver: zodResolver(userSchema as any),
     defaultValues: {
       status: "active",
+      studentIds: [],
     },
   });
 
   const selectedRoleId = watch("roleId");
   const selectedClerkId = watch("clerkId");
+  const selectedStudentIds = watch("studentIds") || [];
   const selectedRole = roles.find((role: any) => role.id === selectedRoleId);
 
   React.useEffect(() => {
@@ -263,6 +527,7 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
       setValue("roleId", editData.roleId);
       setValue("clerkId", editData.clerkId || "");
       setValue("gender", editData.gender || "");
+      setValue("avatarUrl", editData.avatarUrl || "");
       setValue("nisn", editData.nisn || "");
       setValue("birthPlace", editData.birthPlace || "");
       setValue("birthDate", editData.birthDate ? new Date(editData.birthDate).toISOString().split("T")[0] : "");
@@ -275,10 +540,12 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
       setValue("status", editData.status || "active");
       setValue("employeeId", editData.employeeId || "");
       setValue("position", editData.position || "");
+      setValue("studentIds", editData.studentIds || []);
       setValue("relation", editData.relation || "");
     } else {
       reset({
         status: "active",
+        studentIds: [],
       });
     }
   }, [editData, setValue, reset]);
@@ -287,9 +554,15 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
     if (clerkUser) {
       setValue("clerkId", clerkUser.id);
       setValue("email", clerkUser.email_addresses[0]?.email_address || "");
+      setValue("name", `${clerkUser.first_name} ${clerkUser.last_name}`);
+      setValue("avatarUrl", clerkUser.image_url || "");
     } else {
       setValue("clerkId", "");
     }
+  };
+
+  const handleAvatarUpload = (url: string) => {
+    setValue("avatarUrl", url);
   };
 
   const onSubmit = async (data: UserFormValues) => {
@@ -313,29 +586,6 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
       onSuccess();
     } catch (error: any) {
       toast.error(error.message || "Terjadi kesalahan");
-    }
-  };
-
-  const onSubmitAvatar = async (file: File) => {
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const res = await fetch(`${process.env.NEXT_PUBLIC_FILESERVER_URL}`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to upload avatar");
-      }
-
-      const data = await res.json();
-
-      setValue("avatarUrl", data.fileUrl);
-      toast.success("Avatar berhasil diunggah!");
-    } catch (error: any) {
-      toast.error(error.message || "Gagal mengunggah avatar");
     }
   };
 
@@ -466,6 +716,9 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
                 <Label htmlFor="position">Jabatan</Label>
                 <Input id="position" placeholder="Guru Matematika" {...register("position")} />
               </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Tahun Akademik *</Label>
                 <Select onValueChange={(value) => setValue("academicYearId", value)} value={watch("academicYearId")}>
@@ -488,7 +741,7 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Wali Kelas *</Label>
+                <Label>Wali Kelas</Label>
                 <Select onValueChange={(value) => setValue("classId", value)} value={watch("classId")}>
                   <SelectTrigger>
                     <SelectValue placeholder="Pilih kelas" />
@@ -508,8 +761,11 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Wali Jurusan *</Label>
+                <Label>Wali Jurusan</Label>
                 <Select onValueChange={(value) => setValue("majorId", value)} value={watch("majorId")}>
                   <SelectTrigger>
                     <SelectValue placeholder="Pilih jurusan" />
@@ -534,27 +790,6 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
                 <Textarea id="address" placeholder="Alamat lengkap guru" {...register("address")} />
                 {errors.address && <p className="text-sm text-red-500">{errors.address.message}</p>}
               </div>
-              <div className="space-y-2">
-                <Label>Tahun Akademik *</Label>
-                <Select onValueChange={(value) => setValue("academicYearId", value)} value={watch("academicYearId")}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pilih tahun akademik" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {academicYearsLoading ? (
-                      <SelectItem value="" disabled>
-                        Loading...
-                      </SelectItem>
-                    ) : (
-                      academicYears.map((year: any) => (
-                        <SelectItem key={year.id} value={year.id}>
-                          {year.year}
-                        </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
             </div>
           </>
         );
@@ -562,6 +797,15 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
       case "parent":
         return (
           <>
+            {/* Student Selection for Parent */}
+            {userLoading ? (
+              <div className="flex items-center justify-center h-20 border rounded-md">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+              </div>
+            ) : (
+              <StudentSelector students={students} selectedStudentIds={selectedStudentIds} onSelectionChange={(studentIds) => setValue("studentIds", studentIds)} disabled={createUser.isPending || updateUser.isPending} />
+            )}
+
             <div className="space-y-2">
               <Label>Hubungan *</Label>
               <Select onValueChange={(value) => setValue("relation", value)} value={watch("relation")}>
@@ -574,6 +818,12 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
                   <SelectItem value="Guardian">Wali</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.relation && <p className="text-sm text-red-500">{errors.relation.message}</p>}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="address">Alamat</Label>
+              <Textarea id="address" placeholder="Alamat lengkap orang tua/wali" {...register("address")} />
             </div>
           </>
         );
@@ -662,6 +912,12 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
             </div>
           </div>
 
+          {/* Avatar Upload Section */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Foto Profil</h3>
+            <AvatarUpload currentAvatarUrl={watch("avatarUrl")} onUploadSuccess={handleAvatarUpload} disabled={createUser.isPending || updateUser.isPending} />
+          </div>
+
           {/* Role-specific fields */}
           {selectedRole && (
             <div className="space-y-4">
@@ -670,33 +926,8 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
             </div>
           )}
 
-          {/* input avatar url */}
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="picture">Avatar</Label>
-                <Input id="picture" type="file" accept="image/*" />
-                {errors.avatarUrl && <p className="text-sm text-red-500">{errors.avatarUrl.message}</p>}
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    const fileInput = document.getElementById("picture") as HTMLInputElement;
-                    const file = fileInput?.files?.[0];
-                    if (file) {
-                      onSubmitAvatar(file);
-                    }
-                  }}
-                  className="mt-2"
-                >
-                  Submit Avatar
-                </Button>
-              </div>
-            </div>
-          </div>
-
           <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={createUser.isPending || updateUser.isPending}>
               Batal
             </Button>
             <Button type="submit" disabled={createUser.isPending || updateUser.isPending}>
