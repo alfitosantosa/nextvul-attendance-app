@@ -762,6 +762,18 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
                 </Select>
               </div>
             </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="birthPlace">Tempat Lahir *</Label>
+                <Input id="birthPlace" placeholder="Jakarta" {...register("birthPlace")} />
+                {errors.birthPlace && <p className="text-sm text-red-500">{errors.birthPlace.message}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="birthDate">Tanggal Lahir *</Label>
+                <Input id="birthDate" type="date" {...register("birthDate")} />
+                {errors.birthDate && <p className="text-sm text-red-500">{errors.birthDate.message}</p>}
+              </div>
+            </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -790,6 +802,10 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
                 <Textarea id="address" placeholder="Alamat lengkap guru" {...register("address")} />
                 {errors.address && <p className="text-sm text-red-500">{errors.address.message}</p>}
               </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="parentPhone">No. Hanphone</Label>
+              <Input id="parentPhone" placeholder="08123456789" {...register("parentPhone")} />
             </div>
           </>
         );
