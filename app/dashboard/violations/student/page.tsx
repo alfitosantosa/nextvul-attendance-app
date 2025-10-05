@@ -2,37 +2,22 @@
 
 import * as React from "react";
 import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus, Pencil, Trash2, Calendar, User, AlertTriangle, Search, X, Check } from "lucide-react";
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Calendar, User, AlertTriangle, Search, X, Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-// Import hooks
-import { useGetViolations, useCreateViolation, useUpdateViolation, useDeleteViolation } from "@/app/hooks/useViolations";
-import { useGetTypeViolations } from "@/app/hooks/useTypeViolations";
-import { useGetClasses } from "@/app/hooks/useClass";
-import Navbar from "@/components/navbar";
-import { useGetUserById } from "@/app/hooks/useUsers";
-import { object } from "zod";
 import { useGetViolationsByIdStudent } from "@/app/hooks/useViolationsByIdStudent";
+import { useGetClasses } from "@/app/hooks/useClass";
+import { useGetStudentById } from "@/app/hooks/useGetStudentById";
+import Navbar from "@/components/navbar";
 
-// Type definitions
 export type ViolationData = {
   id: string;
   studentId: string;
@@ -63,130 +48,6 @@ export type ViolationData = {
   };
 };
 
-// Searchable Student Select Component
-interface SearchableStudentSelectProps {
-  students: any[];
-  value?: string;
-  onValueChange: (value: string) => void;
-  placeholder?: string;
-  disabled?: boolean;
-  className?: string;
-}
-
-function SearchableStudentSelect({ students, value, onValueChange, placeholder = "Pilih siswa...", disabled = false, className }: SearchableStudentSelectProps): React.ReactElement {
-  const [open, setOpen] = React.useState(false);
-  const [searchTerm, setSearchTerm] = React.useState("");
-
-  // Filter students based on search by name OR email
-  const [filteredStudents, setFilteredStudents] = React.useState(students);
-
-  React.useEffect(() => {
-    if (!searchTerm) {
-      setFilteredStudents(students);
-    } else {
-      const filtered = students.filter((student) => {
-        const searchValue = searchTerm.toLowerCase();
-        return student.name.toLowerCase().includes(searchValue) || (student.email && student.email.toLowerCase().includes(searchValue));
-      });
-      setFilteredStudents(filtered);
-    }
-  }, [students, searchTerm]);
-
-  // Find selected student
-  const selectedStudent = React.useMemo(() => {
-    if (!value) return null;
-    return students.find((student) => student.id === value) || null;
-  }, [students, value]);
-
-  const handleSelect = (student: any) => {
-    onValueChange(student.id);
-    setOpen(false);
-    setSearchTerm("");
-  };
-
-  const handleClear = () => {
-    onValueChange("");
-    setSearchTerm("");
-  };
-
-  React.useEffect(() => {
-    if (open) {
-      setSearchTerm("");
-    }
-  }, [open]);
-
-  React.useEffect(() => {
-    if (value && !students.some((student) => student.id === value)) {
-      onValueChange("");
-    }
-  }, [value, students, onValueChange]);
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open} className={cn("w-full justify-between h-auto min-h-10 px-3 py-2", !selectedStudent && "text-muted-foreground", className)} disabled={disabled}>
-          <div className="flex flex-1 items-center gap-2 overflow-hidden">
-            {selectedStudent ? (
-              <div className="flex flex-col items-start flex-1 min-w-0">
-                <span className="font-medium truncate w-full">{selectedStudent.name}</span>
-                <span className="text-xs text-muted-foreground truncate w-full">{selectedStudent.email}</span>
-              </div>
-            ) : (
-              <span className="truncate">{placeholder}</span>
-            )}
-          </div>
-          <div className="flex items-center gap-1 ml-2">
-            {selectedStudent && !disabled && <X className="h-4 w-4 opacity-50 hover:opacity-100 cursor-pointer" onClick={handleClear} />}
-            <ChevronDown className="h-4 w-4 opacity-50" />
-          </div>
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-full p-0" align="start">
-        <Command>
-          <div className="flex items-center border-b px-3">
-            <CommandInput
-              placeholder="Cari nama siswa..."
-              value={searchTerm}
-              onValueChange={setSearchTerm}
-              className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-            />
-          </div>
-          <CommandEmpty className="py-6 text-center text-sm">{searchTerm ? "Tidak ada siswa yang ditemukan" : "Tidak ada data siswa"}</CommandEmpty>
-          <CommandGroup className="max-h-60 overflow-auto">
-            {filteredStudents.map((student) => (
-              <CommandItem key={student.id} value={student.name} onSelect={() => handleSelect(student)} className="cursor-pointer">
-                <div className="flex items-center justify-between w-full">
-                  <div className="flex flex-col flex-1 min-w-0">
-                    <span className="font-medium truncate">{student.name}</span>
-                    <span className="text-xs text-muted-foreground truncate">{student.email}</span>
-                  </div>
-                  <Check className={cn("ml-2 h-4 w-4", value === student.id ? "opacity-100" : "opacity-0")} />
-                </div>
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-// Form schema
-const violationSchema = z.object({
-  studentId: z.string().min(1, "Siswa wajib dipilih"),
-  violationTypeId: z.string().min(1, "Jenis pelanggaran wajib dipilih"),
-  classId: z.string().min(1, "Kelas wajib dipilih"),
-  description: z.string().optional(),
-  status: z.string().min(1, "Status wajib dipilih"),
-  reportedBy: z.string().min(1, "Pelapor wajib diisi"),
-  date: z.string().min(1, "Tanggal kejadian wajib diisi"),
-  resolutionDate: z.string().optional(),
-  resolutionNotes: z.string().optional(),
-});
-
-type ViolationFormValues = z.infer<typeof violationSchema>;
-
-// Predefined status options
 const violationStatuses = [
   { value: "active", label: "Aktif" },
   { value: "resolved", label: "Selesai" },
@@ -194,251 +55,11 @@ const violationStatuses = [
   { value: "dismissed", label: "Dibatalkan" },
 ];
 
-// Create/Edit Dialog Component
-// function ViolationFormDialog({ open, onOpenChange, editData, onSuccess }: { open: boolean; onOpenChange: (open: boolean) => void; editData?: ViolationData | null; onSuccess: () => void }) {
-const studentId = "cmftrvnq5000lgq1tauteunhn";
-//   const createViolation = useCreateViolation();
-//   const updateViolation = useUpdateViolation();
-//   const { data: violationTypes } = useGetTypeViolations();
-//   const { data: classes } = useGetClasses();
-// const { data: usersData = [], isLoading: usersLoading } = useGetUserById(studentId);
-
-//   // Filter students from users data (role.name === "Student")
-//   const students = React.useMemo(() => {
-//     return usersData.filter((user: any) => user.role?.name === "Student");
-//   }, [usersData]);
-
-//   const {
-//     register,
-//     handleSubmit,
-//     setValue,
-//     watch,
-//     formState: { errors },
-//     reset,
-//   } = useForm<ViolationFormValues>({
-//     resolver: zodResolver(violationSchema),
-//     defaultValues: {
-//       status: "active",
-//       date: new Date().toISOString().split("T")[0],
-//     },
-//   });
-
-//   const selectedStudentId = watch("studentId");
-//   const selectedViolationTypeId = watch("violationTypeId");
-//   const selectedClassId = watch("classId");
-//   const selectedStatus = watch("status");
-
-//   React.useEffect(() => {
-//     if (editData) {
-//       setValue("studentId", editData.studentId);
-//       setValue("violationTypeId", editData.violationTypeId);
-//       setValue("classId", editData.classId);
-//       setValue("description", editData.description || "");
-//       setValue("status", editData.status);
-//       setValue("reportedBy", editData.reportedBy);
-//       setValue("date", editData.date.split("T")[0]);
-//       setValue("resolutionDate", editData.resolutionDate ? editData.resolutionDate.split("T")[0] : "");
-//       setValue("resolutionNotes", editData.resolutionNotes || "");
-//     } else {
-//       reset({
-//         status: "active",
-//         date: new Date().toISOString().split("T")[0],
-//       });
-//     }
-//   }, [editData, setValue, reset]);
-
-//   const onSubmit = async (data: ViolationFormValues) => {
-//     try {
-//       const formattedData = {
-//         ...data,
-//         date: new Date(data.date).toISOString(),
-//         resolutionDate: data.resolutionDate ? new Date(data.resolutionDate).toISOString() : null,
-//       };
-
-//       if (editData) {
-//         await updateViolation.mutateAsync({ id: editData.id, ...formattedData });
-//         toast.success("Pelanggaran berhasil diperbarui!");
-//       } else {
-//         await createViolation.mutateAsync(formattedData);
-//         toast.success("Pelanggaran berhasil dibuat!");
-//       }
-//       reset();
-//       onOpenChange(false);
-//       onSuccess();
-//     } catch (error: any) {
-//       toast.error(error.message || "Terjadi kesalahan");
-//     }
-//   };
-
-//   return (
-//     <Dialog open={open} onOpenChange={onOpenChange}>
-//       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-//         <DialogHeader>
-//           <DialogTitle>{editData ? "Edit Pelanggaran" : "Tambah Pelanggaran Baru"}</DialogTitle>
-//         </DialogHeader>
-
-//         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-//           <div className="grid grid-cols-2 gap-4">
-//             <div className="space-y-2">
-//               <Label>Siswa</Label>
-//               {usersLoading ? (
-//                 <div className="flex items-center justify-center h-10 border rounded-md">
-//                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-//                 </div>
-//               ) : (
-//                 <SearchableStudentSelect students={students} value={selectedStudentId} onValueChange={(value) => setValue("studentId", value)} placeholder="Cari nama siswa..." className="w-full" />
-//               )}
-//               {errors.studentId && <p className="text-sm text-red-500">{errors.studentId.message}</p>}
-//             </div>
-
-//             <div className="space-y-2">
-//               <Label>Kelas</Label>
-//               <Select value={selectedClassId} onValueChange={(value) => setValue("classId", value)}>
-//                 <SelectTrigger>
-//                   <SelectValue placeholder="Pilih Kelas" />
-//                 </SelectTrigger>
-//                 <SelectContent>
-//                   {classes?.map((classItem: any) => (
-//                     <SelectItem key={classItem.id} value={classItem.id}>
-//                       {classItem.name}
-//                     </SelectItem>
-//                   ))}
-//                 </SelectContent>
-//               </Select>
-//               {errors.classId && <p className="text-sm text-red-500">{errors.classId.message}</p>}
-//             </div>
-//           </div>
-
-//           <div className="space-y-2">
-//             <Label>Jenis Pelanggaran</Label>
-//             <Select value={selectedViolationTypeId} onValueChange={(value) => setValue("violationTypeId", value)}>
-//               <SelectTrigger>
-//                 <SelectValue placeholder="Pilih Jenis Pelanggaran" />
-//               </SelectTrigger>
-//               <SelectContent>
-//                 {violationTypes?.map((violation: any) => (
-//                   <SelectItem key={violation.id} value={violation.id}>
-//                     {violation.name} ({violation.points} poin)
-//                   </SelectItem>
-//                 ))}
-//               </SelectContent>
-//             </Select>
-//             {errors.violationTypeId && <p className="text-sm text-red-500">{errors.violationTypeId.message}</p>}
-//           </div>
-
-//           <div className="space-y-2">
-//             <Label htmlFor="description">Deskripsi Tambahan</Label>
-//             <Textarea id="description" placeholder="Deskripsi detail kejadian..." rows={3} {...register("description")} />
-//           </div>
-
-//           <div className="grid grid-cols-2 gap-4">
-//             <div className="space-y-2">
-//               <Label htmlFor="reportedBy">Dilaporkan Oleh</Label>
-//               <Input id="reportedBy" placeholder="Nama guru/staff" {...register("reportedBy")} />
-//               {errors.reportedBy && <p className="text-sm text-red-500">{errors.reportedBy.message}</p>}
-//             </div>
-
-//             <div className="space-y-2">
-//               <Label htmlFor="date">Tanggal Kejadian</Label>
-//               <Input id="date" type="date" {...register("date")} />
-//               {errors.date && <p className="text-sm text-red-500">{errors.date.message}</p>}
-//             </div>
-//           </div>
-
-//           <div className="space-y-2">
-//             <Label>Status</Label>
-//             <Select value={selectedStatus} onValueChange={(value) => setValue("status", value)}>
-//               <SelectTrigger>
-//                 <SelectValue placeholder="Pilih Status" />
-//               </SelectTrigger>
-//               <SelectContent>
-//                 {violationStatuses.map((status) => (
-//                   <SelectItem key={status.value} value={status.value}>
-//                     {status.label}
-//                   </SelectItem>
-//                 ))}
-//               </SelectContent>
-//             </Select>
-//             {errors.status && <p className="text-sm text-red-500">{errors.status.message}</p>}
-//           </div>
-
-//           {(selectedStatus === "resolved" || editData?.status === "resolved") && (
-//             <>
-//               <div className="space-y-2">
-//                 <Label htmlFor="resolutionDate">Tanggal Penyelesaian</Label>
-//                 <Input id="resolutionDate" type="date" {...register("resolutionDate")} />
-//               </div>
-
-//               <div className="space-y-2">
-//                 <Label htmlFor="resolutionNotes">Catatan Penyelesaian</Label>
-//                 <Textarea id="resolutionNotes" placeholder="Catatan tentang penyelesaian..." rows={3} {...register("resolutionNotes")} />
-//               </div>
-//             </>
-//           )}
-
-//           <div className="flex justify-end gap-2 pt-4">
-//             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-//               Batal
-//             </Button>
-//             <Button type="submit" disabled={createViolation.isPending || updateViolation.isPending}>
-//               {createViolation.isPending || updateViolation.isPending ? "Menyimpan..." : editData ? "Perbarui" : "Simpan"}
-//             </Button>
-//           </div>
-//         </form>
-//       </DialogContent>
-//     </Dialog>
-//   );
-// }
-
-// Delete Confirmation Dialog
-// function DeleteViolationDialog({ open, onOpenChange, violationData, onSuccess }: { open: boolean; onOpenChange: (open: boolean) => void; violationData: ViolationData | null; onSuccess: () => void }) {
-//   const deleteViolation = useDeleteViolation();
-
-//   const handleDelete = async () => {
-//     if (!violationData) return;
-
-//     try {
-//       await deleteViolation.mutateAsync(violationData.id);
-//       toast.success("Pelanggaran berhasil dihapus!");
-//       onOpenChange(false);
-//       onSuccess();
-//     } catch (error: any) {
-//       toast.error(error.message || "Gagal menghapus pelanggaran");
-//     }
-//   };
-
-//   return (
-//     <AlertDialog open={open} onOpenChange={onOpenChange}>
-//       <AlertDialogContent>
-//         <AlertDialogHeader>
-//           <AlertDialogTitle>Hapus Pelanggaran</AlertDialogTitle>
-//           <AlertDialogDescription>Apakah Anda yakin ingin menghapus pelanggaran ini? Tindakan ini tidak dapat dibatalkan.</AlertDialogDescription>
-//         </AlertDialogHeader>
-//         <AlertDialogFooter>
-//           <AlertDialogCancel>Batal</AlertDialogCancel>
-//           <AlertDialogAction onClick={handleDelete} disabled={deleteViolation.isPending} className="bg-red-600 hover:bg-red-700">
-//             {deleteViolation.isPending ? "Menghapus..." : "Hapus"}
-//           </AlertDialogAction>
-//         </AlertDialogFooter>
-//       </AlertDialogContent>
-//     </AlertDialog>
-//   );
-// }
-
-// Main DataTable Component
 export default function ViolationDataTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-
-  // Dialog states
-  // const [createDialogOpen, setCreateDialogOpen] = React.useState(false);
-  // const [editDialogOpen, setEditDialogOpen] = React.useState(false);
-  // const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
-  // const [selectedViolation, setSelectedViolation] = React.useState<ViolationData | null>(null);
-
-  // Additional filter states
   const [statusFilter, setStatusFilter] = React.useState<string>("all");
   const [classFilter, setClassFilter] = React.useState<string>("all");
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
@@ -446,13 +67,8 @@ export default function ViolationDataTable() {
   const idStudent = "cmftrvnq5000lgq1tauteunhn";
 
   const { data: violations = [], isLoading, refetch } = useGetViolationsByIdStudent(idStudent);
-  console.log(violations);
   const { data: classes } = useGetClasses();
-  console.log(classes);
-
-  const handleSuccess = () => {
-    refetch();
-  };
+  const { data: dataStudent } = useGetStudentById(idStudent);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("id-ID", {
@@ -482,20 +98,15 @@ export default function ViolationDataTable() {
     return found ? found.label : status;
   };
 
-  // Custom global filter function
   const globalFilterFn = React.useCallback((row: any, columnId: string, filterValue: string) => {
     if (!filterValue) return true;
-
     const searchValue = filterValue.toLowerCase();
     const student = row.original.student;
     const violationType = row.original.violationType;
     const classData = row.original.class;
     const reportedBy = row.original.reportedBy;
     const description = row.original.description;
-
-    // Search in multiple fields
     const searchableText = [student?.name, student?.email, violationType?.name, classData?.name, reportedBy, description, getStatusLabel(row.original.status)].filter(Boolean).join(" ").toLowerCase();
-
     return searchableText.includes(searchValue);
   }, []);
 
@@ -615,7 +226,6 @@ export default function ViolationDataTable() {
       enableHiding: false,
       cell: ({ row }) => {
         const violationData = row.original;
-
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -627,26 +237,6 @@ export default function ViolationDataTable() {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Aksi</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => navigator.clipboard.writeText(violationData.id)}>Copy ID Pelanggaran</DropdownMenuItem>
-              {/* <DropdownMenuSeparator /> */}
-              {/* <DropdownMenuItem
-                onClick={() => {
-                  setSelectedViolation(violationData);
-                  setEditDialogOpen(true);
-                }}
-              >
-                <Pencil className="mr-2 h-4 w-4" />
-                Edit
-              </DropdownMenuItem> */}
-              {/* <DropdownMenuItem
-                onClick={() => {
-                  setSelectedViolation(violationData);
-                  setDeleteDialogOpen(true);
-                }}
-                className="text-red-600"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Hapus
-              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -676,7 +266,6 @@ export default function ViolationDataTable() {
     },
   });
 
-  // Apply status filter
   React.useEffect(() => {
     if (statusFilter !== "all") {
       table.getColumn("status")?.setFilterValue(statusFilter);
@@ -685,7 +274,6 @@ export default function ViolationDataTable() {
     }
   }, [statusFilter, table]);
 
-  // Apply class filter
   React.useEffect(() => {
     if (classFilter !== "all") {
       table.getColumn("class")?.setFilterValue(classFilter);
@@ -696,14 +284,17 @@ export default function ViolationDataTable() {
 
   if (isLoading) {
     return (
-      <div className="w-full">
-        <div className="flex items-center justify-center h-32">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-            <p className="mt-2 text-sm text-muted-foreground">Memuat data pelanggaran...</p>
+      <>
+        <Navbar />
+        <div className="w-full">
+          <div className="flex items-center justify-center h-screen">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+              <p className="mt-4 text-sm text-muted-foreground">Memuat data pelanggaran...</p>
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -712,22 +303,32 @@ export default function ViolationDataTable() {
       <Navbar />
       <div className="mx-auto my-8 p-6 max-w-7xl">
         <div className="font-bold text-3xl mb-6">Data Pelanggaran</div>
-        {/* get student data  */}
-        {/* 
-        {studentData && (
-          <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <div className="flex items-center gap-3">
-              <Users className="h-6 w-6 text-blue-600" />
-              <div>
-                <h2 className="text-xl font-semibold text-blue-900">{studentData.name}</h2>
-                {studentData.email && <p className="text-sm text-blue-700">{studentData.email}</p>}
-                {studentData.studentId && <p className="text-sm text-blue-700">NIS: {studentData.studentId}</p>} */}
+
+        {dataStudent && (
+          <div className="bg-card rounded-lg border p-6 mb-6">
+            <div className="flex items-center space-x-4">
+              <div className="bg-primary/10 rounded-full p-3">
+                <User className="h-8 w-8 text-primary" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-xl font-semibold">{dataStudent.name || "Nama Siswa"}</h2>
+                <p className="text-muted-foreground">{dataStudent.email || "Email tidak tersedia"}</p>
+                {dataStudent.class && (
+                  <Badge variant="secondary" className="mt-2">
+                    Kelas: {dataStudent.class.name}
+                  </Badge>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="mx-auto">
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center space-x-2">
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Cari siswa, kelas, pelanggaran..." value={globalFilter ?? ""} onChange={(event) => setGlobalFilter(event.target.value)} className="max-w-sm pl-8" disabled={isLoading} />
+                <Input placeholder="Cari siswa, kelas, pelanggaran..." value={globalFilter ?? ""} onChange={(event) => setGlobalFilter(event.target.value)} className="max-w-sm pl-8" />
               </div>
 
               <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -758,7 +359,6 @@ export default function ViolationDataTable() {
                 </SelectContent>
               </Select>
 
-              {/* Clear all filters button */}
               {(globalFilter || statusFilter !== "all" || classFilter !== "all") && (
                 <Button
                   variant="outline"
@@ -776,49 +376,41 @@ export default function ViolationDataTable() {
               )}
             </div>
 
-            <div className="flex items-center space-x-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
-                    Kolom <ChevronDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {table
-                    .getAllColumns()
-                    .filter((column) => column.getCanHide())
-                    .map((column) => {
-                      return (
-                        <DropdownMenuCheckboxItem key={column.id} className="capitalize" checked={column.getIsVisible()} onCheckedChange={(value) => column.toggleVisibility(!!value)}>
-                          {column.id === "student"
-                            ? "Siswa"
-                            : column.id === "class"
-                            ? "Kelas"
-                            : column.id === "violationType"
-                            ? "Jenis Pelanggaran"
-                            : column.id === "date"
-                            ? "Tanggal"
-                            : column.id === "status"
-                            ? "Status"
-                            : column.id === "reportedBy"
-                            ? "Dilaporkan Oleh"
-                            : column.id === "description"
-                            ? "Deskripsi"
-                            : column.id}
-                        </DropdownMenuCheckboxItem>
-                      );
-                    })}
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              {/* <Button onClick={() => setCreateDialogOpen(true)}>
-                <Plus className="mr-2 h-4 w-4" />
-                Tambah Pelanggaran
-              </Button> */}
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  Kolom <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => {
+                    return (
+                      <DropdownMenuCheckboxItem key={column.id} className="capitalize" checked={column.getIsVisible()} onCheckedChange={(value) => column.toggleVisibility(!!value)}>
+                        {column.id === "student"
+                          ? "Siswa"
+                          : column.id === "class"
+                          ? "Kelas"
+                          : column.id === "violationType"
+                          ? "Jenis Pelanggaran"
+                          : column.id === "date"
+                          ? "Tanggal"
+                          : column.id === "status"
+                          ? "Status"
+                          : column.id === "reportedBy"
+                          ? "Dilaporkan Oleh"
+                          : column.id === "description"
+                          ? "Deskripsi"
+                          : column.id}
+                      </DropdownMenuCheckboxItem>
+                    );
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
-          {/* Active Filters Display */}
           {(globalFilter || statusFilter !== "all" || classFilter !== "all") && (
             <div className="flex items-center space-x-2 py-2">
               <span className="text-sm text-muted-foreground">Filter aktif:</span>
@@ -911,7 +503,6 @@ export default function ViolationDataTable() {
             </div>
           </div>
 
-          {/* Summary Statistics */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
             <div className="bg-card rounded-lg border p-4">
               <div className="flex items-center space-x-2">
@@ -947,13 +538,6 @@ export default function ViolationDataTable() {
             </div>
           </div>
         </div>
-
-        {/* Dialogs */}
-        {/* <ViolationFormDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} onSuccess={handleSuccess} />
-
-        <ViolationFormDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} editData={selectedViolation} onSuccess={handleSuccess} /> */}
-
-        {/* <DeleteViolationDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} violationData={selectedViolation} onSuccess={handleSuccess} /> */}
       </div>
     </>
   );
