@@ -20,14 +20,14 @@ model Role {
 }
 
 model User {
-  id             String        @id @default(cuid())
+  id             String        @id @unique @default(cuid())
   academicYearId String?
   address        String?
   avatarUrl      String?
   birthDate      DateTime?
   birthPlace     String?
   classId        String?
-  clerkId        String?
+  clerkId        String?       @unique
   createdAt      DateTime      @default(now())
   email          String?
   employeeId     String?

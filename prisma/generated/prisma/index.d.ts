@@ -18161,6 +18161,7 @@ export namespace Prisma {
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    clerkId?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
@@ -18170,7 +18171,6 @@ export namespace Prisma {
     birthDate?: DateTimeNullableFilter<"User"> | Date | string | null
     birthPlace?: StringNullableFilter<"User"> | string | null
     classId?: StringNullableFilter<"User"> | string | null
-    clerkId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     email?: StringNullableFilter<"User"> | string | null
     employeeId?: StringNullableFilter<"User"> | string | null
@@ -18200,7 +18200,7 @@ export namespace Prisma {
     violations?: ViolationListRelationFilter
     users_A?: UserListRelationFilter
     users_B?: UserListRelationFilter
-  }, "id">
+  }, "id" | "id" | "clerkId">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
