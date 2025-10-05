@@ -44,19 +44,19 @@ model User {
   relation       String?
   roleId         String?
   startDate      DateTime?
+  status         String?       @default("active")
   studentIds     String[]
   updatedAt      DateTime      @updatedAt
-  status         String?       @default("active")
   attendances    Attendance[]  @relation("StudentAttendance")
   payments       Payment[]     @relation("StudentPayment")
   schedules      Schedule[]    @relation("TeacherSchedule")
-  violations     Violation[]   @relation("StudentViolation")
-  users_A        User[]        @relation("ParentStudent")
-  users_B        User[]        @relation("ParentStudent")
   academicYear   AcademicYear? @relation("UserAcademicYear", fields: [academicYearId], references: [id])
   class          Class?        @relation("UserClass", fields: [classId], references: [id])
   major          Major?        @relation("UserMajor", fields: [majorId], references: [id])
   role           Role?         @relation(fields: [roleId], references: [id])
+  violations     Violation[]   @relation("StudentViolation")
+  users_A        User[]        @relation("ParentStudent")
+  users_B        User[]        @relation("ParentStudent")
 
   @@map("users")
 }
