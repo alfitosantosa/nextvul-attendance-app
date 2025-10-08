@@ -31,7 +31,7 @@ import Navbar from "@/components/navbar";
 import { useGetUsers } from "@/app/hooks/useUsers";
 import { object } from "zod";
 import { useGetViolationsByIdTeacher } from "@/app/hooks/useViolationsByIdTeacher";
-import { useGetUserById } from "@/app/hooks/useUsersById";
+import { useGetUserByIdClerk } from "@/app/hooks/useUsersByIdClerk";
 import { useGetUserByIdTeacher } from "@/app/hooks/useGetUserByIdTeacher";
 
 // Type definitions
@@ -450,8 +450,6 @@ export default function ViolationDataTable() {
   // get profile teacher
 
   const { data: usersData, isLoading: isLoadingUser } = useGetUserByIdTeacher(idTeacher);
-
-  console.log(usersData);
 
   //get class from id techer
   const { data: violations = [], isLoading, refetch } = useGetViolationsByIdTeacher(idTeacher);

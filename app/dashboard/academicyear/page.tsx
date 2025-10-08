@@ -167,7 +167,7 @@ function DeleteAcademicYearDialog({ open, onOpenChange, academicYearData, onSucc
     try {
       await deleteAcademicYear.mutateAsync(academicYearData.id);
       toast.success("Tahun ajaran berhasil dihapus!");
-      console.log(academicYearData.id);
+
       onOpenChange(false);
       onSuccess();
     } catch (error: any) {
