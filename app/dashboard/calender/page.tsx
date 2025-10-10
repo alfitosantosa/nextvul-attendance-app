@@ -177,8 +177,6 @@ export default function CalendarPage() {
     };
   }, [allFeatures]);
 
-  console.log(allFeatures);
-
   // Loading state
   if (schedulesLoading || specialSchedulesLoading) {
     return (

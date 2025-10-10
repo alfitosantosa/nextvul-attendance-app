@@ -2,7 +2,7 @@
 "use client";
 
 import Navbar from "@/components/navbar";
-import { useGetUserById } from "./hooks/useUsersById";
+import { useGetUserByIdClerk } from "./hooks/useUsersByIdClerk";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -145,7 +145,7 @@ const InfoItem = ({
 // Main Component
 export default function Home() {
   const clerkUserId = "user_30GFph3K4RPkgsMUnhqdnIDOrNQ";
-  const { data: user, isLoading, error } = useGetUserById(clerkUserId);
+  const { data: user, isLoading, error } = useGetUserByIdClerk(clerkUserId);
 
   if (isLoading) return <UserProfileSkeleton />;
   if (error) return <ErrorComponent error={error} />;

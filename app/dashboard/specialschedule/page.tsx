@@ -69,11 +69,11 @@ const EVENT_TYPES = [
 const toast = {
   success: (message: string) => {
     // Replace with your actual toast implementation
-    console.log("Success:", message);
+    toast.success(`Success, ${message}`);
   },
   error: (message: string) => {
     // Replace with your actual toast implementation
-    console.log("Error:", message);
+    toast.error(`Error : ${message}`);
   },
 };
 
