@@ -15,7 +15,6 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
             subject: true,
             teacher: true,
             academicYear: true,
-            
           },
         },
       },
