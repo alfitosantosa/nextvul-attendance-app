@@ -12,112 +12,101 @@ import { useState } from "react";
 import Navbar from "@/components/navbar";
 import { useGetUserById } from "../hooks/useUserById";
 
-// Mock data untuk demo
+const ParentDashboard = () => {
+  const idParent = "cmgdv9wgx0001gqkl9qavavir";
 
-const idParent = "cmgdv9wgx0001gqkl9qavavir";
+  const { data: mockParentData = [] } = useGetUserById(idParent);
 
-const { data: mockParentData = [] } = useGetUserById(idParent);
+  console.log(mockParentData);
+  console.log(mockParentData.studentIds);
 
-console.log(mockParentData);
+  const mockStudents = [
+    {
+      id: "cmftrvnq5000lgq1tauteunhn",
+      name: "Ahmad Fauzi",
+      nisn: "1234567890",
+      class: "XII RPL 1",
+      major: "Rekayasa Perangkat Lunak",
+      avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmad",
+      status: "active",
+    },
+    {
+      id: "student2id",
+      name: "Siti Nurhaliza",
+      nisn: "1234567891",
+      class: "X TKJ 1",
+      major: "Teknik Komputer dan Jaringan",
+      avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Siti",
+      status: "active",
+    },
+  ];
 
-// const mockParentData = {
-//   id: "cmgdv9wgx0001gqkl9qavavir",
-//   name: "Imam Santosa",
-//   email: "ImamSantosa@gmail.com",
-//   phone: "08123456789",
-//   address: "Jakarta Timur Kec.cipayung kel.setu Jl. Rukun No.54 RW002 RT005 13880",
-//   relation: "Father",
-//   studentIds: ["cmftrvnq5000lgq1tauteunhn", "student2id"],
-// };
+  const mockAttendance = {
+    thisMonth: {
+      present: 18,
+      absent: 2,
+      late: 1,
+      excused: 1,
+      total: 22,
+    },
+    recentAttendance: [
+      { date: "2025-01-15", status: "present", subject: "Matematika" },
+      { date: "2025-01-14", status: "present", subject: "Bahasa Indonesia" },
+      { date: "2025-01-13", status: "late", subject: "Pemrograman" },
+      { date: "2025-01-12", status: "present", subject: "Bahasa Inggris" },
+      { date: "2025-01-11", status: "absent", subject: "Fisika" },
+    ],
+  };
 
-const mockStudents = [
-  {
-    id: "cmftrvnq5000lgq1tauteunhn",
-    name: "Ahmad Fauzi",
-    nisn: "1234567890",
-    class: "XII RPL 1",
-    major: "Rekayasa Perangkat Lunak",
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmad",
-    status: "active",
-  },
-  {
-    id: "student2id",
-    name: "Siti Nurhaliza",
-    nisn: "1234567891",
-    class: "X TKJ 1",
-    major: "Teknik Komputer dan Jaringan",
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Siti",
-    status: "active",
-  },
-];
-
-const mockAttendance = {
-  thisMonth: {
-    present: 18,
-    absent: 2,
-    late: 1,
-    excused: 1,
-    total: 22,
-  },
-  recentAttendance: [
-    { date: "2025-01-15", status: "present", subject: "Matematika" },
-    { date: "2025-01-14", status: "present", subject: "Bahasa Indonesia" },
-    { date: "2025-01-13", status: "late", subject: "Pemrograman" },
-    { date: "2025-01-12", status: "present", subject: "Bahasa Inggris" },
-    { date: "2025-01-11", status: "absent", subject: "Fisika" },
-  ],
-};
-
-const mockViolations = [
-  {
-    id: "1",
-    date: "2025-01-10",
-    type: "Terlambat",
-    category: "ringan",
-    points: 5,
-    description: "Datang terlambat 15 menit",
-    status: "active",
-  },
-  {
-    id: "2",
-    date: "2025-01-05",
-    type: "Tidak Mengerjakan PR",
-    category: "sedang",
-    points: 10,
-    description: "Tidak mengerjakan PR Matematika",
-    status: "resolved",
-  },
-];
-
-const mockPayments = {
-  summary: {
-    totalPaid: 2500000,
-    totalDue: 500000,
-    nextDueDate: "2025-02-01",
-  },
-  history: [
+  const mockViolations = [
     {
       id: "1",
-      type: "SPP",
-      amount: 500000,
-      dueDate: "2025-01-01",
-      paymentDate: "2024-12-28",
-      status: "paid",
-      receiptNumber: "RCP-2024-001",
+      date: "2025-01-10",
+      type: "Terlambat",
+      category: "ringan",
+      points: 5,
+      description: "Datang terlambat 15 menit",
+      status: "active",
     },
     {
       id: "2",
-      type: "SPP",
-      amount: 500000,
-      dueDate: "2025-02-01",
-      paymentDate: null,
-      status: "pending",
-      receiptNumber: null,
+      date: "2025-01-05",
+      type: "Tidak Mengerjakan PR",
+      category: "sedang",
+      points: 10,
+      description: "Tidak mengerjakan PR Matematika",
+      status: "resolved",
     },
-  ],
-};
+  ];
 
-const ParentDashboard = () => {
+  const mockPayments = {
+    summary: {
+      totalPaid: 2500000,
+      totalDue: 500000,
+      nextDueDate: "2025-02-01",
+    },
+    history: [
+      {
+        id: "1",
+        type: "SPP",
+        amount: 500000,
+        dueDate: "2025-01-01",
+        paymentDate: "2024-12-28",
+        status: "paid",
+        receiptNumber: "RCP-2024-001",
+      },
+      {
+        id: "2",
+        type: "SPP",
+        amount: 500000,
+        dueDate: "2025-02-01",
+        paymentDate: null,
+        status: "pending",
+        receiptNumber: null,
+      },
+    ],
+  };
+
   const [selectedStudent, setSelectedStudent] = useState(mockStudents[0]);
 
   // Status badge helpers

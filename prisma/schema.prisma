@@ -27,7 +27,7 @@ model User {
   birthDate      DateTime?
   birthPlace     String?
   classId        String?
-  clerkId        String?       @unique
+  clerkId        String?       
   createdAt      DateTime      @default(now())
   email          String?
   employeeId     String?       
@@ -45,7 +45,7 @@ model User {
   roleId         String?
   startDate      DateTime?
   status         String?       @default("active")
-  studentIds     String[]
+  studentIds     String[] 
   updatedAt      DateTime      @updatedAt
   attendances    Attendance[]  @relation("StudentAttendance")
   payments       Payment[]     @relation("StudentPayment")
