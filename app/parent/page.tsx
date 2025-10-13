@@ -8,11 +8,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { User, Calendar, CheckCircle, XCircle, AlertCircle, Clock, DollarSign, TrendingUp, TrendingDown, AlertTriangle, BookOpen, GraduationCap, MapPin, Phone, Mail, CreditCard, FileText, Award } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/navbar";
 import { useGetUserById } from "../hooks/useUserById";
+import { useGetStudentsByIds } from "../hooks/useStudentByIds";
 
-const ParentDashboard = () => {
+export default function ParentDashboard() {
   const idParent = "cmgdv9wgx0001gqkl9qavavir";
 
   const { data: mockParentData = [] } = useGetUserById(idParent);
@@ -20,26 +21,13 @@ const ParentDashboard = () => {
   console.log(mockParentData);
   console.log(mockParentData.studentIds);
 
-  const mockStudents = [
-    {
-      id: "cmftrvnq5000lgq1tauteunhn",
-      name: "Ahmad Fauzi",
-      nisn: "1234567890",
-      class: "XII RPL 1",
-      major: "Rekayasa Perangkat Lunak",
-      avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmad",
-      status: "active",
-    },
-    {
-      id: "student2id",
-      name: "Siti Nurhaliza",
-      nisn: "1234567891",
-      class: "X TKJ 1",
-      major: "Teknik Komputer dan Jaringan",
-      avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Siti",
-      status: "active",
-    },
-  ];
+  const studentsIdsFromParent = mockParentData.studentIds;
+
+  const { data: students = [], isLoading: loadingStudent } = useGetStudentsByIds(studentsIdsFromParent);
+
+  console.log(students);
+
+  const mockStudents = students;
 
   const mockAttendance = {
     thisMonth: {
@@ -107,7 +95,27 @@ const ParentDashboard = () => {
     ],
   };
 
-  const [selectedStudent, setSelectedStudent] = useState(mockStudents[0]);
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+
+  useEffect(() => {
+    if (!selectedStudent && mockStudents && mockStudents.length > 0) {
+      setSelectedStudent(mockStudents[0]);
+    }
+  }, [mockStudents, selectedStudent]);
+
+  if (!selectedStudent) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-background">
+          <div className="max-w-7xl mx-auto p-6 space-y-6">
+            <h1 className="text-3xl font-bold">Dashboard Orang Tua</h1>
+            <p className="text-muted-foreground">Memuat data siswa...</p>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   // Status badge helpers
   const getStatusBadge = (status: string) => {
@@ -208,7 +216,7 @@ const ParentDashboard = () => {
             </CardHeader>
             <CardContent>
               <Select
-                value={selectedStudent.id}
+                value={(selectedStudent?.id as any) ?? ""}
                 onValueChange={(value) => {
                   const student = mockStudents.find((s) => s.id === value);
                   if (student) setSelectedStudent(student);
@@ -222,11 +230,11 @@ const ParentDashboard = () => {
                     <SelectItem key={student.id} value={student.id}>
                       <div className="flex items-center gap-2">
                         <Avatar className="h-6 w-6">
-                          <AvatarImage src={student.avatarUrl} />
-                          <AvatarFallback>{student.name[0]}</AvatarFallback>
+                          <AvatarImage src={(student.avatarUrl as any) ?? undefined} />
+                          <AvatarFallback>{student.name?.[0] ?? "?"}</AvatarFallback>
                         </Avatar>
                         <span>
-                          {student.name} - {student.class}
+                          {(student.name as any) ?? "Tanpa Nama"} - {(student.class?.name as any) ?? "-"}
                         </span>
                       </div>
                     </SelectItem>
@@ -244,11 +252,11 @@ const ParentDashboard = () => {
             <CardContent>
               <div className="flex flex-col md:flex-row gap-6">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src={selectedStudent.avatarUrl} />
+                  <AvatarImage src={(selectedStudent.avatarUrl as any) ?? undefined} />
                   <AvatarFallback className="text-2xl">
                     {selectedStudent.name
                       .split(" ")
-                      .map((n) => n[0])
+                      .map((n: string) => n[0] ?? "")
                       .join("")}
                   </AvatarFallback>
                 </Avatar>
@@ -260,11 +268,11 @@ const ParentDashboard = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div className="flex items-center gap-2">
                       <BookOpen className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm">Kelas: {selectedStudent.class}</span>
+                      <span className="text-sm">Kelas: {selectedStudent.class?.name as any}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <GraduationCap className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm">Jurusan: {selectedStudent.major}</span>
+                      <span className="text-sm">Jurusan: {selectedStudent.major?.name as any}</span>
                     </div>
                   </div>
                   <Badge variant="default">{selectedStudent.status === "active" ? "Aktif" : "Tidak Aktif"}</Badge>
@@ -523,6 +531,4 @@ const ParentDashboard = () => {
       </div>
     </>
   );
-};
-
-export default ParentDashboard;
+}

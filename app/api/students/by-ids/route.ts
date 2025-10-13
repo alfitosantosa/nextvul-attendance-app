@@ -19,32 +19,10 @@ export async function GET(request: NextRequest) {
           in: ids,
         },
       },
-      include: {
-        class: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        major: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
+      include: { class: true, major: true, academicYear: true, role: true },
     });
 
-    const formattedStudents = students.map((student: any) => ({
-      id: student.id,
-      name: student.name,
-      nisn: student.nisn,
-      avatarUrl: student.user?.avatarUrl,
-      status: student.status,
-      class: student.class,
-      major: student.major,
-    }));
-    return NextResponse.json(formattedStudents);
+    return NextResponse.json(students);
   } catch (error) {
     console.error("Error fetching students:", error);
     return NextResponse.json({ error: "Failed to fetch students" }, { status: 500 });
