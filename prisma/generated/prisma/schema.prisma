@@ -27,7 +27,7 @@ model User {
   birthDate      DateTime?
   birthPlace     String?
   classId        String?
-  clerkId        String?       @unique
+  clerkId        String?
   createdAt      DateTime      @default(now())
   email          String?
   employeeId     String?

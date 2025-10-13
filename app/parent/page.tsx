@@ -8,117 +8,114 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { User, Calendar, CheckCircle, XCircle, AlertCircle, Clock, DollarSign, TrendingUp, TrendingDown, AlertTriangle, BookOpen, GraduationCap, MapPin, Phone, Mail, CreditCard, FileText, Award } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/navbar";
 import { useGetUserById } from "../hooks/useUserById";
+import { useGetStudentsByIds } from "../hooks/useStudentByIds";
 
-// Mock data untuk demo
+export default function ParentDashboard() {
+  const idParent = "cmgdv9wgx0001gqkl9qavavir";
 
-const idParent = "cmgdv9wgx0001gqkl9qavavir";
+  const { data: mockParentData = [] } = useGetUserById(idParent);
 
-const { data: mockParentData = [] } = useGetUserById(idParent);
+  console.log(mockParentData);
+  console.log(mockParentData.studentIds);
 
-console.log(mockParentData);
+  const studentsIdsFromParent = mockParentData.studentIds;
 
-// const mockParentData = {
-//   id: "cmgdv9wgx0001gqkl9qavavir",
-//   name: "Imam Santosa",
-//   email: "ImamSantosa@gmail.com",
-//   phone: "08123456789",
-//   address: "Jakarta Timur Kec.cipayung kel.setu Jl. Rukun No.54 RW002 RT005 13880",
-//   relation: "Father",
-//   studentIds: ["cmftrvnq5000lgq1tauteunhn", "student2id"],
-// };
+  const { data: students = [], isLoading: loadingStudent } = useGetStudentsByIds(studentsIdsFromParent);
 
-const mockStudents = [
-  {
-    id: "cmftrvnq5000lgq1tauteunhn",
-    name: "Ahmad Fauzi",
-    nisn: "1234567890",
-    class: "XII RPL 1",
-    major: "Rekayasa Perangkat Lunak",
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmad",
-    status: "active",
-  },
-  {
-    id: "student2id",
-    name: "Siti Nurhaliza",
-    nisn: "1234567891",
-    class: "X TKJ 1",
-    major: "Teknik Komputer dan Jaringan",
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Siti",
-    status: "active",
-  },
-];
+  console.log(students);
 
-const mockAttendance = {
-  thisMonth: {
-    present: 18,
-    absent: 2,
-    late: 1,
-    excused: 1,
-    total: 22,
-  },
-  recentAttendance: [
-    { date: "2025-01-15", status: "present", subject: "Matematika" },
-    { date: "2025-01-14", status: "present", subject: "Bahasa Indonesia" },
-    { date: "2025-01-13", status: "late", subject: "Pemrograman" },
-    { date: "2025-01-12", status: "present", subject: "Bahasa Inggris" },
-    { date: "2025-01-11", status: "absent", subject: "Fisika" },
-  ],
-};
+  const mockStudents = students;
 
-const mockViolations = [
-  {
-    id: "1",
-    date: "2025-01-10",
-    type: "Terlambat",
-    category: "ringan",
-    points: 5,
-    description: "Datang terlambat 15 menit",
-    status: "active",
-  },
-  {
-    id: "2",
-    date: "2025-01-05",
-    type: "Tidak Mengerjakan PR",
-    category: "sedang",
-    points: 10,
-    description: "Tidak mengerjakan PR Matematika",
-    status: "resolved",
-  },
-];
+  const mockAttendance = {
+    thisMonth: {
+      present: 18,
+      absent: 2,
+      late: 1,
+      excused: 1,
+      total: 22,
+    },
+    recentAttendance: [
+      { date: "2025-01-15", status: "present", subject: "Matematika" },
+      { date: "2025-01-14", status: "present", subject: "Bahasa Indonesia" },
+      { date: "2025-01-13", status: "late", subject: "Pemrograman" },
+      { date: "2025-01-12", status: "present", subject: "Bahasa Inggris" },
+      { date: "2025-01-11", status: "absent", subject: "Fisika" },
+    ],
+  };
 
-const mockPayments = {
-  summary: {
-    totalPaid: 2500000,
-    totalDue: 500000,
-    nextDueDate: "2025-02-01",
-  },
-  history: [
+  const mockViolations = [
     {
       id: "1",
-      type: "SPP",
-      amount: 500000,
-      dueDate: "2025-01-01",
-      paymentDate: "2024-12-28",
-      status: "paid",
-      receiptNumber: "RCP-2024-001",
+      date: "2025-01-10",
+      type: "Terlambat",
+      category: "ringan",
+      points: 5,
+      description: "Datang terlambat 15 menit",
+      status: "active",
     },
     {
       id: "2",
-      type: "SPP",
-      amount: 500000,
-      dueDate: "2025-02-01",
-      paymentDate: null,
-      status: "pending",
-      receiptNumber: null,
+      date: "2025-01-05",
+      type: "Tidak Mengerjakan PR",
+      category: "sedang",
+      points: 10,
+      description: "Tidak mengerjakan PR Matematika",
+      status: "resolved",
     },
-  ],
-};
+  ];
 
-const ParentDashboard = () => {
-  const [selectedStudent, setSelectedStudent] = useState(mockStudents[0]);
+  const mockPayments = {
+    summary: {
+      totalPaid: 2500000,
+      totalDue: 500000,
+      nextDueDate: "2025-02-01",
+    },
+    history: [
+      {
+        id: "1",
+        type: "SPP",
+        amount: 500000,
+        dueDate: "2025-01-01",
+        paymentDate: "2024-12-28",
+        status: "paid",
+        receiptNumber: "RCP-2024-001",
+      },
+      {
+        id: "2",
+        type: "SPP",
+        amount: 500000,
+        dueDate: "2025-02-01",
+        paymentDate: null,
+        status: "pending",
+        receiptNumber: null,
+      },
+    ],
+  };
+
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+
+  useEffect(() => {
+    if (!selectedStudent && mockStudents && mockStudents.length > 0) {
+      setSelectedStudent(mockStudents[0]);
+    }
+  }, [mockStudents, selectedStudent]);
+
+  if (!selectedStudent) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-background">
+          <div className="max-w-7xl mx-auto p-6 space-y-6">
+            <h1 className="text-3xl font-bold">Dashboard Orang Tua</h1>
+            <p className="text-muted-foreground">Memuat data siswa...</p>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   // Status badge helpers
   const getStatusBadge = (status: string) => {
@@ -219,7 +216,7 @@ const ParentDashboard = () => {
             </CardHeader>
             <CardContent>
               <Select
-                value={selectedStudent.id}
+                value={(selectedStudent?.id as any) ?? ""}
                 onValueChange={(value) => {
                   const student = mockStudents.find((s) => s.id === value);
                   if (student) setSelectedStudent(student);
@@ -233,11 +230,11 @@ const ParentDashboard = () => {
                     <SelectItem key={student.id} value={student.id}>
                       <div className="flex items-center gap-2">
                         <Avatar className="h-6 w-6">
-                          <AvatarImage src={student.avatarUrl} />
-                          <AvatarFallback>{student.name[0]}</AvatarFallback>
+                          <AvatarImage src={(student.avatarUrl as any) ?? undefined} />
+                          <AvatarFallback>{student.name?.[0] ?? "?"}</AvatarFallback>
                         </Avatar>
                         <span>
-                          {student.name} - {student.class}
+                          {(student.name as any) ?? "Tanpa Nama"} - {(student.class?.name as any) ?? "-"}
                         </span>
                       </div>
                     </SelectItem>
@@ -255,11 +252,11 @@ const ParentDashboard = () => {
             <CardContent>
               <div className="flex flex-col md:flex-row gap-6">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src={selectedStudent.avatarUrl} />
+                  <AvatarImage src={(selectedStudent.avatarUrl as any) ?? undefined} />
                   <AvatarFallback className="text-2xl">
                     {selectedStudent.name
                       .split(" ")
-                      .map((n) => n[0])
+                      .map((n: string) => n[0] ?? "")
                       .join("")}
                   </AvatarFallback>
                 </Avatar>
@@ -271,11 +268,11 @@ const ParentDashboard = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div className="flex items-center gap-2">
                       <BookOpen className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm">Kelas: {selectedStudent.class}</span>
+                      <span className="text-sm">Kelas: {selectedStudent.class?.name as any}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <GraduationCap className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm">Jurusan: {selectedStudent.major}</span>
+                      <span className="text-sm">Jurusan: {selectedStudent.major?.name as any}</span>
                     </div>
                   </div>
                   <Badge variant="default">{selectedStudent.status === "active" ? "Aktif" : "Tidak Aktif"}</Badge>
@@ -534,6 +531,4 @@ const ParentDashboard = () => {
       </div>
     </>
   );
-};
-
-export default ParentDashboard;
+}

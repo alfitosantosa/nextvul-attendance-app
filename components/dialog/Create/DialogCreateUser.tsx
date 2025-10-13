@@ -572,6 +572,10 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
         birthDate: data.birthDate ? new Date(data.birthDate) : undefined,
         enrollmentDate: selectedRole?.name === "Student" ? new Date() : undefined,
         startDate: selectedRole?.name === "Teacher" ? new Date() : undefined,
+        // Ubah string kosong ke null supaya backend tahu ini tidak ada nilai
+        classId: data.classId === "" ? null : data.classId,
+        academicYearId: data.academicYearId === "" ? null : data.academicYearId,
+        majorId: data.majorId === "" ? null : data.majorId,
       };
 
       if (editData) {

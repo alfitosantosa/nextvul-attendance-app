@@ -59,6 +59,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+function replaceUndefinedWithNull<T>(value: T): T {
+  if (Array.isArray(value)) {
+    return value.map((item) => replaceUndefinedWithNull(item)) as unknown as T;
+  }
+  if (value !== null && typeof value === "object") {
+    const result: Record<string, unknown> = {};
+    for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
+      if (val === undefined) {
+        result[key] = null;
+      } else if (Array.isArray(val) || (val !== null && typeof val === "object")) {
+        result[key] = replaceUndefinedWithNull(val);
+      } else {
+        result[key] = val;
+      }
+    }
+    return result as unknown as T;
+  }
+  return (value === undefined ? (null as unknown as T) : value) as T;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const users = await prisma.user.findMany({
@@ -84,13 +104,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Name and role are required" }, { status: 400 });
     }
 
+    const data = replaceUndefinedWithNull({ name, email, roleId, ...rest });
+
     const newUser = await prisma.user.create({
-      data: {
-        name,
-        email,
-        roleId,
-        ...rest,
-      },
+      data,
     });
 
     return NextResponse.json(newUser, { status: 201 });
@@ -102,19 +119,16 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const { id, name, email, roleId, ...rest } = await request.json();
+    const { id, name, email, roleId, ...restData } = await request.json();
     if (!id || !name || !roleId) {
       return NextResponse.json({ error: "ID, name, and role are required" }, { status: 400 });
     }
 
+    const data = replaceUndefinedWithNull({ name, email, roleId, ...restData });
+
     const updatedUser = await prisma.user.update({
       where: { id },
-      data: {
-        name,
-        email,
-        roleId,
-        ...rest,
-      },
+      data,
     });
 
     return NextResponse.json(updatedUser);

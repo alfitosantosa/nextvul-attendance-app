@@ -4,72 +4,92 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-// Types
+// ===== Types inferred from API responses =====
 export interface StudentData {
   id: string;
   name: string;
-  nisn: string;
-  avatarUrl?: string;
-  status: string;
-  class: {
+  nisn?: string;
+  avatarUrl?: string | null;
+  status?: string;
+  class?: {
     id: string;
     name: string;
-  };
-  major: {
+  } | null;
+  major?: {
     id: string;
     name: string;
-  };
+  } | null;
 }
 
-export interface AttendanceStats {
-  thisMonth: {
-    present: number;
-    absent: number;
-    late: number;
-    excused: number;
-    total: number;
-  };
-  recentAttendance: Array<{
+export interface AttendanceData {
+  id: string;
+  studentId: string;
+  scheduleId: string;
+  status: string;
+  notes?: string | null;
+  date: string;
+  createdAt: string;
+  schedule?: {
     id: string;
-    date: string;
-    status: string;
-    schedule: {
-      subject: {
-        name: string;
-      };
-    };
-  }>;
+    class?: { id: string; name: string } | null;
+    subject?: { id: string; name: string; code: string } | null;
+    teacher?: { id: string; name: string } | null;
+    dayOfWeek: number;
+    startTime: string;
+    endTime: string;
+    room?: string | null;
+  } | null;
+  student?: {
+    id: string;
+    name: string;
+    email?: string | null;
+  } | null;
 }
 
 export interface ViolationData {
   id: string;
+  studentId: string;
+  violationTypeId: string;
+  classId: string;
+  description?: string | null;
+  status: string;
+  reportedBy: string;
+  createdAt: string;
   date: string;
-  status: string;
-  violationType: {
+  resolutionDate?: string | null;
+  resolutionNotes?: string | null;
+  student?: {
+    id: string;
     name: string;
-    category: string;
+    email?: string | null;
+  } | null;
+  violationType?: {
+    id: string;
+    name: string;
     points: number;
-    description: string;
-  };
-  description?: string;
-}
-
-export interface PaymentData {
-  id: string;
-  amount: number;
-  dueDate: string;
-  paymentDate?: string;
-  status: string;
-  receiptNumber?: string;
-  paymentType: {
+    category: string;
+  } | null;
+  class?: {
+    id: string;
     name: string;
-  };
+    grade?: number;
+  } | null;
 }
 
 export interface PaymentSummary {
   totalPaid: number;
   totalDue: number;
-  nextDueDate?: string;
+  nextDueDate?: string | null;
+}
+
+export interface PaymentData {
+  id: string;
+  type: string;
+  amount: number;
+  dueDate?: string | null;
+  paymentDate?: string | null;
+  status: string;
+  receiptNumber?: string | null;
 }
 
 // Get students by IDs (for parent's children)
@@ -96,7 +116,7 @@ export const useGetStudentAttendance = (studentId: string, enabled: boolean = tr
     queryKey: ["attendance", "student", studentId],
     queryFn: async () => {
       const response = await axios.get(`/api/attendance/student/${studentId}`);
-      return response.data as AttendanceStats;
+      return response.data as AttendanceData[];
     },
     enabled: !!studentId && enabled,
   });
