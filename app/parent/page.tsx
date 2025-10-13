@@ -14,7 +14,7 @@ import { useGetUserById } from "../hooks/useUserById";
 import { useGetStudentsByIds } from "../hooks/useStudentByIds";
 
 export default function ParentDashboard() {
-  const idParent = "cmgdv9wgx0001gqkl9qavavir";
+  const idParent = "cmgpcwcve0005l504fj0f1hwu";
 
   const { data: mockParentData = [] } = useGetUserById(idParent);
 
