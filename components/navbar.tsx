@@ -32,7 +32,7 @@ const navigationItems = [
   { href: "/dashboard/calender", label: "Calendar for user" },
   { href: "/dashboard/violations/student", label: "Pelanggaran for Siswa" },
   { href: "/dashboard/violations/teacher", label: "Pelanggaran for teacher" },
-  { href: "/parent", label: "Parent Page" },
+  { href: "/dashboard/parent", label: "Parent Page" },
 ];
 
 export default function Navbar() {

@@ -10,8 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { User, Calendar, CheckCircle, XCircle, AlertCircle, Clock, DollarSign, TrendingUp, TrendingDown, AlertTriangle, BookOpen, GraduationCap, MapPin, Phone, Mail, CreditCard, FileText, Award } from "lucide-react";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/navbar";
-import { useGetUserById } from "../hooks/useUserById";
-import { useGetStudentsByIds } from "../hooks/useStudentByIds";
+import { useGetUserById } from "../../hooks/useUserById";
+import { useGetStudentsByIds } from "../../hooks/useStudentByIds";
 
 export default function ParentDashboard() {
   const idParent = "cmgpcwcve0005l504fj0f1hwu";
