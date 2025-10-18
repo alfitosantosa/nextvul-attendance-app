@@ -370,7 +370,7 @@ export default function ParentPage() {
                   <div>
                     <h3 className="text-2xl font-bold">{selectedStudent?.name}</h3>
                     <p className="text-muted-foreground">
-                      NISN: {selectedStudent?.nisn || "-"} | NIS: {selectedStudent?.nis || "-"}
+                      NISN: {selectedStudent?.nisn || "-"} | NIK: {selectedStudent?.nik || "-"}
                     </p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
