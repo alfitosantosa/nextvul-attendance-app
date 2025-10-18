@@ -7,182 +7,288 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { User, Calendar, CheckCircle, XCircle, AlertCircle, Clock, DollarSign, TrendingUp, TrendingDown, AlertTriangle, BookOpen, GraduationCap, MapPin, Phone, Mail, CreditCard, FileText, Award } from "lucide-react";
-import { useEffect, useState } from "react";
+import { User, Calendar, CheckCircle, XCircle, AlertCircle, Clock, AlertTriangle, BookOpen, GraduationCap, Mail, Phone, FileText, Award, ChevronLeft, ChevronRight, ArrowUpDown, TrendingUp, TrendingDown } from "lucide-react";
+import { useState, useMemo } from "react";
+import { useGetAttendanceByIdStudent } from "@/app/hooks/useAttendaceByIdStudent";
+import { useGetStudentsByIds } from "@/app/hooks/useStudentByIds";
+import { useGetUserById } from "@/app/hooks/useUserById";
+import { useGetViolationsByIdStudent } from "@/app/hooks/useViolationsByIdStudent";
 import Navbar from "@/components/navbar";
-import { useGetUserById } from "../../hooks/useUserById";
-import { useGetStudentsByIds } from "../../hooks/useStudentByIds";
 
-export default function ParentDashboard() {
-  const idParent = "cmgpcwcve0005l504fj0f1hwu";
+// Simple Table Component
+function SimpleTable({ columns, data, emptyMessage = "Tidak ada data" }: any) {
+  const [currentPage, setCurrentPage] = useState(0);
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
+  const pageSize = 10;
 
-  const { data: mockParentData = [] } = useGetUserById(idParent);
+  const sortedData = useMemo(() => {
+    if (!sortConfig) return data;
 
-  console.log(mockParentData);
-  console.log(mockParentData.studentIds);
+    return [...data].sort((a, b) => {
+      const aValue = sortConfig.key.split(".").reduce((obj, key) => obj?.[key], a);
+      const bValue = sortConfig.key.split(".").reduce((obj, key) => obj?.[key], b);
 
-  const studentsIdsFromParent = mockParentData.studentIds;
+      if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [data, sortConfig]);
 
-  const { data: students = [], isLoading: loadingStudent } = useGetStudentsByIds(studentsIdsFromParent);
+  const totalPages = Math.ceil(sortedData.length / pageSize);
+  const startIndex = currentPage * pageSize;
+  const endIndex = startIndex + pageSize;
+  const currentData = sortedData.slice(startIndex, endIndex);
 
-  console.log(students);
-
-  const mockStudents = students;
-
-  const mockAttendance = {
-    thisMonth: {
-      present: 18,
-      absent: 2,
-      late: 1,
-      excused: 1,
-      total: 22,
-    },
-    recentAttendance: [
-      { date: "2025-01-15", status: "present", subject: "Matematika" },
-      { date: "2025-01-14", status: "present", subject: "Bahasa Indonesia" },
-      { date: "2025-01-13", status: "late", subject: "Pemrograman" },
-      { date: "2025-01-12", status: "present", subject: "Bahasa Inggris" },
-      { date: "2025-01-11", status: "absent", subject: "Fisika" },
-    ],
+  const handleSort = (key: string) => {
+    setSortConfig((current) => ({
+      key,
+      direction: current?.key === key && current.direction === "asc" ? "desc" : "asc",
+    }));
   };
 
-  const mockViolations = [
+  if (data.length === 0) {
+    return <div className="text-center py-12 text-muted-foreground">{emptyMessage}</div>;
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-md border overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b bg-muted/50">
+              {columns.map((column: any) => (
+                <th key={column.key} className="h-12 px-4 text-left align-middle font-medium text-muted-foreground cursor-pointer hover:bg-muted/70" onClick={() => column.sortable !== false && handleSort(column.key)}>
+                  <div className="flex items-center gap-2">
+                    {column.header}
+                    {column.sortable !== false && <ArrowUpDown className="h-3 w-3" />}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {currentData.map((row: any, idx: number) => (
+              <tr key={idx} className="border-b transition-colors hover:bg-muted/50">
+                {columns.map((column: any) => (
+                  <td key={column.key} className="p-4 align-middle">
+                    {column.render ? column.render(row) : column.key.split(".").reduce((obj: any, key: string) => obj?.[key], row)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between px-2">
+          <div className="text-sm text-muted-foreground">
+            Menampilkan {startIndex + 1}-{Math.min(endIndex, sortedData.length)} dari {sortedData.length} data
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button variant="outline" size="sm" onClick={() => setCurrentPage((p: number) => Math.max(0, p - 1))} disabled={currentPage === 0}>
+              <ChevronLeft className="h-4 w-4" />
+              Sebelumnya
+            </Button>
+            <span className="text-sm">
+              Halaman {currentPage + 1} dari {totalPages}
+            </span>
+            <Button variant="outline" size="sm" onClick={() => setCurrentPage((p: number) => Math.min(totalPages - 1, p + 1))} disabled={currentPage >= totalPages - 1}>
+              Selanjutnya
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function ParentPage() {
+  const idParent = "cmgw24741000pgqgq06yh5ff1";
+
+  const { data: parentData, isLoading: loadingParent } = useGetUserById(idParent);
+  const studentIds = parentData?.studentIds || [];
+
+  const { data: students = [], isLoading: loadingStudents } = useGetStudentsByIds(studentIds);
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+
+  // Set selected student once data is loaded
+  useMemo(() => {
+    if (!selectedStudent && students.length > 0) {
+      setSelectedStudent(students[0]);
+    }
+  }, [students, selectedStudent]);
+
+  const selectedStudentId = selectedStudent?.id || "";
+
+  const { data: attendanceStudent = [], isLoading: loadingAttendance } = useGetAttendanceByIdStudent(selectedStudentId);
+  const { data: violationStudent = [], isLoading: loadingViolations } = useGetViolationsByIdStudent(selectedStudentId);
+
+  // Calculate statistics
+  const attendanceStats = useMemo(() => {
+    const total = attendanceStudent.length;
+    const present = attendanceStudent.filter((a: any) => a.status === "present").length;
+    const absent = attendanceStudent.filter((a: any) => a.status === "absent").length;
+    const late = attendanceStudent.filter((a: any) => a.status === "late").length;
+    const excused = attendanceStudent.filter((a: any) => a.status === "excused" || a.status === "sick").length;
+    const percentage = total > 0 ? (present / total) * 100 : 0;
+    return { total, present, absent, late, excused, percentage };
+  }, [attendanceStudent]);
+
+  const violationStats = useMemo(() => {
+    const activeViolations = violationStudent.filter((v: any) => v.status === "ACTIVE");
+    const totalPoints = activeViolations.reduce((sum: number, v: any) => sum + (v.violationType?.points || 0), 0);
+    return { activeCount: activeViolations.length, totalPoints, total: violationStudent.length };
+  }, [violationStudent]);
+
+  // Attendance columns
+  const attendanceColumns = [
     {
-      id: "1",
-      date: "2025-01-10",
-      type: "Terlambat",
-      category: "ringan",
-      points: 5,
-      description: "Datang terlambat 15 menit",
-      status: "active",
+      key: "date",
+      header: "Tanggal",
+      render: (row: any) => {
+        const date = new Date(row.date);
+        return (
+          <div className="flex items-center gap-3">
+            <div className="text-center">
+              <div className="text-xl font-bold">{date.getDate()}</div>
+              <div className="text-xs text-muted-foreground">{date.toLocaleDateString("id-ID", { month: "short", year: "numeric" })}</div>
+            </div>
+          </div>
+        );
+      },
     },
     {
-      id: "2",
-      date: "2025-01-05",
-      type: "Tidak Mengerjakan PR",
-      category: "sedang",
-      points: 10,
-      description: "Tidak mengerjakan PR Matematika",
-      status: "resolved",
+      key: "schedule.subject.name",
+      header: "Mata Pelajaran",
+      render: (row: any) => (
+        <div>
+          <div className="font-medium">{row.schedule?.subject?.name || "-"}</div>
+          <div className="text-sm text-muted-foreground">{row.schedule?.teacher?.name || "-"}</div>
+        </div>
+      ),
+    },
+    {
+      key: "schedule.startTime",
+      header: "Waktu",
+      render: (row: any) => (
+        <div className="text-sm">
+          {row.schedule?.startTime || "-"} - {row.schedule?.endTime || "-"}
+        </div>
+      ),
+    },
+    {
+      key: "status",
+      header: "Status",
+      render: (row: any) => {
+        const variants: any = {
+          PRESENT: { variant: "default", icon: CheckCircle, label: "Hadir", color: "text-green-600" },
+          ABSENT: { variant: "destructive", icon: XCircle, label: "Tidak Hadir", color: "text-red-600" },
+          LATE: { variant: "secondary", icon: Clock, label: "Terlambat", color: "text-yellow-600" },
+          EXCUSED: { variant: "outline", icon: FileText, label: "Izin", color: "text-blue-600" },
+          SICK: { variant: "outline", icon: AlertCircle, label: "Sakit", color: "text-blue-600" },
+        };
+        const config = variants[row.status] || variants.ABSENT;
+        const Icon = config.icon;
+        return (
+          <Badge variant={config.variant} className="flex items-center gap-1 w-fit">
+            <Icon className="h-3 w-3" />
+            {config.label}
+          </Badge>
+        );
+      },
+    },
+    {
+      key: "notes",
+      header: "Catatan",
+      sortable: false,
+      render: (row: any) => <div className="text-sm text-muted-foreground max-w-xs truncate">{row.notes || "-"}</div>,
     },
   ];
 
-  const mockPayments = {
-    summary: {
-      totalPaid: 2500000,
-      totalDue: 500000,
-      nextDueDate: "2025-02-01",
+  // Violations columns
+  const violationsColumns = [
+    {
+      key: "date",
+      header: "Tanggal",
+      render: (row: any) => <div className="text-sm">{new Date(row.date).toLocaleDateString("id-ID")}</div>,
     },
-    history: [
-      {
-        id: "1",
-        type: "SPP",
-        amount: 500000,
-        dueDate: "2025-01-01",
-        paymentDate: "2024-12-28",
-        status: "paid",
-        receiptNumber: "RCP-2024-001",
+    {
+      key: "violationType.name",
+      header: "Jenis Pelanggaran",
+      render: (row: any) => (
+        <div>
+          <div className="font-medium">{row.violationType?.name || "-"}</div>
+          <div className="text-sm text-muted-foreground">{row.description || "-"}</div>
+        </div>
+      ),
+    },
+    {
+      key: "violationType.category",
+      header: "Kategori",
+      render: (row: any) => {
+        const category = row.violationType?.category || "RINGAN";
+        const variants: any = {
+          RINGAN: "secondary",
+          SEDANG: "default",
+          BERAT: "destructive",
+        };
+        return (
+          <Badge variant={variants[category]} className="capitalize">
+            {category.toLowerCase()}
+          </Badge>
+        );
       },
-      {
-        id: "2",
-        type: "SPP",
-        amount: 500000,
-        dueDate: "2025-02-01",
-        paymentDate: null,
-        status: "pending",
-        receiptNumber: null,
-      },
-    ],
-  };
+    },
+    {
+      key: "violationType.points",
+      header: "Poin",
+      render: (row: any) => (
+        <div className="flex items-center gap-1 font-semibold">
+          <AlertCircle className="h-4 w-4 text-orange-600" />
+          {row.violationType?.points || 0}
+        </div>
+      ),
+    },
+    {
+      key: "status",
+      header: "Status",
+      render: (row: any) => <Badge variant={row.status === "RESOLVED" ? "default" : "secondary"}>{row.status === "RESOLVED" ? "Selesai" : row.status === "APPEALED" ? "Banding" : "Aktif"}</Badge>,
+    },
+  ];
 
-  const [selectedStudent, setSelectedStudent] = useState<any>(null);
-
-  useEffect(() => {
-    if (!selectedStudent && mockStudents && mockStudents.length > 0) {
-      setSelectedStudent(mockStudents[0]);
-    }
-  }, [mockStudents, selectedStudent]);
-
-  if (!selectedStudent) {
+  // Loading state
+  if (loadingParent || loadingStudents || !selectedStudent) {
     return (
       <>
         <Navbar />
         <div className="min-h-screen bg-background">
           <div className="max-w-7xl mx-auto p-6 space-y-6">
-            <h1 className="text-3xl font-bold">Dashboard Orang Tua</h1>
-            <p className="text-muted-foreground">Memuat data siswa...</p>
+            <div className="flex items-center justify-center min-h-[400px]">
+              <div className="text-center space-y-4">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+                <p className="text-muted-foreground">Memuat data...</p>
+              </div>
+            </div>
           </div>
         </div>
       </>
     );
   }
 
-  // Status badge helpers
-  const getStatusBadge = (status: string) => {
-    const variants = {
-      present: { variant: "default" as const, icon: CheckCircle, label: "Hadir", color: "text-green-600" },
-      absent: { variant: "destructive" as const, icon: XCircle, label: "Tidak Hadir", color: "text-red-600" },
-      late: { variant: "secondary" as const, icon: Clock, label: "Terlambat", color: "text-yellow-600" },
-      excused: { variant: "outline" as const, icon: FileText, label: "Izin", color: "text-blue-600" },
-    };
-
-    const config = variants[status as keyof typeof variants] || variants.absent;
-    const Icon = config.icon;
-
-    return (
-      <Badge variant={config.variant} className="flex items-center gap-1">
-        <Icon className="h-3 w-3" />
-        {config.label}
-      </Badge>
-    );
-  };
-
-  const getViolationBadge = (category: string) => {
-    const variants = {
-      ringan: { variant: "secondary" as const, color: "text-yellow-600" },
-      sedang: { variant: "default" as const, color: "text-orange-600" },
-      berat: { variant: "destructive" as const, color: "text-red-600" },
-    };
-
-    return variants[category as keyof typeof variants] || variants.ringan;
-  };
-
-  const getPaymentBadge = (status: string) => {
-    const variants = {
-      paid: { variant: "default" as const, label: "Lunas", icon: CheckCircle },
-      pending: { variant: "secondary" as const, label: "Belum Bayar", icon: Clock },
-      overdue: { variant: "destructive" as const, label: "Terlambat", icon: AlertCircle },
-    };
-
-    const config = variants[status as keyof typeof variants] || variants.pending;
-    const Icon = config.icon;
-
-    return (
-      <Badge variant={config.variant} className="flex items-center gap-1">
-        <Icon className="h-3 w-3" />
-        {config.label}
-      </Badge>
-    );
-  };
-
-  // Calculate attendance percentage
-  const attendancePercentage = (mockAttendance.thisMonth.present / mockAttendance.thisMonth.total) * 100;
-
-  // Calculate total violation points
-  const totalViolationPoints = mockViolations.filter((v) => v.status === "active").reduce((sum, v) => sum + v.points, 0);
-
   return (
     <>
       <Navbar />
       <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto p-6 space-y-6">
-          {/* Header Section */}
+          {/* Header */}
           <div className="space-y-2">
             <h1 className="text-3xl font-bold">Dashboard Orang Tua</h1>
-            <p className="text-muted-foreground">Pantau perkembangan anak Anda di sekolah</p>
+            <p className="text-muted-foreground">Pantau perkembangan anak Anda di SMK Fajar Sentosa</p>
           </div>
 
-          {/* Parent Info Card */}
+          {/* Parent Info */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -194,15 +300,15 @@ export default function ParentDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="flex items-center gap-2">
                   <Mail className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{mockParentData.email}</span>
+                  <span className="text-sm">{parentData?.email || "-"}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Phone className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{mockParentData.phone}</span>
+                  <span className="text-sm">{parentData?.parentPhone || "-"}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">Hubungan: {mockParentData.relation}</span>
+                  <span className="text-sm">Jumlah Anak: {students.length}</span>
                 </div>
               </div>
             </CardContent>
@@ -216,9 +322,9 @@ export default function ParentDashboard() {
             </CardHeader>
             <CardContent>
               <Select
-                value={(selectedStudent?.id as any) ?? ""}
+                value={selectedStudent?.id}
                 onValueChange={(value) => {
-                  const student = mockStudents.find((s) => s.id === value);
+                  const student = students.find((s: any) => s.id === value);
                   if (student) setSelectedStudent(student);
                 }}
               >
@@ -226,15 +332,15 @@ export default function ParentDashboard() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {mockStudents.map((student) => (
+                  {students.map((student: any) => (
                     <SelectItem key={student.id} value={student.id}>
                       <div className="flex items-center gap-2">
                         <Avatar className="h-6 w-6">
-                          <AvatarImage src={(student.avatarUrl as any) ?? undefined} />
-                          <AvatarFallback>{student.name?.[0] ?? "?"}</AvatarFallback>
+                          <AvatarImage src={student.avatarUrl || undefined} />
+                          <AvatarFallback>{student.name?.[0] || "?"}</AvatarFallback>
                         </Avatar>
                         <span>
-                          {(student.name as any) ?? "Tanpa Nama"} - {(student.class?.name as any) ?? "-"}
+                          {student.name || "Tanpa Nama"} - {student.class?.name || "-"}
                         </span>
                       </div>
                     </SelectItem>
@@ -244,7 +350,7 @@ export default function ParentDashboard() {
             </CardContent>
           </Card>
 
-          {/* Student Info Card */}
+          {/* Student Profile */}
           <Card>
             <CardHeader>
               <CardTitle>Profil Siswa</CardTitle>
@@ -252,65 +358,70 @@ export default function ParentDashboard() {
             <CardContent>
               <div className="flex flex-col md:flex-row gap-6">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src={(selectedStudent.avatarUrl as any) ?? undefined} />
+                  <AvatarImage src={selectedStudent?.avatarUrl || undefined} />
                   <AvatarFallback className="text-2xl">
-                    {selectedStudent.name
-                      .split(" ")
-                      .map((n: string) => n[0] ?? "")
-                      .join("")}
+                    {selectedStudent?.name
+                      ?.split(" ")
+                      .map((n: string) => n[0])
+                      .join("") || "?"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="space-y-3 flex-1">
                   <div>
-                    <h3 className="text-2xl font-bold">{selectedStudent.name}</h3>
-                    <p className="text-muted-foreground">NISN: {selectedStudent.nisn}</p>
+                    <h3 className="text-2xl font-bold">{selectedStudent?.name}</h3>
+                    <p className="text-muted-foreground">
+                      NISN: {selectedStudent?.nisn || "-"} | NIS: {selectedStudent?.nis || "-"}
+                    </p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div className="flex items-center gap-2">
                       <BookOpen className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm">Kelas: {selectedStudent.class?.name as any}</span>
+                      <span className="text-sm">Kelas: {selectedStudent?.class?.name || "-"}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <GraduationCap className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm">Jurusan: {selectedStudent.major?.name as any}</span>
+                      <span className="text-sm">Jurusan: {selectedStudent?.major?.name || "-"}</span>
                     </div>
                   </div>
-                  <Badge variant="default">{selectedStudent.status === "active" ? "Aktif" : "Tidak Aktif"}</Badge>
+                  <Badge variant={selectedStudent?.status === "ACTIVE" ? "default" : "secondary"}>{selectedStudent?.status === "ACTIVE" ? "Aktif" : "Tidak Aktif"}</Badge>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Attendance Summary */}
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600" />
-                  Kehadiran Bulan Ini
+                  Kehadiran
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <div className="text-3xl font-bold">{attendancePercentage.toFixed(1)}%</div>
-                  <Progress value={attendancePercentage} className="h-2" />
+                  <div className="flex items-baseline gap-2">
+                    <div className="text-3xl font-bold">{attendanceStats.percentage.toFixed(1)}%</div>
+                    <span className="text-sm text-muted-foreground">dari {attendanceStats.total} pertemuan</span>
+                  </div>
+                  <Progress value={attendanceStats.percentage} className="h-2" />
                   <div className="grid grid-cols-2 gap-2 text-xs mt-4">
                     <div className="flex items-center gap-1">
                       <div className="h-2 w-2 rounded-full bg-green-500" />
-                      <span>Hadir: {mockAttendance.thisMonth.present}</span>
+                      <span>Hadir: {attendanceStats.present}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <div className="h-2 w-2 rounded-full bg-red-500" />
-                      <span>Alpa: {mockAttendance.thisMonth.absent}</span>
+                      <span>Alpa: {attendanceStats.absent}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <div className="h-2 w-2 rounded-full bg-yellow-500" />
-                      <span>Terlambat: {mockAttendance.thisMonth.late}</span>
+                      <span>Terlambat: {attendanceStats.late}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <div className="h-2 w-2 rounded-full bg-blue-500" />
-                      <span>Izin: {mockAttendance.thisMonth.excused}</span>
+                      <span>Izin: {attendanceStats.excused}</span>
                     </div>
                   </div>
                 </div>
@@ -322,22 +433,24 @@ export default function ParentDashboard() {
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <AlertTriangle className="h-4 w-4 text-orange-600" />
-                  Pelanggaran Aktif
+                  Pelanggaran
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
                   <div className="flex items-baseline gap-2">
-                    <div className="text-3xl font-bold">{totalViolationPoints}</div>
+                    <div className="text-3xl font-bold">{violationStats.totalPoints}</div>
                     <span className="text-sm text-muted-foreground">poin</span>
                   </div>
-                  <div className="text-sm text-muted-foreground">{mockViolations.filter((v) => v.status === "active").length} pelanggaran aktif</div>
-                  {totalViolationPoints > 50 ? (
+                  <div className="text-sm text-muted-foreground">
+                    {violationStats.activeCount} pelanggaran aktif dari {violationStats.total} total
+                  </div>
+                  {violationStats.totalPoints > 50 ? (
                     <Badge variant="destructive" className="mt-2">
                       <AlertCircle className="h-3 w-3 mr-1" />
                       Perlu Perhatian
                     </Badge>
-                  ) : totalViolationPoints > 20 ? (
+                  ) : violationStats.totalPoints > 20 ? (
                     <Badge variant="secondary" className="mt-2">
                       <AlertCircle className="h-3 w-3 mr-1" />
                       Hati-hati
@@ -351,178 +464,63 @@ export default function ParentDashboard() {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Payment Summary */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <CreditCard className="h-4 w-4 text-blue-600" />
-                  Status Pembayaran
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex items-baseline gap-2">
-                    <div className="text-3xl font-bold">Rp {(mockPayments.summary.totalDue / 1000).toFixed(0)}K</div>
-                  </div>
-                  <div className="text-sm text-muted-foreground">Tagihan tertunda</div>
-                  {mockPayments.summary.totalDue > 0 ? (
-                    <Badge variant="secondary" className="mt-2">
-                      <Clock className="h-3 w-3 mr-1" />
-                      Jatuh tempo: {new Date(mockPayments.summary.nextDueDate).toLocaleDateString("id-ID")}
-                    </Badge>
-                  ) : (
-                    <Badge variant="default" className="mt-2">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      Lunas
-                    </Badge>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
           </div>
 
           {/* Detailed Tabs */}
           <Tabs defaultValue="attendance" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="attendance">
                 <Calendar className="h-4 w-4 mr-2" />
-                Absensi
+                Riwayat Absensi
               </TabsTrigger>
               <TabsTrigger value="violations">
                 <AlertTriangle className="h-4 w-4 mr-2" />
-                Pelanggaran
-              </TabsTrigger>
-              <TabsTrigger value="payments">
-                <DollarSign className="h-4 w-4 mr-2" />
-                Pembayaran
+                Riwayat Pelanggaran
               </TabsTrigger>
             </TabsList>
 
             {/* Attendance Tab */}
-            <TabsContent value="attendance" className="space-y-4">
+            <TabsContent value="attendance">
               <Card>
                 <CardHeader>
-                  <CardTitle>Riwayat Kehadiran Terkini</CardTitle>
-                  <CardDescription>5 kehadiran terakhir dari {selectedStudent.name}</CardDescription>
+                  <CardTitle>Riwayat Kehadiran</CardTitle>
+                  <CardDescription>Data kehadiran lengkap dari {selectedStudent?.name}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    {mockAttendance.recentAttendance.map((attendance, index) => (
-                      <div key={index} className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent transition-colors">
-                        <div className="flex items-center gap-4">
-                          <div className="text-center">
-                            <div className="text-2xl font-bold">{new Date(attendance.date).getDate()}</div>
-                            <div className="text-xs text-muted-foreground">{new Date(attendance.date).toLocaleDateString("id-ID", { month: "short" })}</div>
-                          </div>
-                          <Separator orientation="vertical" className="h-12" />
-                          <div>
-                            <div className="font-medium">{attendance.subject}</div>
-                            <div className="text-sm text-muted-foreground">
-                              {new Date(attendance.date).toLocaleDateString("id-ID", {
-                                weekday: "long",
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              })}
-                            </div>
-                          </div>
-                        </div>
-                        <div>{getStatusBadge(attendance.status)}</div>
-                      </div>
-                    ))}
-                  </div>
+                  {loadingAttendance ? (
+                    <div className="text-center py-12">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                      <p className="text-muted-foreground">Memuat data kehadiran...</p>
+                    </div>
+                  ) : (
+                    <SimpleTable columns={attendanceColumns} data={attendanceStudent} emptyMessage="Belum ada data kehadiran" />
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
 
             {/* Violations Tab */}
-            <TabsContent value="violations" className="space-y-4">
+            <TabsContent value="violations">
               <Card>
                 <CardHeader>
                   <CardTitle>Daftar Pelanggaran</CardTitle>
-                  <CardDescription>Catatan pelanggaran dari {selectedStudent.name}</CardDescription>
+                  <CardDescription>Catatan pelanggaran dari {selectedStudent?.name}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {mockViolations.length === 0 ? (
+                  {loadingViolations ? (
+                    <div className="text-center py-12">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                      <p className="text-muted-foreground">Memuat data pelanggaran...</p>
+                    </div>
+                  ) : violationStudent.length === 0 ? (
                     <div className="text-center py-12">
                       <Award className="h-12 w-12 mx-auto text-green-600 mb-4" />
                       <h3 className="font-semibold text-lg">Tidak Ada Pelanggaran</h3>
-                      <p className="text-muted-foreground">{selectedStudent.name} belum memiliki catatan pelanggaran</p>
+                      <p className="text-muted-foreground">{selectedStudent?.name} belum memiliki catatan pelanggaran</p>
                     </div>
                   ) : (
-                    <div className="space-y-3">
-                      {mockViolations.map((violation) => (
-                        <div key={violation.id} className="flex items-start justify-between p-4 border rounded-lg">
-                          <div className="space-y-2 flex-1">
-                            <div className="flex items-center gap-2">
-                              <h4 className="font-semibold">{violation.type}</h4>
-                              <Badge variant={getViolationBadge(violation.category).variant} className="capitalize">
-                                {violation.category}
-                              </Badge>
-                            </div>
-                            <p className="text-sm text-muted-foreground">{violation.description}</p>
-                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                              <span className="flex items-center gap-1">
-                                <Calendar className="h-3 w-3" />
-                                {new Date(violation.date).toLocaleDateString("id-ID")}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <AlertCircle className="h-3 w-3" />
-                                {violation.points} poin
-                              </span>
-                            </div>
-                          </div>
-                          <div>
-                            <Badge variant={violation.status === "resolved" ? "default" : "secondary"}>{violation.status === "resolved" ? "Selesai" : "Aktif"}</Badge>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                    <SimpleTable columns={violationsColumns} data={violationStudent} emptyMessage="Belum ada data pelanggaran" />
                   )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* Payments Tab */}
-            <TabsContent value="payments" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Riwayat Pembayaran</CardTitle>
-                  <CardDescription>Status pembayaran SPP dan biaya lainnya</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {mockPayments.history.map((payment) => (
-                      <div key={payment.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="space-y-1 flex-1">
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-semibold">{payment.type}</h4>
-                          </div>
-                          <div className="text-2xl font-bold">Rp {payment.amount.toLocaleString("id-ID")}</div>
-                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                            <span>Jatuh tempo: {new Date(payment.dueDate).toLocaleDateString("id-ID")}</span>
-                            {payment.paymentDate && <span>Dibayar: {new Date(payment.paymentDate).toLocaleDateString("id-ID")}</span>}
-                          </div>
-                          {payment.receiptNumber && <div className="text-xs text-muted-foreground">No. Kwitansi: {payment.receiptNumber}</div>}
-                        </div>
-                        <div>{getPaymentBadge(payment.status)}</div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <Separator className="my-6" />
-
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Total Dibayar:</span>
-                      <span className="font-semibold">Rp {mockPayments.summary.totalPaid.toLocaleString("id-ID")}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Total Tertunda:</span>
-                      <span className="font-semibold text-orange-600">Rp {mockPayments.summary.totalDue.toLocaleString("id-ID")}</span>
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
             </TabsContent>

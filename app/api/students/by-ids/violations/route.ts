@@ -19,6 +19,27 @@ export async function GET(request: NextRequest) {
           in: ids,
         },
       },
+      include: {
+        student: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        violationType: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        class: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
 
     return NextResponse.json(students);

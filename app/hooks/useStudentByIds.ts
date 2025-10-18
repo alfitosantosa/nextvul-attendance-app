@@ -135,16 +135,16 @@ export const useGetStudentViolations = (studentId: string, enabled: boolean = tr
 };
 
 // Get payments for a student
-export const useGetStudentPayments = (studentId: string, enabled: boolean = true) => {
-  return useQuery({
-    queryKey: ["payments", "student", studentId],
-    queryFn: async () => {
-      const response = await axios.get(`/api/payments/student/${studentId}`);
-      return response.data as {
-        summary: PaymentSummary;
-        history: PaymentData[];
-      };
-    },
-    enabled: !!studentId && enabled,
-  });
-};
+// export const useGetStudentPayments = (studentId: string, enabled: boolean = true) => {
+//   return useQuery({
+//     queryKey: ["payments", "student", studentId],
+//     queryFn: async () => {
+//       const response = await axios.get(`/api/payments/student/${studentId}`);
+//       return response.data as {
+//         summary: PaymentSummary;
+//         history: PaymentData[];
+//       };
+//     },
+//     enabled: !!studentId && enabled,
+//   });
+// };

@@ -775,10 +775,16 @@ export function UserFormDialog({ open, onOpenChange, editData, onSuccess }: { op
               </Select>
               {errors.relation && <p className="text-sm text-red-500">{errors.relation.message}</p>}
             </div>
+            <div className="grid grid-cols-2 gap-4 ">
+              <div className="space-y-2">
+                <Label htmlFor="address">Alamat</Label>
+                <Textarea id="address" placeholder="Alamat lengkap orang tua/wali" {...register("address")} />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="address">Alamat</Label>
-              <Textarea id="address" placeholder="Alamat lengkap orang tua/wali" {...register("address")} />
+              <div className="space-y-2">
+                <Label htmlFor="parentPhone">No. Hanphone</Label>
+                <Input id="parentPhone" placeholder="08123456789" {...register("parentPhone")} />
+              </div>
             </div>
           </>
         );
