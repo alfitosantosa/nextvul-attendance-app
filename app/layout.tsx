@@ -1,5 +1,5 @@
 import { type Metadata } from "next";
-import { ClerkProvider, SignInButton, SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { ClerkProvider, SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReactQueryProvider } from "./client/providers";
@@ -29,19 +29,36 @@ export default function RootLayout({
     // <ClerkProvider>
     //   <html lang="en">
     //     <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-    //       <header>
-    //         <SignedIn />
-    //       </header>
-    //       {children}
+    //       {/* <header>
+    //         <SignedOut>
+    //           <SignInButton />
+    //           <SignUpButton />
+    //         </SignedOut>
+    //         <Toaster />
+    //         <SignedIn>
+    //           <UserButton />
+    //         </SignedIn>
+    //       </header> */}
+    //       <ReactQueryProvider>{children}</ReactQueryProvider>
     //     </body>
     //   </html>
     // </ClerkProvider>
 
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ReactQueryProvider>{children}</ReactQueryProvider>
-        <Toaster />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          <Toaster />
+          <ReactQueryProvider>{children}</ReactQueryProvider>
+          {/* {children} */}
+        </body>
+      </html>
+    </ClerkProvider>
+
+    // <html lang="en">
+    //   <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    //     <ReactQueryProvider>{children}</ReactQueryProvider>
+    //     <Toaster />
+    //   </body>
+    // </html>
   );
 }
