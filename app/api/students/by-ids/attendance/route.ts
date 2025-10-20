@@ -19,6 +19,17 @@ export async function GET(request: NextRequest) {
           in: ids,
         },
       },
+      include: {
+        student: true,
+        schedule: {
+          include: {
+            class: true,
+            subject: true,
+            teacher: true,
+            academicYear: true,
+          },
+        },
+      },
     });
 
     return NextResponse.json(students);

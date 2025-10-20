@@ -20,17 +20,17 @@ model Role {
 }
 
 model User {
-  id             String        @id @default(cuid()) @unique
+  id             String        @id @unique @default(cuid())
   academicYearId String?
   address        String?
   avatarUrl      String?
   birthDate      DateTime?
   birthPlace     String?
   classId        String?
-  clerkId        String?       
+  clerkId        String?
   createdAt      DateTime      @default(now())
   email          String?
-  employeeId     String?       
+  employeeId     String?
   endDate        DateTime?
   enrollmentDate DateTime?
   gender         String?
@@ -45,7 +45,7 @@ model User {
   roleId         String?
   startDate      DateTime?
   status         String?       @default("active")
-  studentIds     String[] 
+  studentIds     String[]
   updatedAt      DateTime      @updatedAt
   attendances    Attendance[]  @relation("StudentAttendance")
   payments       Payment[]     @relation("StudentPayment")

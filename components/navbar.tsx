@@ -7,6 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { useRouter, usePathname } from "next/navigation";
 import React from "react";
+import { SignedIn, SignInButton, SignedOut, SignUpButton, UserButton } from "@clerk/nextjs";
 
 const userRoles = ["Admin", "Teacher", "Student"]; // Example roles, replace with actual user roles
 
@@ -85,14 +86,25 @@ export default function Navbar() {
             {/* User Section */}
             <div className="flex items-center space-x-2">
               <div className="text-sm text-right">
-                <p className="font-medium text-gray-900">Admin User</p>
-                <div className="flex space-x-1 justify-end">
+                {/* <p className="font-medium text-gray-900">Admin User</p> */}
+                {/* <div className="flex space-x-1 justify-end">
                   {userRoles.map((role, index) => (
                     <Badge key={index} variant="secondary" className="text-xs">
                       {role}
                     </Badge>
                   ))}
-                </div>
+                </div> */}
+                <header className="flex justify-end items-center p-4 gap-4 h-16">
+                  <SignedOut>
+                    <SignInButton />
+                    <SignUpButton>
+                      <Button>Sign Up</Button>
+                    </SignUpButton>
+                  </SignedOut>
+                  <SignedIn>
+                    <UserButton />
+                  </SignedIn>
+                </header>
               </div>
               {/* Placeholder for UserButton when available */}
               {/* <UserButton /> */}
