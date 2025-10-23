@@ -29,7 +29,7 @@ import Navbar from "@/components/navbar";
 import { useGetSchedulesByIdClass } from "@/app/hooks/useScheduleByIdClass";
 import { useClassByIdUser } from "@/app/hooks/useClassByIdUser";
 import { useGetStudentById } from "@/app/hooks/useGetStudentById";
-import { useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/clerk-react";
 import { useGetUserByIdClerk } from "@/app/hooks/useUsersByIdClerk";
 
 // Type definitions
@@ -371,7 +371,7 @@ export default function ScheduleDataTable() {
   const { user } = useUser();
   const { data: userData } = useGetUserByIdClerk(user?.id ?? "");
 
-  const studentId = userData.id;
+  const studentId = userData?.id;
 
   const { data: classData, isLoading } = useClassByIdUser(studentId);
 

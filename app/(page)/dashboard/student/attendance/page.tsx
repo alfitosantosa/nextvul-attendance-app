@@ -3,26 +3,18 @@
 import * as React from "react";
 import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus, Pencil, Trash2, Calendar, Clock, Users, Search, X, MapPin, GraduationCap, BookOpen, CheckCircle, XCircle, AlertCircle } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-
-// Import hooks
-
 import { useGetSchedules } from "@/app/hooks/useSchedules";
-
 import Navbar from "@/components/navbar";
-
 import { useGetAttendanceByIdStudent } from "@/app/hooks/useAttendaceByIdStudent";
-import { useParams } from "next/navigation";
 import { useGetStudentById } from "@/app/hooks/useGetStudentById";
-import { useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/clerk-react";
 import { useGetUserByIdClerk } from "@/app/hooks/useUsersByIdClerk";
 
 // Type definitions
@@ -98,9 +90,9 @@ export default function AttendanceDataTable() {
   const { user } = useUser();
   const { data: userData } = useGetUserByIdClerk(user?.id ?? "");
 
-  const { data: attendances = [], isLoading, refetch } = useGetAttendanceByIdStudent(userData.id as string);
+  const { data: attendances = [], isLoading, refetch } = useGetAttendanceByIdStudent(userData?.id ?? "");
   const { data: schedules = [] } = useGetSchedules();
-  const { data: studentData } = useGetStudentById(userData.id as string);
+  const { data: studentData } = useGetStudentById(userData?.id ?? "");
 
   const handleSuccess = () => {
     refetch();
