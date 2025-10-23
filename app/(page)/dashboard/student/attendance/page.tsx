@@ -9,26 +9,21 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { toast } from "sonner";
 
 // Import hooks
-import { useGetAttendance, useCreateAttendance, useUpdateAttendance, useDeleteAttendance } from "@/app/hooks/useAttendance";
+
 import { useGetSchedules } from "@/app/hooks/useSchedules";
-import { useGetUsers } from "@/app/hooks/useUsers"; // Assuming you have this hook for students
+
 import Navbar from "@/components/navbar";
-import { useGetStudents } from "@/app/hooks/useStudents";
+
 import { useGetAttendanceByIdStudent } from "@/app/hooks/useAttendaceByIdStudent";
 import { useParams } from "next/navigation";
 import { useGetStudentById } from "@/app/hooks/useGetStudentById";
+import { useUser } from "@clerk/nextjs";
+import { useGetUserByIdClerk } from "@/app/hooks/useUsersByIdClerk";
 
 // Type definitions
 export type AttendanceData = {
@@ -100,11 +95,12 @@ export default function AttendanceDataTable() {
   const [dateFilter, setDateFilter] = React.useState<string>("");
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
 
-  const params = useParams();
+  const { user } = useUser();
+  const { data: userData } = useGetUserByIdClerk(user?.id ?? "");
 
-  const { data: attendances = [], isLoading, refetch } = useGetAttendanceByIdStudent(params.id as string);
+  const { data: attendances = [], isLoading, refetch } = useGetAttendanceByIdStudent(userData.id as string);
   const { data: schedules = [] } = useGetSchedules();
-  const { data: studentData } = useGetStudentById(params.id as string);
+  const { data: studentData } = useGetStudentById(userData.id as string);
 
   const handleSuccess = () => {
     refetch();
