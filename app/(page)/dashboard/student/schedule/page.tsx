@@ -29,6 +29,8 @@ import Navbar from "@/components/navbar";
 import { useGetSchedulesByIdClass } from "@/app/hooks/useScheduleByIdClass";
 import { useClassByIdUser } from "@/app/hooks/useClassByIdUser";
 import { useGetStudentById } from "@/app/hooks/useGetStudentById";
+import { useUser } from "@clerk/nextjs";
+import { useGetUserByIdClerk } from "@/app/hooks/useUsersByIdClerk";
 
 // Type definitions
 export type ScheduleData = {
@@ -366,7 +368,10 @@ export default function ScheduleDataTable() {
   //use get class by id user for get class id
   // Get class data for the current user (replace with actual user id or get from auth/session)
 
-  const studentId = "cmftrvnq5000lgq1tauteunhn";
+  const { user } = useUser();
+  const { data: userData } = useGetUserByIdClerk(user?.id ?? "");
+
+  const studentId = userData.id;
 
   const { data: classData, isLoading } = useClassByIdUser(studentId);
 
