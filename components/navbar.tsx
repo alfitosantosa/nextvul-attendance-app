@@ -8,8 +8,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { useRouter, usePathname } from "next/navigation";
 import React from "react";
 import { SignedIn, SignInButton, SignedOut, SignUpButton, UserButton } from "@clerk/nextjs";
+import { useUser } from "@clerk/clerk-react";
 
-const userRoles = ["Admin", "Teacher", "Student"]; // Example roles, replace with actual user roles
+import Logo from "@/public/logo-smkfajarsentosa.svg";
+import { useRolesByIdUser } from "@/app/hooks/useRolesByIdUser";
+import { useGetUserByIdClerk } from "@/app/hooks/useUsersByIdClerk";
+import { User } from "@clerk/nextjs/server";
+
+// Example roles, replace with actual user roles
 
 const navigationItems = [
   { href: "/", label: "Home" },
@@ -43,7 +49,30 @@ export default function Navbar() {
   // Handler untuk navigasi saat menu dipilih
   const handleNavigate = (value: string) => {
     router.push(value);
+
+    //get users role
   };
+
+  const { user } = useUser();
+
+  const { data: userData } = useGetUserByIdClerk(user?.id ?? "");
+  const userRoles = userData?.role?.name;
+
+  console.log(userData);
+
+  console.log(userData?.role?.permissions);
+
+  //   [
+  //     "dashboard_admin",
+  //     "attendance_for_teacher",
+  //     "attendance_for_student",
+  //     "violation_for_student",
+  //     "dashboard_parent",
+  //     "dashboard_attendance",
+  //     "attendance_for_Student",
+  //     "violation_for_teacher",
+  //     "payment_for_student"
+  // ]
 
   return (
     <header className="bg-white shadow-sm border-b">
@@ -52,8 +81,8 @@ export default function Navbar() {
           {/* Logo and School Info */}
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <GraduationCap className="h-8 w-8 text-blue-600" />
-              <div>
+              <img src={Logo.src} alt="Logo SMK Fajar Sentosa" className="h- w-10" />
+              <div className="hidden md:block">
                 <h1 className="text-xl font-bold text-gray-900">SMK Fajar Sentosa</h1>
                 <p className="text-sm text-gray-500">Sistem Informasi Sekolah</p>
               </div>
@@ -87,13 +116,7 @@ export default function Navbar() {
             <div className="flex items-center space-x-2">
               <div className="text-sm text-right">
                 {/* <p className="font-medium text-gray-900">Admin User</p> */}
-                {/* <div className="flex space-x-1 justify-end">
-                  {userRoles.map((role, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
-                      {role}
-                    </Badge>
-                  ))}
-                </div> */}
+
                 <header className="flex justify-end items-center p-4 gap-4 h-16">
                   <SignedOut>
                     <SignInButton />
@@ -102,6 +125,11 @@ export default function Navbar() {
                     </SignUpButton>
                   </SignedOut>
                   <SignedIn>
+                    <div className="space-x-1 justify-end hidden md:block">
+                      <Badge variant="default" className="text-sm">
+                        {userRoles}
+                      </Badge>
+                    </div>
                     <UserButton />
                   </SignedIn>
                 </header>
@@ -219,80 +247,6 @@ export function NavbarWithGroupedMenu() {
             <div className="flex items-center space-x-2">
               <div className="text-sm text-right">
                 <p className="font-medium text-gray-900">Admin User</p>
-                <div className="flex space-x-1 justify-end">
-                  {userRoles.map((role, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
-                      {role}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
-  );
-}
-
-// ===== ALTERNATIVE VERSION: With DropdownMenu =====
-// Jika lebih suka menggunakan DropdownMenu daripada Select
-
-export function NavbarWithDropdown() {
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const handleNavigate = (href: string) => {
-    router.push(href);
-  };
-
-  return (
-    <header className="bg-white shadow-sm border-b">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <GraduationCap className="h-8 w-8 text-blue-600" />
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">SMK Fajar Sentosa</h1>
-                <p className="text-sm text-gray-500">Sistem Informasi Sekolah</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline">
-                  Menu
-                  <ChevronDown className="ml-2 h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[250px] max-h-[400px] overflow-y-auto">
-                {navigationItems.map((item) => (
-                  <DropdownMenuItem key={item.href} onClick={() => handleNavigate(item.href)} className={pathname === item.href ? "bg-accent" : ""}>
-                    {pathname === item.href && <Check className="mr-2 h-4 w-4" />}
-                    {item.label}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
-            </Button>
-
-            <div className="flex items-center space-x-2">
-              <div className="text-sm text-right">
-                <p className="font-medium text-gray-900">Admin User</p>
-                <div className="flex space-x-1 justify-end">
-                  {userRoles.map((role, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
-                      {role}
-                    </Badge>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
