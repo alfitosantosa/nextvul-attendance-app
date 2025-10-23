@@ -17,6 +17,8 @@ import { useGetViolationsByIdStudent } from "@/app/hooks/useViolationsByIdStuden
 import { useGetClasses } from "@/app/hooks/useClass";
 import { useGetStudentById } from "@/app/hooks/useGetStudentById";
 import Navbar from "@/components/navbar";
+import { useUser } from "@clerk/clerk-react";
+import { useGetUserByIdClerk } from "@/app/hooks/useUsersByIdClerk";
 
 export type ViolationData = {
   id: string;
@@ -64,11 +66,12 @@ export default function ViolationDataTable() {
   const [classFilter, setClassFilter] = React.useState<string>("all");
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
 
-  const idStudent = "cmftrvnq5000lgq1tauteunhn";
+  const { user } = useUser();
+  const { data: userData } = useGetUserByIdClerk(user?.id ?? "");
 
-  const { data: violations = [], isLoading, refetch } = useGetViolationsByIdStudent(idStudent);
+  const { data: violations = [], isLoading, refetch } = useGetViolationsByIdStudent(userData?.id ?? "");
   const { data: classes } = useGetClasses();
-  const { data: dataStudent } = useGetStudentById(idStudent);
+  const { data: dataStudent } = useGetStudentById(userData?.id ?? "");
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("id-ID", {

@@ -3,6 +3,7 @@
 import * as React from "react";
 import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus, Pencil, Trash2, Calendar, User, AlertTriangle, Search, X, Check } from "lucide-react";
+import { useUser } from "@clerk/clerk-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -445,14 +446,15 @@ export default function ViolationDataTable() {
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
 
   //get violation from id teacher
-  const idTeacher = "cmfts2oct000pgq1tnt2wrvyq";
+  const { user } = useUser();
+  const { data: userData } = useGetUserByIdClerk(user?.id ?? "");
 
   // get profile teacher
 
-  const { data: usersData, isLoading: isLoadingUser } = useGetUserByIdTeacher(idTeacher);
+  const { data: usersData, isLoading: isLoadingUser } = useGetUserByIdTeacher(userData?.id ?? "");
 
   //get class from id techer
-  const { data: violations = [], isLoading, refetch } = useGetViolationsByIdTeacher(idTeacher);
+  const { data: violations = [], isLoading, refetch } = useGetViolationsByIdTeacher(usersData?.id ?? "");
 
   // const { data: violations = [], isLoading, refetch } = useGetViolations();
   const { data: classes } = useGetClasses();
