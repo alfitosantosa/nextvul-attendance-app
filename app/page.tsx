@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { User, Mail, Calendar, MapPin, Phone, GraduationCap, Building2, Shield, Clock, UserCheck, Briefcase, Star, Award, CheckCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useUser } from "@clerk/clerk-react";
 
 // Loading Component
 const UserProfileSkeleton = () => (
@@ -144,11 +145,11 @@ const InfoItem = ({
 
 // Main Component
 export default function Home() {
-  const clerkUserId = "user_30GFph3K4RPkgsMUnhqdnIDOrNQ";
-  const { data: user, isLoading, error } = useGetUserByIdClerk(clerkUserId);
+  const { user: clerkUser } = useUser();
+  const { data: user, isLoading: userLoading } = useGetUserByIdClerk(clerkUser?.id ?? "");
 
-  if (isLoading) return <UserProfileSkeleton />;
-  if (error) return <ErrorComponent error={error} />;
+  if (userLoading) return <UserProfileSkeleton />;
+  if (user?.error) return <ErrorComponent error={user?.error} />;
 
   // Helper function to format date
   const formatDate = (dateString: string | null) => {
@@ -191,16 +192,19 @@ export default function Home() {
           {/* Header Card */}
           <Card className="overflow-hidden shadow-2xl border-0 backdrop-blur-sm bg-white/90 hover:shadow-3xl transition-all duration-500">
             {/* Enhanced Background Header */}
-            <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 h-40 lg:h-48 relative overflow-hidden">{/* Decorative elements */}</div>
+            <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 h-40 lg:h-48 relative overflow-hidden block md:hidden">{/* Decorative elements */}</div>
+            <div className=" h-20 lg:h-24 relative overflow-hidden block hidden md:block">{/* Decorative elements */}</div>
 
             {/* Enhanced Profile Content */}
             <CardContent className="pt-0 px-6 lg:px-8 pb-8">
               <div className="flex flex-col xl:flex-row items-center xl:items-end gap-6 xl:gap-8 -mt-20 lg:-mt-24">
                 {/* Enhanced Avatar */}
                 <div className="relative group">
-                  <Avatar className="w-32 h-32 lg:w-40 lg:h-40 border-4 lg:border-6 border-white shadow-2xl ring-4 ring-blue-100 transition-all duration-300 group-hover:ring-blue-200 group-hover:shadow-3xl">
+                  <Avatar className="w-32 h-32 lg:w-40 lg:h-40 border-4 lg:border-6 border-white shadow-2xl ring-4 ring-blue-100 transition-all duration-300 group-hover:ring-blue-200  group-hover:shadow-3xl">
                     <AvatarImage src={user?.avatarUrl} alt={user?.name} className="object-cover" />
-                    <AvatarFallback className="text-2xl lg:text-3xl bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold">{getInitials(user?.name || "User")}</AvatarFallback>
+                    <Card className="absolute bottom-0 right-0">
+                      <AvatarFallback className="text-2xl lg:text-3xl bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold">{getInitials(user?.name || "User")}</AvatarFallback>
+                    </Card>
                   </Avatar>
                   <div className="absolute -bottom-1 -right-2 w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-green-400 to-emerald-500 border-4 border-white rounded-full flex items-center justify-center shadow-lg">
                     <CheckCircle className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
@@ -212,16 +216,16 @@ export default function Home() {
                   <div className="space-y-3">
                     <div className="flex flex-col xl:flex-row xl:items-center gap-3 xl:gap-4">
                       <h1 className="relative text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black">{user?.name}</h1>
-                      {user?.status && (
-                        <div className="flex items-center justify-center xl:justify-start">
-                          <Badge variant={getStatusVariant(user?.status)} className="px-4 py-2 text-sm font-semibold shadow-lg  transition-all rounded-4xl duration-300 ">
+                      {/* {user?.status && (
+                        <div className="flex  items-center justify-center xl:justify-start">
+                          <Badge variant={getStatusVariant(user?.status)} className="px-4 py-3.5 text-sm font-semibold shadow-lg  transition-all rounded-4xl duration-300 ">
                             <div className="w-2 h-2 rounded-full bg-current mr-2 "></div>
                             {user?.status?.charAt(0).toUpperCase() + user?.status?.slice(1)}
                           </Badge>
                         </div>
-                      )}
+                      )} */}
                     </div>
-                    <p className="text-xl sm:text-2xl lg:text-3xl text-gray-600 font-semibold">{user?.position || "Position not specified"}</p>
+                    <p className="text-xl sm:text-2xl lg:text-3xl text-gray-600 font-semibold">{user?.position || ""}</p>
                   </div>
 
                   {/* Enhanced Meta Info */}

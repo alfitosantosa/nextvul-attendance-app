@@ -13,8 +13,9 @@ model Role {
   name        String   @unique
   description String
   permissions String[]
-  isActive    Boolean  @default(true)
-  users       User[]
+
+  isActive Boolean @default(true)
+  users    User[]
 
   @@map("roles")
 }
