@@ -92,6 +92,8 @@ const availablePermissions = [
   { id: "/dashboard/payments", label: "Payment for Student" },
   { id: "/dashboard/specialschedule", label: "Special Schedule" },
   { id: "/dashboard/calender", label: "Calendar for User" },
+  { id: "/dashboard/calender/teacher", label: "Calendar for Teacher" },
+  { id: "/dashboard/calender/student", label: "Calendar for Student" },
   { id: "/dashboard/teacher/schedule", label: "Schedule for Teacher" },
   { id: "/dashboard/student/attendance", label: "Attendance for Student" },
   { id: "/dashboard/student/schedule", label: "Schedule for Student" },

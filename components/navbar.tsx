@@ -26,6 +26,8 @@ const permissionLabels: Record<string, string> = {
   "/dashboard/payments": "Pembayaran",
   "/dashboard/specialschedule": "Special Schedule",
   "/dashboard/calender": "Calendar for user",
+  "/dashboard/calender/teacher": "Calendar for Teacher",
+  "/dashboard/calender/student": "Calendar for Student",
   "/dashboard/parent": "Parent Page",
   "/dashboard/violations/student": "Pelanggaran for Siswa",
   "/dashboard/violations/teacher": "Pelanggaran for teacher",
