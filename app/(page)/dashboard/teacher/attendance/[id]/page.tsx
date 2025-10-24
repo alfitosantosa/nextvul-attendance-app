@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, use } from "react";
+import React, { useState } from "react";
 import { useGetClassById } from "@/app/hooks/useGetClassById";
 import { useGetScheduleById } from "@/app/hooks/useGetScheduleById";
 import Navbar from "@/components/navbar";
@@ -11,8 +11,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Smartphone, Clock, AlertTriangle, CheckCircle, User, BookOpen, Users } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useCreateAttendanceBulk } from "@/app/hooks/useBulkAttendance";
-import Link from "next/link";
-import { useRouter } from "next/router";
 
 interface Student {
   id: string;
@@ -222,7 +220,7 @@ export default function AttendanceModule() {
                           )}
                         </div>
                       </div>
-                      <div className="flex space-x-1">
+                      <div className="grid grid-cols-2 space-x-1">
                         {Object.entries(STATUS_MAP).map(([status, config]) => (
                           <Button key={status} size="sm" variant={attendanceData[student.id]?.status === status ? "default" : "outline"} onClick={() => updateAttendance(student.id, status)} className="text-xs px-2 py-1">
                             {config.label}

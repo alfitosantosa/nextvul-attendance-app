@@ -13,12 +13,17 @@ import { CalendarDays, Clock, MapPin, BookOpen, Users, GraduationCap, Eye, Plus 
 import Link from "next/link";
 import { useState } from "react";
 import { useGetAttendance } from "@/app/hooks/useAttendance";
+import { useUser } from "@clerk/clerk-react";
+import { useGetUserByIdClerk } from "@/app/hooks/useUsersByIdClerk";
 
 export default function TeacherAttendancePage() {
   const today = new Date().getDay();
   const [selectedDay, setSelectedDay] = useState<string>(today.toString());
 
-  const { data: scheduleData = [], isLoading: isLoadingSchedule, error: scheduleError } = useGetScheduleByIdTeacher("cmfts2oct000pgq1tnt2wrvyq");
+  const { user } = useUser();
+  const { data: userData } = useGetUserByIdClerk(user?.id ?? "");
+
+  const { data: scheduleData = [], isLoading: isLoadingSchedule, error: scheduleError } = useGetScheduleByIdTeacher(userData?.id ?? "");
 
   const getDayName = (dayOfWeek: number) => {
     const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
@@ -224,7 +229,7 @@ export default function TeacherAttendancePage() {
                       </CardContent>
 
                       <CardFooter className="bg-slate-50/50 flex gap-3">
-                        <Link href={`/teacher/schedule/${schedule.id}`} passHref>
+                        <Link href={`/dashboard/teacher/schedule/${schedule.id}`} passHref>
                           <Button variant="outline" className="flex items-center gap-2">
                             <Eye className="h-4 w-4" />
                             Lihat Absensi
@@ -237,7 +242,7 @@ export default function TeacherAttendancePage() {
                             className={`flex items-center gap-2 ${isButtonDisabled(schedule) ? "opacity-10 cursor-not-allowed bg-gray-300 text-gray-1000 hover:bg-gray-300" : ""}`}
                             onClick={() => {
                               if (!isButtonDisabled(schedule)) {
-                                window.location.href = `/teacher/attendance/${schedule.id}`;
+                                window.location.href = `/dashboard/teacher/attendance/${schedule.id}`;
                               }
                             }}
                           >

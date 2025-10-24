@@ -4,9 +4,9 @@ import { useMemo } from "react";
 import { CalendarBody, CalendarDate, CalendarDatePagination, CalendarDatePicker, CalendarHeader, CalendarItem, CalendarMonthPicker, CalendarProvider, CalendarYearPicker } from "@/components/ui/kibo-ui/calendar";
 import Navbar from "@/components/navbar";
 import { useGetSpecialSchedules } from "@/app/hooks/useSpecialSchedule";
-import { useGetSchedulesByStudent } from "@/app/hooks/useSchedules";
 import { useUser } from "@clerk/clerk-react";
 import { useGetUserByIdClerk } from "@/app/hooks/useUsersByIdClerk";
+import { useGetScheduleByIdTeacher } from "@/app/hooks/useGetScheduleById";
 
 // Type definitions berdasarkan JSON
 type Schedule = {
@@ -66,7 +66,7 @@ export default function CalendarPage() {
   const { user } = useUser();
   const { data: userData } = useGetUserByIdClerk(user?.id ?? "");
 
-  const { data: schedules = [], isLoading: schedulesLoading } = useGetSchedulesByStudent(userData?.id ?? "");
+  const { data: schedules = [], isLoading: schedulesLoading } = useGetScheduleByIdTeacher(userData?.id ?? "");
   const { data: specialSchedules = [], isLoading: specialSchedulesLoading } = useGetSpecialSchedules();
 
   // Status untuk berbagai jenis event
