@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus, Pencil, Trash2, Calendar, Clock, Users, Search, X, MapPin, GraduationCap, BookOpen } from "lucide-react";
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Calendar, Clock, Users, Search, X, MapPin, GraduationCap, BookOpen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -540,25 +540,6 @@ export default function ScheduleDataTable() {
               <DropdownMenuLabel>Aksi</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => navigator.clipboard.writeText(scheduleData.id)}>Copy ID Jadwal</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => {
-                  setSelectedSchedule(scheduleData);
-                  setEditDialogOpen(true);
-                }}
-              >
-                <Pencil className="mr-2 h-4 w-4" />
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  setSelectedSchedule(scheduleData);
-                  setDeleteDialogOpen(true);
-                }}
-                className="text-red-600"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Hapus
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -646,21 +627,6 @@ export default function ScheduleDataTable() {
               <Input placeholder="Cari kelas, mata pelajaran, atau guru..." value={globalFilter ?? ""} onChange={(event) => setGlobalFilter(event.target.value)} className="max-w-sm pl-8" disabled={isLoading} />
             </div>
 
-            {/* Class Filter */}
-            {/* <Select value={classFilter} onValueChange={setClassFilter}>
-              <SelectTrigger className="w-[140px]">
-                <SelectValue placeholder="Filter Kelas" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Semua Kelas</SelectItem>
-                {classes?.map((cls: any) => (
-                  <SelectItem key={cls.id} value={cls.id}>
-                    {cls.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select> */}
-
             {/* Day Filter */}
             <Select value={dayFilter} onValueChange={setDayFilter}>
               <SelectTrigger className="w-[120px]">
@@ -735,11 +701,6 @@ export default function ScheduleDataTable() {
                   })}
               </DropdownMenuContent>
             </DropdownMenu>
-
-            <Button onClick={() => setCreateDialogOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Tambah Jadwal
-            </Button>
           </div>
         </div>
 
