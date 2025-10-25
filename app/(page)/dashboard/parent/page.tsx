@@ -14,6 +14,8 @@ import { useGetStudentsByIds } from "@/app/hooks/useStudentByIds";
 import { useGetUserById } from "@/app/hooks/useUserById";
 import { useGetViolationsByIdStudent } from "@/app/hooks/useViolationsByIdStudent";
 import Navbar from "@/components/navbar";
+import { useUser } from "@clerk/clerk-react";
+import { useGetUserByIdClerk } from "@/app/hooks/useUsersByIdClerk";
 
 // Simple Table Component
 function SimpleTable({ columns, data, emptyMessage = "Tidak ada data" }: any) {
@@ -105,9 +107,10 @@ function SimpleTable({ columns, data, emptyMessage = "Tidak ada data" }: any) {
 }
 
 export default function ParentPage() {
-  const idParent = "cmgw24741000pgqgq06yh5ff1";
+  const { user } = useUser();
+  const { data: userData } = useGetUserByIdClerk(user?.id ?? "");
 
-  const { data: parentData, isLoading: loadingParent } = useGetUserById(idParent);
+  const { data: parentData, isLoading: loadingParent } = useGetUserById(userData?.id ?? "");
   const studentIds = parentData?.studentIds || [];
 
   const { data: students = [], isLoading: loadingStudents } = useGetStudentsByIds(studentIds);
@@ -183,11 +186,11 @@ export default function ParentPage() {
       header: "Status",
       render: (row: any) => {
         const variants: any = {
-          PRESENT: { variant: "default", icon: CheckCircle, label: "Hadir", color: "text-green-600" },
-          ABSENT: { variant: "destructive", icon: XCircle, label: "Tidak Hadir", color: "text-red-600" },
-          LATE: { variant: "secondary", icon: Clock, label: "Terlambat", color: "text-yellow-600" },
-          EXCUSED: { variant: "outline", icon: FileText, label: "Izin", color: "text-blue-600" },
-          SICK: { variant: "outline", icon: AlertCircle, label: "Sakit", color: "text-blue-600" },
+          present: { variant: "default", icon: CheckCircle, label: "Hadir", color: "text-green-600" },
+          absent: { variant: "destructive", icon: XCircle, label: "Tidak Hadir", color: "text-red-600" },
+          late: { variant: "secondary", icon: Clock, label: "Terlambat", color: "text-yellow-600" },
+          excused: { variant: "outline", icon: FileText, label: "Izin", color: "text-blue-600" },
+          sick: { variant: "outline", icon: AlertCircle, label: "Sakit", color: "text-blue-600" },
         };
         const config = variants[row.status] || variants.ABSENT;
         const Icon = config.icon;
