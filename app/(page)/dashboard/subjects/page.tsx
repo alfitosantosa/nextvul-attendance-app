@@ -531,49 +531,52 @@ export default function SubjectDataTable() {
           </div>
 
           <div className="flex items-center space-x-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline">
-                  Kolom <ChevronDown className="ml-2 h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {table
-                  .getAllColumns()
-                  .filter((column) => column.getCanHide())
-                  .map((column) => {
-                    const getColumnLabel = (columnId: string) => {
-                      switch (columnId) {
-                        case "code":
-                          return "Kode";
-                        case "name":
-                          return "Nama Mata Pelajaran";
-                        case "major":
-                          return "Jurusan";
-                        case "credits":
-                          return "SKS";
-                        case "isActive":
-                          return "Status";
-                        case "description":
-                          return "Deskripsi";
-                        default:
-                          return columnId;
-                      }
-                    };
+            <div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">
+                    Kolom <ChevronDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {table
+                    .getAllColumns()
+                    .filter((column) => column.getCanHide())
+                    .map((column) => {
+                      const getColumnLabel = (columnId: string) => {
+                        switch (columnId) {
+                          case "code":
+                            return "Kode";
+                          case "name":
+                            return "Nama Mata Pelajaran";
+                          case "major":
+                            return "Jurusan";
+                          case "credits":
+                            return "SKS";
+                          case "isActive":
+                            return "Status";
+                          case "description":
+                            return "Deskripsi";
+                          default:
+                            return columnId;
+                        }
+                      };
 
-                    return (
-                      <DropdownMenuCheckboxItem key={column.id} className="capitalize" checked={column.getIsVisible()} onCheckedChange={(value) => column.toggleVisibility(!!value)}>
-                        {getColumnLabel(column.id)}
-                      </DropdownMenuCheckboxItem>
-                    );
-                  })}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <Button onClick={() => setCreateDialogOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Tambah Mata Pelajaran
-            </Button>
+                      return (
+                        <DropdownMenuCheckboxItem key={column.id} className="capitalize" checked={column.getIsVisible()} onCheckedChange={(value) => column.toggleVisibility(!!value)}>
+                          {getColumnLabel(column.id)}
+                        </DropdownMenuCheckboxItem>
+                      );
+                    })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            <div>
+              <Button onClick={() => setCreateDialogOpen(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Tambah Mata Pelajaran
+              </Button>
+            </div>
           </div>
         </div>
 
