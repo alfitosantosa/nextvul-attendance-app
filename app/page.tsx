@@ -7,9 +7,199 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { User, Mail, Calendar, MapPin, Phone, GraduationCap, Building2, Shield, Clock, UserCheck, Briefcase, Star, Award, CheckCircle } from "lucide-react";
+import { User, Mail, Calendar, MapPin, Phone, GraduationCap, Building2, Shield, Clock, UserCheck, Briefcase, Star, Award, CheckCircle, AlertCircle, UserX, MessageSquare, CheckCircle2, UserCog, ExternalLink } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@clerk/clerk-react";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+
+const NoUserDataComponent = ({ clerkUser }: { clerkUser: any }) => {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <Navbar />
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-20">
+        <div className="max-w-4xl mx-auto">
+          {/* Main Alert Card */}
+          <Card className="border-0 shadow-2xl bg-white/90 backdrop-blur-sm overflow-hidden">
+            {/* Header with gradient */}
+            <div className="bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 p-6 lg:p-8">
+              <div className="flex flex-col items-center text-center space-y-4">
+                <div className="w-20 h-20 lg:w-24 lg:h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg">
+                  <UserX className="w-10 h-10 lg:w-12 lg:h-12 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl lg:text-4xl font-bold text-white mb-2">Akun Belum Terhubung</h1>
+                  <p className="text-white/90 text-base lg:text-lg">Akun Clerk Anda belum terhubung dengan sistem sekolah</p>
+                </div>
+              </div>
+            </div>
+
+            <CardContent className="p-6 lg:p-8 space-y-6">
+              {/* User Info from Clerk */}
+              {clerkUser && (
+                <Alert className="border-blue-200 bg-blue-50/50">
+                  <Shield className="h-5 w-5 text-blue-600" />
+                  <AlertTitle className="text-blue-900 font-semibold">Informasi Akun Clerk</AlertTitle>
+                  <AlertDescription className="text-blue-800 mt-2 space-y-1">
+                    <p>
+                      <strong>Nama:</strong> {clerkUser.fullName || clerkUser.firstName}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {clerkUser.primaryEmailAddress?.emailAddress}
+                    </p>
+                    <p>
+                      <strong>Clerk ID:</strong> <code className="bg-blue-100 px-2 py-1 rounded text-xs">{clerkUser.id}</code>
+                    </p>
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {/* What's Happening */}
+              <div className="space-y-4">
+                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  <AlertCircle className="w-6 h-6 text-orange-600" />
+                  Apa yang Terjadi?
+                </h2>
+                <div className="bg-gray-50 rounded-xl p-5 space-y-3">
+                  <p className="text-gray-700 leading-relaxed">
+                    Anda telah berhasil login menggunakan akun Clerk, namun akun Anda
+                    <strong className="text-orange-600"> belum terdaftar </strong>
+                    dalam sistem database sekolah kami.
+                  </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    Untuk dapat mengakses fitur-fitur sistem seperti absensi, jadwal, dan data akademik, akun Clerk Anda perlu
+                    <strong className="text-blue-600"> dihubungkan dengan data user </strong>
+                    di sistem oleh administrator.
+                  </p>
+                </div>
+              </div>
+
+              {/* Steps to Resolve */}
+              <div className="space-y-4">
+                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  <CheckCircle2 className="w-6 h-6 text-green-600" />
+                  Langkah Selanjutnya
+                </h2>
+                <div className="space-y-3">
+                  {[
+                    {
+                      number: "1",
+                      title: "Hubungi Administrator",
+                      description: "Kirimkan permintaan ke admin untuk menghubungkan akun Clerk Anda",
+                      color: "from-blue-500 to-cyan-500",
+                    },
+                    {
+                      number: "2",
+                      title: "Berikan Informasi",
+                      description: "Sampaikan Clerk ID dan email Anda kepada administrator",
+                      color: "from-purple-500 to-pink-500",
+                    },
+                    {
+                      number: "3",
+                      title: "Tunggu Konfirmasi",
+                      description: "Admin akan menghubungkan akun Anda dengan data di sistem",
+                      color: "from-green-500 to-emerald-500",
+                    },
+                  ].map((step) => (
+                    <div key={step.number} className="flex gap-4 p-4 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 hover:shadow-md transition-all duration-300">
+                      <div className={`flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-r ${step.color} flex items-center justify-center text-white font-bold shadow-lg`}>{step.number}</div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900 mb-1">{step.title}</h3>
+                        <p className="text-sm text-gray-600">{step.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Contact Information */}
+              <div className="space-y-4">
+                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  <MessageSquare className="w-6 h-6 text-blue-600" />
+                  Hubungi Administrator
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Email Card */}
+                  <Card className="border-2 border-blue-100 hover:border-blue-300 transition-all duration-300 hover:shadow-lg">
+                    <CardContent className="p-5">
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 bg-blue-100 rounded-lg">
+                          <Mail className="w-6 h-6 text-blue-600" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
+                          <p className="text-sm text-gray-600 mb-3">Kirim email ke administrator</p>
+                          <Button variant="outline" size="sm" className="w-full border-blue-300 text-blue-600 hover:bg-blue-50" onClick={() => (window.location.href = "mailto:admin@school.com")}>
+                            <Mail className="w-4 h-4 mr-2" />
+                            admin@school.com
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Phone Card */}
+                  <Card className="border-2 border-green-100 hover:border-green-300 transition-all duration-300 hover:shadow-lg">
+                    <CardContent className="p-5">
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 bg-green-100 rounded-lg">
+                          <Phone className="w-6 h-6 text-green-600" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-900 mb-1">Telepon</h3>
+                          <p className="text-sm text-gray-600 mb-3">Hubungi via telepon</p>
+                          <Button variant="outline" size="sm" className="w-full border-green-300 text-green-600 hover:bg-green-50" onClick={() => (window.location.href = "tel:+6281234567890")}>
+                            <Phone className="w-4 h-4 mr-2" />
+                            +62 812-3456-7890
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Admin Portal Link */}
+              {/* <Alert className="border-purple-200 bg-purple-50/50">
+                <UserCog className="h-5 w-5 text-purple-600" />
+                <AlertTitle className="text-purple-900 font-semibold">Untuk Administrator</AlertTitle>
+                <AlertDescription className="text-purple-800 mt-2">
+                  <p className="mb-3">Jika Anda adalah administrator, silakan hubungkan akun Clerk ini dengan user di dashboard.</p>
+                  <Button variant="outline" size="sm" className="border-purple-300 text-purple-600 hover:bg-purple-100" onClick={() => (window.location.href = "/dashboard/users")}>
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Buka Dashboard Users
+                  </Button>
+                </AlertDescription>
+              </Alert> */}
+
+              {/* Status Badge */}
+              <div className="flex items-center justify-center pt-4">
+                <Badge variant="secondary" className="px-4 py-2 text-sm bg-orange-100 text-orange-800 border border-orange-200">
+                  <Clock className="w-4 h-4 mr-2" />
+                  Status: Menunggu Aktivasi
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Additional Help Card */}
+          <Card className="mt-6 border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+            <CardContent className="p-6">
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <AlertCircle className="w-5 h-5 text-blue-600" />
+                Butuh Bantuan Lebih Lanjut?
+              </h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Jika Anda mengalami kesulitan atau memiliki pertanyaan, silakan hubungi bagian IT Support sekolah atau datang langsung ke ruang admin. Bawa informasi akun Clerk Anda untuk mempercepat proses aktivasi.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // Loading Component
 const UserProfileSkeleton = () => (
@@ -149,6 +339,12 @@ export default function Home() {
   const { data: user, isLoading: userLoading } = useGetUserByIdClerk(clerkUser?.id ?? "");
 
   if (userLoading) return <UserProfileSkeleton />;
+
+  // Add this check
+  if (!user || !user.id) {
+    return <NoUserDataComponent clerkUser={clerkUser} />;
+  }
+
   if (user?.error) return <ErrorComponent error={user?.error} />;
 
   // Helper function to format date
