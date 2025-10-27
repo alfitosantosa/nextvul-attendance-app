@@ -24,6 +24,7 @@ import { useGetClasses } from "@/app/hooks/useClass";
 import { useGetAcademicYears } from "@/app/hooks/useAcademicYear";
 import { useGetMajors } from "@/app/hooks/useMajors";
 import { useGetClerk } from "@/app/hooks/useClerk";
+import Image from "next/image";
 
 // Type definitions
 export type UserData = {
@@ -333,7 +334,7 @@ function AvatarUpload({ currentAvatarUrl, onUploadSuccess, disabled = false }: {
         <div className="relative">
           {previewUrl ? (
             <div className="relative group">
-              <img src={previewUrl} alt="Avatar preview" className="w-24 h-24 rounded-full object-cover border-2" />
+              <Image src={previewUrl} alt="Avatar preview" className="w-24 h-24 rounded-full object-cover border-2" />
               <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
                 <Button type="button" size="sm" variant="ghost" className="text-white hover:text-white" onClick={() => setShowPreview(true)}>
                   <Eye className="h-4 w-4" />
@@ -376,7 +377,7 @@ function AvatarUpload({ currentAvatarUrl, onUploadSuccess, disabled = false }: {
               <DialogTitle>Preview Avatar</DialogTitle>
             </DialogHeader>
             <div className="flex items-center justify-center p-4">
-              <img src={previewUrl} alt="Avatar preview" className="max-w-full max-h-[70vh] rounded-lg" />
+              <Image src={previewUrl} alt="Avatar preview" className="max-w-full max-h-[70vh] rounded-lg" />
             </div>
           </DialogContent>
         </Dialog>
@@ -455,7 +456,7 @@ function ClerkUserSelector({ onSelect, selectedClerkId, disabled = false }: { on
                   <div key={user.id} className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-muted cursor-pointer" onClick={() => handleSelect(user)}>
                     <div className="flex-shrink-0">
                       {user.image_url ? (
-                        <img src={user.image_url} alt={`${user.first_name} ${user.last_name}`} className="h-10 w-10 rounded-full" />
+                        <Image src={user.image_url} alt={`${user.first_name} ${user.last_name}`} className="h-10 w-10 rounded-full" />
                       ) : (
                         <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
                           <User className="h-5 w-5" />

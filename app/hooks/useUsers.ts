@@ -12,8 +12,13 @@ export const useGetUsers = () => {
       try {
         const res = await axios.get("/api/users");
         return res.data;
-      } catch (error: any) {
-        throw new Error(error?.response?.data?.message || "Failed to fetch users");
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.error("Error fetching users:", error.response?.data || error.message);
+        } else {
+          console.error("Unexpected error:", error);
+        }
+        throw new Error("Failed to fetch users");
       }
     },
   });
@@ -29,9 +34,13 @@ export const useCreateUser = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
-    onError: (error: any) => {
-      console.error("Error creating user:", error);
-      throw new Error(error?.response?.data?.message || "Failed to create user");
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        console.error("Error creating user:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw new Error("Failed to create user");
     },
   });
 };
@@ -46,9 +55,13 @@ export const useUpdateUser = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
-    onError: (error: any) => {
-      console.error("Error updating user:", error);
-      throw new Error(error?.response?.data?.message || "Failed to update user");
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        console.error("Error updating user:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw new Error("Failed to update user");
     },
   });
 };
@@ -63,9 +76,13 @@ export const useDeleteUser = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
-    onError: (error: any) => {
-      console.error("Error deleting user:", error);
-      throw new Error(error?.response?.data?.message || "Failed to delete user");
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        console.error("Error deleting user:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw new Error("Failed to delete user");
     },
   });
 };
@@ -77,8 +94,13 @@ export const useGetUserById = (id: string) => {
       try {
         const res = await axios.get(`/api/users/${id}`);
         return res.data;
-      } catch (error: any) {
-        throw new Error(error?.response?.data?.message || "Failed to fetch user");
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.error("Error fetching user:", error.response?.data || error.message);
+        } else {
+          console.error("Unexpected error:", error);
+        }
+        throw new Error("Failed to fetch user");
       }
     },
     enabled: !!id, // Only run query if id exists

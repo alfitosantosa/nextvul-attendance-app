@@ -43,9 +43,13 @@ export const useUpdateRole = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["roles"] });
     },
-    onError: (error: any) => {
-      console.error("Error updating role:", error);
-      throw new Error(error?.response?.data?.message || "Failed to update role");
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        console.error("Error updating role:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw new Error("Failed to update role");
     },
   });
 };
@@ -60,9 +64,13 @@ export const useDeleteRole = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["roles"] });
     },
-    onError: (error: any) => {
-      console.error("Error deleting role:", error);
-      throw new Error(error?.response?.data?.message || "Failed to delete role");
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        console.error("Error deleting role:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw new Error("Failed to delete role");
     },
   });
 };

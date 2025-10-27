@@ -8,12 +8,18 @@ export const useGetMajors = () => {
       try {
         const res = await axios.get("/api/major");
         return res.data;
-      } catch (error: any) {
-        throw new Error(error?.response?.data?.message || "Failed to fetch majors");
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.error("Error fetching majors:", error.response?.data || error.message);
+        } else {
+          console.error("Unexpected error:", error);
+        }
+        throw new Error("Failed to fetch majors");
       }
     },
   });
 };
+
 export const useCreateMajor = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -24,9 +30,13 @@ export const useCreateMajor = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["majors"] });
     },
-    onError: (error: any) => {
-      console.error("Error creating major:", error);
-      throw new Error(error?.response?.data?.message || "Failed to create major");
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        console.error("Error creating major:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw new Error("Failed to create major");
     },
   });
 };
@@ -41,9 +51,13 @@ export const useUpdateMajor = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["majors"] });
     },
-    onError: (error: any) => {
-      console.error("Error updating major:", error);
-      throw new Error(error?.response?.data?.message || "Failed to update major");
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        console.error("Error updating major:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw new Error("Failed to update major");
     },
   });
 };
@@ -58,9 +72,13 @@ export const useDeleteMajor = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["majors"] });
     },
-    onError: (error: any) => {
-      console.error("Error deleting major:", error);
-      throw new Error(error?.response?.data?.message || "Failed to delete major");
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        console.error("Error deleting major:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw new Error("Failed to delete major");
     },
   });
 };

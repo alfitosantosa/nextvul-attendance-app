@@ -79,7 +79,7 @@ function replaceUndefinedWithNull<T>(value: T): T {
   return (value === undefined ? (null as unknown as T) : value) as T;
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const users = await prisma.user.findMany({
       include: {

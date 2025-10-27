@@ -8,6 +8,7 @@ import { SignedIn, SignInButton, SignedOut, SignUpButton, UserButton } from "@cl
 import { useUser } from "@clerk/clerk-react";
 import Logo from "@/public/logo-smkfajarsentosa.svg";
 import { useGetUserByIdClerk } from "@/app/hooks/useUsersByIdClerk";
+import Image from "next/image";
 
 const permissionLabels: Record<string, string> = {
   "/": "Home",
@@ -60,7 +61,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <img src={Logo.src} alt="Logo SMK Fajar Sentosa" className="h- w-10" />
+              <Image src={Logo} alt="Logo SMK Fajar Sentosa" className="h- w-10" />
               <div className="hidden md:block">
                 <h1 className="text-xl font-bold text-gray-900">SMK Fajar Sentosa</h1>
                 <p className="text-sm text-gray-500">Sistem Informasi Sekolah</p>

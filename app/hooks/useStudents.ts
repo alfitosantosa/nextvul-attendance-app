@@ -1,5 +1,5 @@
 "use client";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export const useGetStudents = () => {
@@ -9,8 +9,13 @@ export const useGetStudents = () => {
       try {
         const res = await axios.get("/api/students");
         return res.data;
-      } catch (error: any) {
-        throw new Error(error?.response?.data?.message || "Failed to fetch data");
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.error("Error fetching students:", error.response?.data || error.message);
+        } else {
+          console.error("Unexpected error:", error);
+        }
+        throw new Error("Failed to fetch students");
       }
     },
   });

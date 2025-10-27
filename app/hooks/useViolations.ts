@@ -8,8 +8,13 @@ export const useGetViolations = () => {
       try {
         const response = await axios.get("/api/violations");
         return response.data;
-      } catch (error: any) {
-        throw new Error(error?.response?.data?.message || "Failed to fetch violations");
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.error("Error fetching violations:", error.response?.data || error.message);
+        } else {
+          console.error("Unexpected error:", error);
+        }
+        throw new Error("Failed to fetch violations");
       }
     },
   });
@@ -25,9 +30,13 @@ export const useCreateViolation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["violations"] });
     },
-    onError: (error: any) => {
-      console.error("Error creating violation:", error);
-      throw new Error(error?.response?.data?.message || "Failed to create violation");
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        console.error("Error creating violation:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw new Error("Failed to create violation");
     },
   });
 };
@@ -42,9 +51,13 @@ export const useUpdateViolation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["violations"] });
     },
-    onError: (error: any) => {
-      console.error("Error updating violation:", error);
-      throw new Error(error?.response?.data?.message || "Failed to update violation");
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        console.error("Error updating violation:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw new Error("Failed to update violation");
     },
   });
 };
@@ -58,10 +71,6 @@ export const useDeleteViolation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["violations"] });
-    },
-    onError: (error: any) => {
-      console.error("Error deleting violation:", error);
-      throw new Error(error?.response?.data?.message || "Failed to delete violation");
     },
   });
 };

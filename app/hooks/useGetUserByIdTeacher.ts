@@ -2,7 +2,7 @@
 
 // app/api/users/teacher/[id]
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export const useGetUserByIdTeacher = (id: string) => {
