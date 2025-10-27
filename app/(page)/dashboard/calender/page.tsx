@@ -89,7 +89,7 @@ export default function CalendarPage() {
 
     schedules.forEach((schedule: Schedule) => {
       // Generate recurring events untuk setiap minggu dalam tahun
-      let currentWeekStart = new Date(startOfYear);
+      const currentWeekStart = new Date(startOfYear);
 
       // Cari hari pertama sesuai dayOfWeek
       while (currentWeekStart.getDay() !== (schedule.dayOfWeek === 7 ? 0 : schedule.dayOfWeek)) {

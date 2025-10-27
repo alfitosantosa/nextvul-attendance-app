@@ -10,8 +10,13 @@ export const useGetAttendanceByIdSchedule = (id: string) => {
       try {
         const res = await axios.get(`/api/attendance/schedule/${id}`);
         return res.data;
-      } catch (error: any) {
-        throw new Error(error?.response?.data?.message || "Failed to fetch schedule");
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.error("Error fetching attendance:", error.response?.data || error.message);
+        } else {
+          console.error("Unexpected error:", error);
+        }
+        throw new Error("Failed to fetch attendance");
       }
     },
   });

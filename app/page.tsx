@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { User, Mail, Calendar, MapPin, Phone, GraduationCap, Building2, Shield, Clock, UserCheck, Briefcase, Star, Award, CheckCircle, AlertCircle, UserX, MessageSquare, CheckCircle2, UserCog, ExternalLink } from "lucide-react";
+import { User, Mail, Calendar, MapPin, Phone, GraduationCap, Building2, Shield, Clock, UserCheck, Briefcase, Award, CheckCircle, AlertCircle, UserX, MessageSquare, CheckCircle2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@clerk/clerk-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
@@ -336,6 +336,7 @@ const InfoItem = ({
 // Main Component
 export default function Home() {
   const { user: clerkUser } = useUser();
+
   const { data: user, isLoading: userLoading } = useGetUserByIdClerk(clerkUser?.id ?? "");
 
   if (userLoading) return <UserProfileSkeleton />;

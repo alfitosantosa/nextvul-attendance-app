@@ -9,8 +9,13 @@ export const useGetTeachers = () => {
       try {
         const res = await axios.get("/api/teachers");
         return res.data;
-      } catch (error: any) {
-        throw new Error(error?.response?.data?.message || "Failed to fetch data");
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.error("Error fetching teachers:", error.response?.data || error.message);
+        } else {
+          console.error("Unexpected error:", error);
+        }
+        throw new Error("Failed to fetch teachers");
       }
     },
   });
@@ -21,8 +26,13 @@ export const useCreateTeacher = () => {
     try {
       const res = await axios.post("/api/teachers", data);
       return res.data;
-    } catch (error: any) {
-      throw new Error(error?.response?.data?.message || "Failed to create teacher");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("Error creating teacher:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw new Error("Failed to create teacher");
     }
   };
 };
@@ -32,8 +42,13 @@ export const useUpdateTeacher = () => {
     try {
       const res = await axios.put("/api/teachers", data);
       return res.data;
-    } catch (error: any) {
-      throw new Error(error?.response?.data?.message || "Failed to update teacher");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("Error updating teacher:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw new Error("Failed to update teacher");
     }
   };
 };
@@ -43,8 +58,13 @@ export const useDeleteTeacher = () => {
     try {
       const res = await axios.delete(`/api/teachers`, { data: { id } });
       return res.data;
-    } catch (error: any) {
-      throw new Error(error?.response?.data?.message || "Failed to delete teacher");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("Error deleting teacher:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw new Error("Failed to delete teacher");
     }
   };
 };

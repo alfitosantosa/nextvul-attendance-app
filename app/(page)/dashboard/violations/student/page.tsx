@@ -19,6 +19,7 @@ import { useGetStudentById } from "@/app/hooks/useGetStudentById";
 import Navbar from "@/components/navbar";
 import { useUser } from "@clerk/clerk-react";
 import { useGetUserByIdClerk } from "@/app/hooks/useUsersByIdClerk";
+import Image from "next/image";
 
 export type ViolationData = {
   id: string;
@@ -36,6 +37,7 @@ export type ViolationData = {
     id: string;
     name: string;
     email: string;
+    avatarUrl: string;
   };
   violationType?: {
     id: string;
@@ -69,7 +71,7 @@ export default function ViolationDataTable() {
   const { user } = useUser();
   const { data: userData } = useGetUserByIdClerk(user?.id ?? "");
 
-  const { data: violations = [], isLoading, refetch } = useGetViolationsByIdStudent(userData?.id ?? "");
+  const { data: violations = [], isLoading } = useGetViolationsByIdStudent(userData?.id ?? "");
   const { data: classes } = useGetClasses();
   const { data: dataStudent } = useGetStudentById(userData?.id ?? "");
 
@@ -311,7 +313,7 @@ export default function ViolationDataTable() {
           <div className="bg-card rounded-lg border p-6 mb-6">
             <div className="flex items-center space-x-4">
               <div className="bg-primary/10 rounded-full p-3">
-                <User className="h-8 w-8 text-primary" />
+                <Image src={dataStudent.avatarUrl} alt="Avatar" width={50} height={50} />
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold">{dataStudent.name || "Nama Siswa"}</h2>

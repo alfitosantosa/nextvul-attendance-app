@@ -18,6 +18,7 @@ import Navbar from "@/components/navbar";
 
 // Import dialog components
 import { UserFormDialog, DeleteUserDialog, UserData, ClerkUser } from "@/components/dialog/Create/DialogCreateUser";
+import Image from "next/image";
 
 // Main DataTable Component
 export default function UserDataTable() {
@@ -76,7 +77,11 @@ export default function UserDataTable() {
       {
         accessorKey: "avatarUrl",
         header: "Avatar",
-        cell: ({ row }) => <img src={row.original.avatarUrl || "https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png"} alt="Avatar" className="w-10 h-10 rounded-full object-cover" />,
+        cell: ({ row }) => {
+          const clerkUser = getClerkUserInfo(row.original.clerkId);
+          const avatarUrl = clerkUser?.profile_image_url || clerkUser?.image_url || row.original.avatarUrl || "https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png";
+          return <Image src={avatarUrl} alt="Avatar" className="w-10 h-10 rounded-full object-cover" width={40} height={40} />;
+        },
       },
       {
         accessorKey: "name",
@@ -101,7 +106,7 @@ export default function UserDataTable() {
           return (
             <div className="flex items-center space-x-2">
               {clerkInfo?.image_url && (
-                <img
+                <Image
                   src={clerkInfo.image_url}
                   alt={name || "User"}
                   className="h-8 w-8 rounded-full object-cover"

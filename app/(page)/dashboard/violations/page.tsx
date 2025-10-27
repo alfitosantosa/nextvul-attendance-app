@@ -221,10 +221,11 @@ function ViolationFormDialog({ open, onOpenChange, editData, onSuccess }: { open
     },
   });
 
-  const selectedStudentId = watch("studentId");
-  const selectedViolationTypeId = watch("violationTypeId");
-  const selectedClassId = watch("classId");
-  const selectedStatus = watch("status");
+  const watchedValues = watch();
+  const selectedStudentId = watchedValues.studentId;
+  const selectedViolationTypeId = watchedValues.violationTypeId;
+  const selectedClassId = watchedValues.classId;
+  const selectedStatus = watchedValues.status;
 
   React.useEffect(() => {
     if (editData) {

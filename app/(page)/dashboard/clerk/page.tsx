@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import Navbar from "@/components/navbar";
 import { useGetClerk } from "@/app/hooks/useClerk";
+import Image from "next/image";
 
 export type User = {
   id: string;
@@ -55,10 +56,12 @@ export default function DataTableClerk() {
       id: "profile",
       header: "Avatar",
       cell: ({ row }) => (
-        <img
+        <Image
           src={row.original.profile_image_url || row.original.image_url || "https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png"}
           alt="Avatar"
           className="w-10 h-10 rounded-full object-cover"
+          width={40}
+          height={40}
         />
       ),
     },
@@ -287,7 +290,7 @@ export default function DataTableClerk() {
             <div className="space-y-6">
               {/* Profile Section */}
               <div className="flex items-start gap-4">
-                <img
+                <Image
                   src={selectedUser.profile_image_url || selectedUser.image_url || "https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png"}
                   alt="Avatar"
                   className="w-20 h-20 rounded-full object-cover"

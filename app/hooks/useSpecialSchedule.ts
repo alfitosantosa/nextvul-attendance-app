@@ -19,6 +19,9 @@ export const useCreateSpecialSchedule = () => {
       const response = await axios.post("/api/specialschedule", data);
       return response.data;
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["specialSchedules"] });
+    },
   });
 };
 
@@ -29,6 +32,9 @@ export const useUpdateSpecialSchedule = () => {
       const response = await axios.put("/api/specialschedule", data);
       return response.data;
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["specialSchedules"] });
+    },
   });
 };
 
@@ -38,6 +44,9 @@ export const useDeleteSpecialSchedule = () => {
     mutationFn: async (id) => {
       const response = await axios.delete("/api/specialschedule", { data: { id } });
       return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["specialSchedules"] });
     },
   });
 };

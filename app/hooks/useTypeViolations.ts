@@ -8,8 +8,13 @@ export const useGetTypeViolations = () => {
       try {
         const response = await axios.get("/api/typeviolations");
         return response.data;
-      } catch (error: any) {
-        throw new Error(error?.response?.data?.message || "Failed to fetch violation types");
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.error("Error fetching violation types:", error.response?.data || error.message);
+        } else {
+          console.error("Unexpected error:", error);
+        }
+        throw new Error("Failed to fetch violation types");
       }
     },
   });
@@ -25,9 +30,13 @@ export const useCreateTypeViolation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["typeViolations"] });
     },
-    onError: (error: any) => {
-      console.error("Error creating violation type:", error);
-      throw new Error(error?.response?.data?.message || "Failed to create violation type");
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        console.error("Error creating violation type:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw new Error("Failed to create violation type");
     },
   });
 };
@@ -42,9 +51,13 @@ export const useUpdateTypeViolation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["typeViolations"] });
     },
-    onError: (error: any) => {
-      console.error("Error updating violation type:", error);
-      throw new Error(error?.response?.data?.message || "Failed to update violation type");
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        console.error("Error updating violation type:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw new Error("Failed to update violation type");
     },
   });
 };
@@ -59,9 +72,13 @@ export const useDeleteTypeViolation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["typeViolations"] });
     },
-    onError: (error: any) => {
-      console.error("Error deleting violation type:", error);
-      throw new Error(error?.response?.data?.message || "Failed to delete violation type");
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        console.error("Error deleting violation type:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      throw new Error("Failed to delete violation type");
     },
   });
 };
