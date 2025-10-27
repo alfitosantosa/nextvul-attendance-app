@@ -52,6 +52,7 @@ export type ViolationData = {
     id: string;
     name: string;
     email: string;
+    avatarUrl: string;
   };
   violationType?: {
     id: string;
@@ -722,24 +723,7 @@ export default function ViolationDataTable() {
       <div className="mx-auto my-8 p-6 max-w-7xl">
         <div className="font-bold text-3xl ">Data Pelanggaran</div>
         <div className="mb-1">Dari mata pelajaran dan kelas anda mengajar</div>
-        {usersData && (
-          <div className="bg-card rounded-lg border p-6">
-            <div className="flex items-center space-x-4">
-              <div className="bg-primary/10 rounded-full p-3">
-                <User className="h-8 w-8 text-primary" />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-xl font-semibold">{usersData.name || "Nama Siswa"}</h2>
-                <p className="text-muted-foreground">{usersData.email || "Email tidak tersedia"}</p>
-                {usersData.class && (
-                  <Badge variant="secondary" className="mt-2">
-                    Sebagai: {usersData.class.name}
-                  </Badge>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
+
         <div className="mx-auto ">
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center space-x-2">
