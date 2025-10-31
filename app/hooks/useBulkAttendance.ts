@@ -27,6 +27,19 @@ export const useUpdateAttendanceBulk = () => {
   });
 };
 
+// export const useDeleteAttendanceBulk = () => {
+//   const queryClient = useQueryClient();
+//   return useMutation({
+//     mutationFn: async (data: any) => {
+//       const response = await axios.delete(`/api/attendance/bulk`, data);
+//       return response.data;
+//     },
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({ queryKey: ["attendance"] });
+//     },
+//   });
+// };
+
 // [
 //   model Attendance {
 //     id         String   @id @default(cuid())
