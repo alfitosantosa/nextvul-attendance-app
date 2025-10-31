@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus, Pencil, Trash2, Calendar, Clock, Users, Search, X, MapPin, GraduationCap, BookOpen, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus, Pencil, Trash2, Calendar, Clock, Users, Search, X, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -22,8 +22,7 @@ import { toast } from "sonner";
 
 // Import hooks
 import { useGetAttendance, useCreateAttendance, useUpdateAttendance, useDeleteAttendance } from "@/app/hooks/useAttendance";
-import { useGetSchedules } from "@/app/hooks/useSchedules";
-import { useGetUsers } from "@/app/hooks/useUsers"; // Assuming you have this hook for students
+import { useGetSchedules } from "@/app/hooks/useSchedules"; // Assuming you have this hook for students
 import Navbar from "@/components/navbar";
 import { useGetStudents } from "@/app/hooks/useStudents";
 
@@ -67,7 +66,7 @@ export type AttendanceData = {
 const attendanceSchema = z.object({
   studentId: z.string().min(1, "Siswa wajib dipilih"),
   scheduleId: z.string().min(1, "Jadwal wajib dipilih"),
-  status: z.enum(["present", "absent", "late", "excused"], {
+  status: z.enum(["present", "absent", "late", "excused", "sick"], {
     error: "Status kehadiran wajib dipilih",
   }),
   notes: z.string().optional(),

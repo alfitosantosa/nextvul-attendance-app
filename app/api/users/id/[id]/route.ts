@@ -62,7 +62,7 @@ import { prisma } from "@/lib/prisma";
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   try {
-    const user = await prisma.user.findFirst({
+    const user = await prisma.user.findUnique({
       where: { id: id },
       include: { class: true, major: true, academicYear: true, role: true },
     });
